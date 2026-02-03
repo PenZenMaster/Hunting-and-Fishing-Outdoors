@@ -1,0 +1,26 @@
+{
+    "name": "rankrocket/hnfo-dev",
+    "description": "HNFO WordPress Development Project",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.10",
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "phpunit/phpunit": "^9.6",
+        "yoast/phpunit-polyfills": "^2.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "scripts": {
+        "phpcs": "phpcs --standard=phpcs.xml.dist",
+        "phpcbf": "phpcbf --standard=phpcs.xml.dist",
+        "test": "phpunit"
+    }
+}

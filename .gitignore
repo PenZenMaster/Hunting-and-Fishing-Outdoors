@@ -1,0 +1,110 @@
+# WordPress Core Files
+# Ignore everything in the root except specific directories
+/*
+!.gitignore
+!README.md
+!CHANGELOG.md
+!PROJECT-SETUP.md
+!WORDPRESS-STANDARDS.md
+!.claude-wordpress.md
+!composer.json
+!composer.lock
+!package.json
+!package-lock.json
+!phpcs.xml.dist
+!phpunit.xml.dist
+!.phpunit.result.cache
+!tests/
+
+# Track wp-content (but exclude default themes/plugins)
+!wp-content/
+
+# wp-content exclusions
+wp-content/index.php
+wp-content/mu-plugins/index.php
+wp-content/plugins/index.php
+wp-content/themes/index.php
+
+# Uploads directory
+wp-content/uploads/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/cache/
+wp-content/backups/
+
+# Default WordPress Themes (exclude stock themes)
+wp-content/themes/twenty*/
+
+# Default WordPress Plugins (exclude Akismet & Hello Dolly)
+wp-content/plugins/akismet/
+wp-content/plugins/hello.php
+
+# Advanced Custom Fields Pro (if using)
+wp-content/plugins/advanced-custom-fields-pro/
+
+# WordPress Plugin & Theme Editor Autosave
+*.tmp
+
+# Log files
+*.log
+error_log
+debug.log
+
+# Environment & Configuration
+.env
+.env.local
+.env.*.local
+wp-config.php
+wp-config-local.php
+local-xdebuginfo.php
+.htaccess
+
+# Database
+*.sql
+*.sql.gz
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDE & Editor Files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.project
+.settings/
+.buildpath
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Composer
+/vendor/
+
+# Build files
+/dist/
+/build/
+
+# Testing
+/tests/coverage/
+.phpunit.result.cache
+
+# Temporary files
+*.bak
+*.old
+*.orig
+*.tmp

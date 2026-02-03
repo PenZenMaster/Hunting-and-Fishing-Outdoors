@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<ruleset name="HNFO WordPress Coding Standards">
+    <description>Coding standards for HNFO WordPress project</description>
+
+    <!-- What to scan -->
+    <file>./wp-content/plugins</file>
+    <file>./wp-content/themes</file>
+
+    <!-- Exclude patterns -->
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/dist/*</exclude-pattern>
+    <exclude-pattern>*/build/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+    <exclude-pattern>*.min.js</exclude-pattern>
+    <exclude-pattern>*.min.css</exclude-pattern>
+
+    <!-- Exclude default WordPress themes and plugins -->
+    <exclude-pattern>*/wp-content/themes/twenty*/*</exclude-pattern>
+    <exclude-pattern>*/wp-content/plugins/akismet/*</exclude-pattern>
+    <exclude-pattern>*/wp-content/plugins/hello.php</exclude-pattern>
+
+    <!-- Show progress and colors -->
+    <arg value="ps"/>
+    <arg name="colors"/>
+
+    <!-- Show sniff codes in reports -->
+    <arg value="ns"/>
+
+    <!-- Check up to 20 files simultaneously -->
+    <arg name="parallel" value="20"/>
+
+    <!-- Only check PHP files -->
+    <arg name="extensions" value="php"/>
+
+    <!-- Use WordPress Coding Standards -->
+    <rule ref="WordPress">
+        <!-- Allow short array syntax -->
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+
+    <!-- Check for WordPress Extra standards -->
+    <rule ref="WordPress-Extra">
+        <!-- Exclude file name rules for WordPress standard file names -->
+        <exclude name="WordPress.Files.FileName"/>
+    </rule>
+
+    <!-- Check for WordPress Documentation standards -->
+    <rule ref="WordPress-Docs"/>
+
+    <!-- Verify minimum PHP version -->
+    <config name="minimum_supported_wp_version" value="6.0"/>
+    <config name="testVersion" value="8.0-"/>
+
+    <!-- Text domain configuration -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="hnfo"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Enforce prefixes for functions and classes -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="hnfo"/>
+                <element value="HNFO"/>
+            </property>
+        </properties>
+    </rule>
+</ruleset>
