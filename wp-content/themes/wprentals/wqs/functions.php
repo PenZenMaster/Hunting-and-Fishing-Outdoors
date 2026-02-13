@@ -291,7 +291,81 @@ function set_last_entry_id() {
 // Add amenity request modal to footer
 add_action('wp_footer', 'add_amenity_modal_html');
 
+// Handle HTML form submission (non-Elementor)
+add_action('wp_ajax_submit_new_amenity', 'handle_new_amenity_submission');
+add_action('wp_ajax_nopriv_submit_new_amenity', 'handle_new_amenity_submission');
+
+function handle_new_amenity_submission() {
+	// Security: Verify nonce
+	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'submit_new_amenity' ) ) {
+		wp_send_json_error( 'Invalid security token' );
+		return;
+	}
+
+	// Security: Sanitize inputs
+	$entry_id    = isset( $_POST['entry_id'] ) ? absint( $_POST['entry_id'] ) : 0;
+	$name        = isset( $_POST['amenity_name'] ) ? sanitize_text_field( $_POST['amenity_name'] ) : '';
+	$category    = isset( $_POST['amenity_category'] ) ? sanitize_text_field( $_POST['amenity_category'] ) : '';
+	$description = isset( $_POST['amenity_description'] ) ? sanitize_textarea_field( $_POST['amenity_description'] ) : '';
+	$image       = isset( $_POST['amenity_image'] ) ? esc_url_raw( $_POST['amenity_image'] ) : '';
+
+	// Validate required fields
+	if ( empty( $name ) || empty( $category ) || empty( $description ) ) {
+		wp_send_json_error( 'Please fill in all required fields' );
+		return;
+	}
+
+	// Insert into database
+	global $wpdb;
+	$result = $wpdb->insert(
+		'new_amenities',
+		array(
+			'new_amenity_entry_id'   => $entry_id,
+			'nw_amenity_name'        => $name,
+			'nw_amenity_category'    => $category,
+			'nw_amenity_description' => $description,
+			'nw_amenity_image'       => $image,
+		),
+		array( '%d', '%s', '%s', '%s', '%s' )
+	);
+
+	if ( ! $result ) {
+		wp_send_json_error( 'Database error: Could not save amenity request' );
+		return;
+	}
+
+	// Send email notification to admin
+	$admin_email = get_option( 'hnfo_amenity_admin_email', get_option( 'admin_email' ) );
+	$site_url    = home_url( '/add-new-amenities/' );
+
+	$to      = $admin_email;
+	$subject = 'New Amenity Request';
+	$message = '<h2>Hello Admin,</h2>';
+	$message .= '<p><a href="' . esc_url( $site_url . '?action=Approve&am_id=' . absint( $entry_id ) ) . '"><b>Approve</b></a> or <a href="' . esc_url( $site_url . '?action=Deny&am_id=' . absint( $entry_id ) ) . '"><b>Deny</b></a> new amenity request</p>';
+	if ( ! empty( $image ) ) {
+		$message .= '<p><img src="' . esc_url( $image ) . '" style="max-width:300px"></p>';
+	}
+	$message .= '<h3>Amenity Details:</h3>';
+	$message .= '<p><b>Amenity name: </b>' . esc_html( $name ) . '</p>';
+	$message .= '<p><b>Category: </b>' . esc_html( $category ) . '</p>';
+	$message .= '<p><b>Description: </b>' . esc_html( $description ) . '</p>';
+
+	$headers   = array();
+	$headers[] = 'Content-Type: text/html; charset=UTF-8';
+	$headers[] = 'From: ' . get_bloginfo( 'name' ) . ' <' . $admin_email . '>';
+	$headers[] = 'Reply-To: ' . $admin_email;
+
+	wp_mail( $to, $subject, $message, $headers );
+
+	wp_send_json_success( array( 'message' => 'Amenity request submitted successfully' ) );
+}
+
 function add_amenity_modal_html() {
+    global $wpdb;
+
+    // Get next entry ID
+    $last_entry_record = $wpdb->get_results($wpdb->prepare("SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC LIMIT 1"));
+    $last_entry_id = !empty($last_entry_record) ? intval($last_entry_record[0]->new_amenity_entry_id) + 1 : 1;
     ?>
     <div id="new-amenity-modal" class="new-amenity-modal-overlay" style="display:none;">
         <div class="new-amenity-modal-container">
@@ -300,7 +374,46 @@ function add_amenity_modal_html() {
                 <button class="new-amenity-modal-close">&times;</button>
             </div>
             <div class="new-amenity-modal-body">
-                <?php echo do_shortcode('[elementor-template id="3750"]'); ?>
+                <form id="new-amenity-form" class="new-amenity-form">
+                    <?php wp_nonce_field('submit_new_amenity', 'amenity_nonce'); ?>
+
+                    <div class="form-group">
+                        <label for="amenity_name">Amenity Name <span class="required">*</span></label>
+                        <input type="text" id="amenity_name" name="amenity_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amenity_category">Category <span class="required">*</span></label>
+                        <select id="amenity_category" name="amenity_category" required>
+                            <option value="">Select Category</option>
+                            <option value="Basic">Basic</option>
+                            <option value="Features">Features</option>
+                            <option value="Includes">Includes</option>
+                            <option value="Type of Fish">Type of Fish</option>
+                            <option value="Type of Game">Type of Game</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amenity_description">Description <span class="required">*</span></label>
+                        <textarea id="amenity_description" name="amenity_description" rows="4" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amenity_image">Image URL</label>
+                        <input type="url" id="amenity_image" name="amenity_image" placeholder="https://example.com/image.jpg">
+                        <small>Optional: Enter the URL of an image for this amenity</small>
+                    </div>
+
+                    <input type="hidden" name="entry_id" value="<?php echo esc_attr($last_entry_id); ?>">
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-button">Submit Request</button>
+                        <button type="button" class="cancel-button new-amenity-modal-close">Cancel</button>
+                    </div>
+
+                    <div class="form-message" style="display:none;"></div>
+                </form>
             </div>
         </div>
     </div>
@@ -355,6 +468,133 @@ function add_amenity_modal_html() {
         .new-amenity-modal-body {
             padding: 20px;
         }
+        .new-amenity-form .form-group {
+            margin-bottom: 20px;
+        }
+        .new-amenity-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .new-amenity-form .required {
+            color: red;
+        }
+        .new-amenity-form input[type="text"],
+        .new-amenity-form input[type="url"],
+        .new-amenity-form select,
+        .new-amenity-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .new-amenity-form textarea {
+            resize: vertical;
+        }
+        .new-amenity-form small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 12px;
+        }
+        .new-amenity-form .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .new-amenity-form .submit-button {
+            flex: 1;
+            padding: 12px 24px;
+            background: #0073aa;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .new-amenity-form .submit-button:hover {
+            background: #005a87;
+        }
+        .new-amenity-form .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .new-amenity-form .cancel-button {
+            padding: 12px 24px;
+            background: #f0f0f0;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .new-amenity-form .cancel-button:hover {
+            background: #e0e0e0;
+        }
+        .new-amenity-form .form-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .new-amenity-form .form-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .new-amenity-form .form-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
+
+    <script>
+    jQuery(document).ready(function($) {
+        $('#new-amenity-form').on('submit', function(e) {
+            e.preventDefault();
+
+            var $form = $(this);
+            var $submitBtn = $form.find('.submit-button');
+            var $message = $form.find('.form-message');
+
+            // Disable submit button
+            $submitBtn.prop('disabled', true).text('Submitting...');
+            $message.hide().removeClass('success error');
+
+            // Prepare form data
+            var formData = {
+                action: 'submit_new_amenity',
+                nonce: $form.find('#amenity_nonce').val(),
+                amenity_name: $form.find('#amenity_name').val(),
+                amenity_category: $form.find('#amenity_category').val(),
+                amenity_description: $form.find('#amenity_description').val(),
+                amenity_image: $form.find('#amenity_image').val(),
+                entry_id: $form.find('input[name="entry_id"]').val()
+            };
+
+            // Submit via AJAX
+            $.post('<?php echo admin_url('admin-ajax.php'); ?>', formData, function(response) {
+                if (response.success) {
+                    $message.addClass('success').html('<strong>Success!</strong> Your amenity request has been submitted and an admin will review it shortly.').show();
+                    $form[0].reset();
+
+                    // Close modal after 3 seconds
+                    setTimeout(function() {
+                        $('#new-amenity-modal').fadeOut(300);
+                        $message.hide();
+                    }, 3000);
+                } else {
+                    $message.addClass('error').html('<strong>Error:</strong> ' + (response.data || 'Something went wrong. Please try again.')).show();
+                }
+            }).fail(function() {
+                $message.addClass('error').html('<strong>Error:</strong> Could not submit request. Please check your connection and try again.').show();
+            }).always(function() {
+                $submitBtn.prop('disabled', false).text('Submit Request');
+            });
+        });
+    });
+    </script>
     <?php
 }
