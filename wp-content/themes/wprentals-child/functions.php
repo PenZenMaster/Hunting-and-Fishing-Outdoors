@@ -265,76 +265,9 @@ function vdw_send_add_new_amenities($fields, $entry, $entry_id, $form_data ){
 //   die();
 // }
 
-add_action("wp_ajax_approve_add_new_amenity", "approve_add_new_amenity");
-add_action("wp_ajax_nopriv_approve_add_new_amenity", "approve_add_new_amenity");
-
-function approve_add_new_amenity(){
-    $amenity_entry_id = $_POST['amenity_entry_id'];
-   
-    global $wpdb;
-  	$new_amenities_data = $wpdb->get_results($wpdb->prepare("SELECT * FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id"));
-    // if (!empty($new_amenities_data)) {
-        $add_amenity_name = $new_amenities_data[0]->nw_amenity_name;
-        $add_amenity_category = $new_amenities_data[0]->nw_amenity_category;
-        $add_amenity_description = $new_amenities_data[0]->nw_amenity_description;
-        $add_amenity_img_url = $new_amenities_data[0]->nw_amenity_image;
-        $add_amenity_slug = str_replace(' ', '-', $add_amenity_name);
-    if ($add_amenity_name != '' && $add_amenity_category != '' && $add_amenity_description != '' && $add_amenity_img_url != '' && $add_amenity_slug != '') {
-        if($add_amenity_category == 'Basic'){
-          $add_amenity_parent = 21;
-        } 
-        elseif ($add_amenity_category == 'Features') {
-          $add_amenity_parent = 29;
-        }
-        elseif ($add_amenity_category == 'Includes') {
-          $add_amenity_parent = 24;
-        }
-        elseif ($add_amenity_category == 'Type of Fish') {
-          $add_amenity_parent = 94;
-        }
-        elseif ($add_amenity_category == 'Type of Game') {
-          $add_amenity_parent = 178;
-        }
-
-        $create_amenities = wp_insert_term( "$add_amenity_name", 'property_features', // the taxonomy
-      array(
-        'description' => $add_amenity_description,
-        'slug'        => strtolower($add_amenity_slug),   
-        'parent'    => $add_amenity_parent
-        )
-      );
-      $term_id = intval($create_amenities["term_id"]);
-        update_term_meta($term_id,'category_featured_image',$add_amenity_img_url);
-        update_term_meta($term_id,'is_fishing','Fishing');
-        update_term_meta($term_id,'is_hunt_camp','Hunt Camp');
-        update_term_meta($term_id,'is_hunting','Hunting');
-        update_term_meta($term_id,'is_hunt_fishing','Hunting and Fishing');
-
-    $del_amenities_data = $wpdb->get_results($wpdb->prepare("DELETE FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id"));
-      print_r(json_encode($term_id));
-    }else{
-      echo json_encode('Fail');
-    }
-  
-
-	//$del_amenities_data = $wpdb->get_results($wpdb->prepare("DELETE FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id"));
-  	//$args = array();
-  	//$args['parent'] = 21;
-  	//wp_insert_term( $new_amenities_data[0]['nw_amenity_name'], 'property_features', $args );
-  
-    die();
-}
-
-
-add_action("wp_ajax_deny_add_new_amenity", "deny_add_new_amenity");
-add_action("wp_ajax_nopriv_deny_add_new_amenity", "deny_add_new_amenity");
-
-function deny_add_new_amenity(){
-    $amenity_entry_id = $_POST['amenity_entry_id'];
-   
-    global $wpdb;
-  	$del_amenities_data = $wpdb->get_results($wpdb->prepare("DELETE FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id"));
-  	
-  	print_r(json_encode($del_amenities_data));
-    die();
-}
+// ========================================
+// REMOVED: Duplicate insecure amenity functions
+// These functions are now in parent theme: wp-content/themes/wprentals/wqs/functions.php
+// Removed on 2026-02-13: Child theme had old insecure versions with SQL injection
+// Parent theme has secure versions with proper sanitization and capability checks
+// ========================================
