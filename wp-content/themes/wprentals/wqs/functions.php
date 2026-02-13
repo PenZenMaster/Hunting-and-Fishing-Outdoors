@@ -28,24 +28,38 @@ function wqs_new_record($record, $ajax_handler)
     //  $fields['field_d034d3a'] = 0;
     // }
  
-    $output['success'] = $wpdb->insert('new_amenities', array('new_amenity_entry_id' => $last_entry_id, 'nw_amenity_name' => $fields['field_2e513a9'], 'nw_amenity_category' => $fields['field_2167f68'], 'nw_amenity_description' => $fields['field_2084096'], 'nw_amenity_image' => $fields['field_d034d3a']));
+	// Security: Sanitize inputs before database insert
+	$output['success'] = $wpdb->insert(
+		'new_amenities',
+		array(
+			'new_amenity_entry_id'   => absint( $last_entry_id ),
+			'nw_amenity_name'        => sanitize_text_field( $fields['field_2e513a9'] ),
+			'nw_amenity_category'    => sanitize_text_field( $fields['field_2167f68'] ),
+			'nw_amenity_description' => sanitize_textarea_field( $fields['field_2084096'] ),
+			'nw_amenity_image'       => esc_url_raw( $fields['field_d034d3a'] ),
+		),
+		array( '%d', '%s', '%s', '%s', '%s' )
+	);
 
-    $to = 'support@hnfo.net';
-    $subject = 'New Amenity Request';
-    $message = '<h2>Hello Admin,</h2>';
-    $message .= '<p><a href="https://hnfo.net/add-new-amenities/?action=Approve&am_id=' . $last_entry_id . '"><b>Approve</b></a> or <a href="https://hnfo.net/add-new-amenities/?action=Deny&am_id=' . $last_entry_id . '"><b>Deny</b></a> new amenity request<b></p>';
-    $message .= '<p><img src="' . $fields['field_d034d3a'] . '" style="max-width:300px"></p>';
-    $message .= '<h3>Below are new amenity details:</h3>';
-    $message .= '<p><b>Amenity name: </b>' . $fields['field_2e513a9'] . '</p>';
-    $message .= '<p><b>Amenity category: </b>' . $fields['field_2167f68'] . '</p>';
-    $message .= '<p><b>Amenity description: </b>' . $fields['field_2084096'] . '</p>';
+	// Security: Use configurable email instead of hardcoded
+	$admin_email = get_option( 'hnfo_amenity_admin_email', get_option( 'admin_email' ) );
+	$site_url    = home_url( '/add-new-amenities/' );
 
-    //$message .= $current_user;
-    $headers = '
-    Content-Type: text/html; charset=UTF-8 \r\n
-    From: support@hnfo.net' . "\r\n" .
-        'CC:  . "\r\n" .
-        Reply-To: support@hnfo.net' . "\r\n";
+	$to      = $admin_email;
+	$subject = 'New Amenity Request';
+	$message = '<h2>Hello Admin,</h2>';
+	$message .= '<p><a href="' . esc_url( $site_url . '?action=Approve&am_id=' . absint( $last_entry_id ) ) . '"><b>Approve</b></a> or <a href="' . esc_url( $site_url . '?action=Deny&am_id=' . absint( $last_entry_id ) ) . '"><b>Deny</b></a> new amenity request<b></p>';
+	$message .= '<p><img src="' . esc_url( $fields['field_d034d3a'] ) . '" style="max-width:300px"></p>';
+	$message .= '<h3>Below are new amenity details:</h3>';
+	$message .= '<p><b>Amenity name: </b>' . esc_html( $fields['field_2e513a9'] ) . '</p>';
+	$message .= '<p><b>Amenity category: </b>' . esc_html( $fields['field_2167f68'] ) . '</p>';
+	$message .= '<p><b>Amenity description: </b>' . esc_html( $fields['field_2084096'] ) . '</p>';
+
+	// Security: Proper email headers
+	$headers   = array();
+	$headers[] = 'Content-Type: text/html; charset=UTF-8';
+	$headers[] = 'From: ' . get_bloginfo( 'name' ) . ' <' . $admin_email . '>';
+	$headers[] = 'Reply-To: ' . $admin_email;
     wp_mail($to, $subject, $message, $headers);
     $output['success2'] = $message;
     $ajax_handler->add_response_data(true, $output);
@@ -55,19 +69,41 @@ function wqs_new_record($record, $ajax_handler)
 add_action("wp_ajax_approve_add_new_amenity", "approve_add_new_amenity");
 add_action("wp_ajax_nopriv_approve_add_new_amenity", "approve_add_new_amenity");
 
-function approve_add_new_amenity()
-{
+function approve_add_new_amenity() {
+	// Security: Check user capability
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		return;
+	}
 
-    $amenity_entry_id = $_POST['amenity_entry_id'];
+	// Security: Sanitize input
+	$amenity_entry_id = isset( $_POST['amenity_entry_id'] ) ? absint( $_POST['amenity_entry_id'] ) : 0;
 
-    global $wpdb;
-    $new_amenities_data = $wpdb->get_results($wpdb->prepare("SELECT * FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id"));
-    // if (!empty($new_amenities_data)) {
-    $add_amenity_name = $new_amenities_data[0]->nw_amenity_name;
-    $add_amenity_category = $new_amenities_data[0]->nw_amenity_category;
-    $add_amenity_description = $new_amenities_data[0]->nw_amenity_description;
-    $add_amenity_img_url = $new_amenities_data[0]->nw_amenity_image;
-    $add_amenity_slug = str_replace(' ', '-', $add_amenity_name);
+	if ( $amenity_entry_id <= 0 ) {
+		wp_send_json_error( array( 'message' => 'Invalid amenity ID' ) );
+		return;
+	}
+
+	global $wpdb;
+	// Security: Properly prepared statement
+	$new_amenities_data = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT * FROM new_amenities WHERE new_amenity_entry_id = %d",
+			$amenity_entry_id
+		)
+	);
+	// Security: Check if data exists
+	if ( empty( $new_amenities_data ) ) {
+		wp_send_json_error( array( 'message' => 'Amenity not found' ) );
+		return;
+	}
+
+	// Security: Sanitize data from database
+	$add_amenity_name        = sanitize_text_field( $new_amenities_data[0]->nw_amenity_name );
+	$add_amenity_category    = sanitize_text_field( $new_amenities_data[0]->nw_amenity_category );
+	$add_amenity_description = sanitize_textarea_field( $new_amenities_data[0]->nw_amenity_description );
+	$add_amenity_img_url     = esc_url_raw( $new_amenities_data[0]->nw_amenity_image );
+	$add_amenity_slug        = sanitize_title( $add_amenity_name );
     if ($add_amenity_category == 'Basic' || $add_amenity_category == 'Features' || $add_amenity_category == 'Includes') {
         if ($add_amenity_name != '' && $add_amenity_category != '' && $add_amenity_description != '' && $add_amenity_slug != '') {
             if ($add_amenity_category == 'Basic') {
@@ -97,10 +133,16 @@ function approve_add_new_amenity()
             update_term_meta($term_id, 'is_hunt_fishing', 'Hunting and Fishing');
             update_term_meta($term_id, 'is_stay_and_fish', 'Stay and Fish');
 
-            $del_amenities_data = $wpdb->get_results($wpdb->prepare("DELETE FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id"));
-            if ($_GET['action'] != 'Approve') {
-                print_r(json_encode($term_id));
-            }
+			// Security: Properly prepared DELETE statement
+			$wpdb->query(
+				$wpdb->prepare(
+					"DELETE FROM new_amenities WHERE new_amenity_entry_id = %d",
+					$amenity_entry_id
+				)
+			);
+
+			// Return success response
+			wp_send_json_success( array( 'term_id' => $term_id ) );
         } else {
             echo json_encode('Fail');
         }
@@ -133,10 +175,16 @@ function approve_add_new_amenity()
             update_term_meta($term_id, 'is_hunt_fishing', 'Hunting and Fishing');
             update_term_meta($term_id, 'is_stay_and_fish', 'Stay and Fish');
 
-            $del_amenities_data = $wpdb->get_results($wpdb->prepare("DELETE FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id"));
-            if ($_GET['action'] != 'Approve') {
-                print_r(json_encode($term_id));
-            }
+			// Security: Properly prepared DELETE statement
+			$wpdb->query(
+				$wpdb->prepare(
+					"DELETE FROM new_amenities WHERE new_amenity_entry_id = %d",
+					$amenity_entry_id
+				)
+			);
+
+			// Return success response
+			wp_send_json_success( array( 'term_id' => $term_id ) );
 
         } else {
             echo json_encode('Fail');

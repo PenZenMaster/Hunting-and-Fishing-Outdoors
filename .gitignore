@@ -151,3 +151,8 @@ package-lock.json
 *.old
 *.orig
 *.tmp
+
+# Error logs (should never be in version control)
+error_log
+debug.log
+*.log

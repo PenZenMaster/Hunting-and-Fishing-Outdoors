@@ -1,23 +1,59 @@
 <?php
+/**
+ * Template Name: Add New Amenities
+ *
+ * Security hardened: 2026-02-13
+ * - Added input sanitization
+ * - Added capability checks
+ * - Fixed SQL injection vulnerability
+ * - Added XSS protection
+ */
 
-// Template Name: Add New Amenities
-
-$amenity_entry_id = $_GET['am_id'];
-global $wpdb;
-$new_amenities_data = $wpdb->get_results($wpdb->prepare("SELECT * FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id"));
-$add_amenity_name = $new_amenities_data[0]->nw_amenity_name;
-$add_amenity_category = $new_amenities_data[0]->nw_amenity_category;
-$add_amenity_description = $new_amenities_data[0]->nw_amenity_description;
-$add_amenity_img_url = $new_amenities_data[0]->nw_amenity_image;
-$add_amenity_slug = str_replace(' ', '-', $add_amenity_name);
-
-if ($amenity_entry_id > 0 and $_GET['action'] == 'Approve') {
-    $_POST['amenity_entry_id'] = $_GET['am_id'];
-    approve_add_new_amenity();
+// Security: Check if user has permission to manage amenities
+if ( ! current_user_can( 'manage_options' ) ) {
+	wp_die( __( 'You do not have permission to access this page.', 'wprentals' ) );
 }
-if ($amenity_entry_id > 0 and $_GET['action'] == 'Deny') {
-    $_POST['amenity_entry_id'] = $_GET['am_id'];
-    deny_add_new_amenity();
+
+// Security: Sanitize and validate input
+$amenity_entry_id = isset( $_GET['am_id'] ) ? absint( $_GET['am_id'] ) : 0;
+$action           = isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : '';
+
+// Initialize variables
+$add_amenity_name        = '';
+$add_amenity_category    = '';
+$add_amenity_description = '';
+$add_amenity_img_url     = '';
+$add_amenity_slug        = '';
+
+// Security: Only proceed if we have a valid ID
+if ( $amenity_entry_id > 0 ) {
+	global $wpdb;
+	// Security: Properly prepared statement
+	$new_amenities_data = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT * FROM new_amenities WHERE new_amenity_entry_id = %d",
+			$amenity_entry_id
+		)
+	);
+
+	if ( ! empty( $new_amenities_data ) ) {
+		// Security: Sanitize output data
+		$add_amenity_name        = sanitize_text_field( $new_amenities_data[0]->nw_amenity_name );
+		$add_amenity_category    = sanitize_text_field( $new_amenities_data[0]->nw_amenity_category );
+		$add_amenity_description = sanitize_textarea_field( $new_amenities_data[0]->nw_amenity_description );
+		$add_amenity_img_url     = esc_url( $new_amenities_data[0]->nw_amenity_image );
+		$add_amenity_slug        = sanitize_title( $add_amenity_name );
+
+		// Security: Process actions only for valid entries
+		if ( in_array( $action, array( 'Approve', 'Deny' ), true ) ) {
+			$_POST['amenity_entry_id'] = $amenity_entry_id;
+			if ( 'Approve' === $action && function_exists( 'approve_add_new_amenity' ) ) {
+				approve_add_new_amenity();
+			} elseif ( 'Deny' === $action && function_exists( 'deny_add_new_amenity' ) ) {
+				deny_add_new_amenity();
+			}
+		}
+	}
 }
 ?>
 <style type="text/css">
@@ -114,17 +150,18 @@ function add_amenity($add_amenity_name, $add_amenity_category, $add_amenity_desc
 
                         <div class="vdf_cnfrm_main" id="vdf_cnfrm_main01">
                         ';
-    if ($_GET['action'] == 'Approve') {
-        echo ' <div class="vdf_cnfrm_msg" style="display:block">
+	// Security: Use sanitized variable instead of raw $_GET
+	if ( 'Approve' === $action ) {
+		echo ' <div class="vdf_cnfrm_msg" style="display:block">
                             <p style="display:block" id="vdf_appr_confrm01">New amenity request was added successfully</p>
                           </div>';
-    }
-    if ($_GET['action'] == 'Deny') {
-        echo '<div class="vdf_cnfrm_msg" >
+	}
+	if ( 'Deny' === $action ) {
+		echo '<div class="vdf_cnfrm_msg" >
                             <p style="display:block" id="vdf_deny_confrm01">New amenity request was denied successfully</p>
                           </div>';
-    }
-    echo '</div>
+	}
+	echo '</div>
                     </div>
                 </div>
             </div>
@@ -162,17 +199,18 @@ function add_amenity_other($add_amenity_name, $add_amenity_category, $add_amenit
 
                         <div class="vdf_cnfrm_main" id="vdf_cnfrm_main01">
                         ';
-    if ($_GET['action'] == 'Approve') {
-        echo ' <div class="vdf_cnfrm_msg" style="display:block">
+	// Security: Use sanitized variable instead of raw $_GET
+	if ( 'Approve' === $action ) {
+		echo ' <div class="vdf_cnfrm_msg" style="display:block">
                                                 <p style="display:block" id="vdf_appr_confrm01">New amenity request was added successfully</p>
                                               </div>';
-    }
-    if ($_GET['action'] == 'Deny') {
-        echo '<div class="vdf_cnfrm_msg" style="display:block">
+	}
+	if ( 'Deny' === $action ) {
+		echo '<div class="vdf_cnfrm_msg" style="display:block">
                                                 <p style="display:block" id="vdf_deny_confrm01">New amenity request was denied successfully</p>
                                               </div>';
-    }
-    echo '</div>
+	}
+	echo '</div>
                         </div>
                     </div>
                 </div>
