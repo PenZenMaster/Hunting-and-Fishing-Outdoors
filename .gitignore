@@ -6,6 +6,7 @@
 !CHANGELOG.md
 !PROJECT-SETUP.md
 !WORDPRESS-STANDARDS.md
+!TESTING.md
 !.claude-wordpress.md
 !composer.json
 !composer.lock
@@ -15,6 +16,7 @@
 !phpunit.xml.dist
 !.phpunit.result.cache
 !tests/
+!.github/
 
 # Track wp-content (but exclude default themes/plugins)
 !wp-content/
