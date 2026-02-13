@@ -64,9 +64,11 @@ if ( $table_exists ) {
 		`nw_amenity_category` VARCHAR(255) NOT NULL,
 		`nw_amenity_description` TEXT DEFAULT NULL,
 		`nw_amenity_image` VARCHAR(500) DEFAULT NULL,
-		`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 		PRIMARY KEY (`new_amenity_entry_id`),
-		KEY `category_idx` (`nw_amenity_category`)
+		KEY `idx_category` (`nw_amenity_category`),
+		KEY `idx_created` (`created_at`)
 	) $charset_collate;";
 
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -128,6 +130,7 @@ echo "<p>Option 2: Run via SSH: <code>php -f wp-content/themes/wprentals/wqs/ins
 echo "<p>Option 3: Copy the SQL and run it in phpMyAdmin/database tool</p>\n";
 
 echo "<h3>SQL for Manual Installation:</h3>\n";
+echo "<p>Use the complete SQL file at: <code>/database-new-amenities.sql</code></p>\n";
 echo "<pre style='background: #f5f5f5; padding: 10px; border: 1px solid #ddd;'>";
 echo "CREATE TABLE `new_amenities` (\n";
 echo "  `new_amenity_entry_id` INT(11) NOT NULL AUTO_INCREMENT,\n";
@@ -135,8 +138,11 @@ echo "  `nw_amenity_name` VARCHAR(255) NOT NULL,\n";
 echo "  `nw_amenity_category` VARCHAR(255) NOT NULL,\n";
 echo "  `nw_amenity_description` TEXT DEFAULT NULL,\n";
 echo "  `nw_amenity_image` VARCHAR(500) DEFAULT NULL,\n";
-echo "  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n";
+echo "  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n";
+echo "  `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n";
 echo "  PRIMARY KEY (`new_amenity_entry_id`),\n";
-echo "  KEY `category_idx` (`nw_amenity_category`)\n";
+echo "  KEY `idx_category` (`nw_amenity_category`),\n";
+echo "  KEY `idx_created` (`created_at`)\n";
 echo ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n";
 echo "</pre>\n";
+echo "<p><strong>Note:</strong> This corrects errors in the original Upwork SQL dump.</p>\n";
