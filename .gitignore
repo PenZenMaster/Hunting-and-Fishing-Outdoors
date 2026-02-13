@@ -115,7 +115,11 @@ Desktop.ini
 
 # IDE & Editor Files
 .idea/
-.vscode/
+# .vscode/ - Track VS Code settings for team consistency
+!.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 *.sublime-project
 *.sublime-workspace
 *.swp

@@ -1,0 +1,29 @@
+{
+  "recommendations": [
+    // PHP Development
+    "bmewburn.vscode-intelephense-client",
+    "xdebug.php-debug",
+    "zobo.php-intellisense",
+
+    // WordPress Development
+    "wordpresstoolbox.wordpress-toolbox",
+
+    // Code Quality
+    "shevaua.phpcs",
+    "recca0120.vscode-phpunit",
+
+    // Git
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+
+    // General Development
+    "editorconfig.editorconfig",
+    "formulahendry.auto-rename-tag",
+    "bradlc.vscode-tailwindcss"
+  ],
+
+  "unwantedRecommendations": [
+    // Avoid these - they conflict with our setup
+    "felixfbecker.php-intellisense"
+  ]
+}

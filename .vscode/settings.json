@@ -1,0 +1,127 @@
+{
+  "php.validate.executablePath": null,
+  "php.validate.run": "onSave",
+
+  // Exclude third-party code from PHP validation
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+
+  // Exclude paths from file watcher (performance)
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/vendor/**": true,
+    "**/wp-content/uploads/**": true,
+    "**/wp-content/cache/**": true,
+    "**/wp-content/updraft/**": true
+  },
+
+  // Configure PHP language server to exclude third-party plugins
+  "intelephense.files.exclude": [
+    "**/.git/**",
+    "**/.svn/**",
+    "**/.hg/**",
+    "**/CVS/**",
+    "**/.DS_Store/**",
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/bower_components/**",
+
+    // Exclude WordPress core
+    "/wp-admin/**",
+    "/wp-includes/**",
+
+    // Exclude third-party plugins (not our code)
+    "/wp-content/plugins/updraftplus/**",
+    "/wp-content/plugins/elementor/**",
+    "/wp-content/plugins/elementor-pro/**",
+    "/wp-content/plugins/revslider/**",
+    "/wp-content/plugins/classic-editor/**",
+    "/wp-content/plugins/classic-widgets/**",
+    "/wp-content/plugins/loco-translate/**",
+    "/wp-content/plugins/popup-maker/**",
+    "/wp-content/plugins/svg-support/**",
+    "/wp-content/plugins/wpforms/**",
+    "/wp-content/plugins/child-theme-configurator/**",
+    "/wp-content/plugins/performance-lab/**",
+
+    // Exclude third-party parent theme
+    "/wp-content/themes/wprentals/libs/**",
+    "/wp-content/themes/wprentals/admin/redux-framework/**",
+    "/wp-content/themes/wprentals/admin/redux-extensions/**",
+    "/wp-content/themes/twenty*/**",
+
+    // Exclude uploads and cache
+    "/wp-content/uploads/**",
+    "/wp-content/cache/**",
+    "/wp-content/backups/**",
+    "/wp-content/updraft/**",
+    "/wp-content/ai1wm-backups/**"
+  ],
+
+  // Only scan our custom code
+  "intelephense.files.associations": [
+    "**/*.php"
+  ],
+
+  // Configure search to exclude third-party code
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/vendor": true,
+    "**/bower_components": true,
+    "**/.git": true,
+
+    // Exclude WordPress core
+    "wp-admin": true,
+    "wp-includes": true,
+
+    // Exclude third-party plugins
+    "wp-content/plugins/updraftplus": true,
+    "wp-content/plugins/elementor": true,
+    "wp-content/plugins/elementor-pro": true,
+    "wp-content/plugins/revslider": true,
+    "wp-content/plugins/classic-editor": true,
+    "wp-content/plugins/classic-widgets": true,
+    "wp-content/plugins/loco-translate": true,
+    "wp-content/plugins/popup-maker": true,
+    "wp-content/plugins/svg-support": true,
+    "wp-content/plugins/wpforms": true,
+
+    // Exclude third-party theme code
+    "wp-content/themes/wprentals/libs": true,
+    "wp-content/themes/wprentals/admin/redux-framework": true,
+    "wp-content/themes/wprentals/admin/redux-extensions": true,
+    "wp-content/themes/twenty*": true,
+
+    // Exclude uploads and backups
+    "wp-content/uploads": true,
+    "wp-content/cache": true,
+    "wp-content/backups": true,
+    "wp-content/updraft": true,
+    "wp-content/ai1wm-backups": true,
+    "wp-content/[0-9][0-9][0-9][0-9]": true
+  },
+
+  // PHP formatting preferences
+  "editor.formatOnSave": false,
+  "editor.tabSize": 4,
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": true,
+
+  // Configure phpcs for WordPress
+  "phpcs.enable": true,
+  "phpcs.standard": "phpcs.xml.dist",
+
+  // Recommendations
+  "[php]": {
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+    "editor.formatOnSave": false
+  }
+}
