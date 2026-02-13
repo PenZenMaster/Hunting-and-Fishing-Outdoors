@@ -159,15 +159,118 @@ jQuery(document).ready(function ($) {
         if (event_val == 'daily') {
             $('.repeat-event-type-label').text('day(s)');
             $('.repeat-week-day').removeClass('active');
-            
+
         } else {
             $('.repeat-event-type-label').text('week(s)');
             $('.repeat-week-day').addClass('active');
         }
-    
-        
 
-    });  
+
+
+    });
+
+    // ========================================
+    // New Amenity Popup Handler
+    // Added: 2026-02-13 (missing from original code)
+    // ========================================
+
+    $('.new-amenity-pop-up, .vd-add-new_amenity').on('click', function(e) {
+        e.preventDefault();
+
+        // Create modal if it doesn't exist
+        if ($('#new-amenity-modal').length === 0) {
+            var modalHTML = '<div id="new-amenity-modal" class="new-amenity-modal-overlay" style="display:none;">' +
+                '<div class="new-amenity-modal-container">' +
+                    '<div class="new-amenity-modal-header">' +
+                        '<h3>Request New Amenity</h3>' +
+                        '<button class="new-amenity-modal-close">&times;</button>' +
+                    '</div>' +
+                    '<div class="new-amenity-modal-body">' +
+                        '<div class="amenity-form-wrapper">' +
+                            // Try to load Elementor form
+                            '<?php echo do_shortcode("[elementor-template id=\"3750\"]"); ?>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+            $('body').append(modalHTML);
+
+            // Add modal styles
+            if ($('#new-amenity-modal-styles').length === 0) {
+                var modalStyles = '<style id="new-amenity-modal-styles">' +
+                    '.new-amenity-modal-overlay {' +
+                        'position: fixed;' +
+                        'top: 0;' +
+                        'left: 0;' +
+                        'width: 100%;' +
+                        'height: 100%;' +
+                        'background: rgba(0, 0, 0, 0.7);' +
+                        'z-index: 99999;' +
+                        'display: flex;' +
+                        'align-items: center;' +
+                        'justify-content: center;' +
+                    '}' +
+                    '.new-amenity-modal-container {' +
+                        'background: white;' +
+                        'border-radius: 8px;' +
+                        'max-width: 600px;' +
+                        'width: 90%;' +
+                        'max-height: 90vh;' +
+                        'overflow-y: auto;' +
+                        'box-shadow: 0 4px 20px rgba(0,0,0,0.3);' +
+                    '}' +
+                    '.new-amenity-modal-header {' +
+                        'padding: 20px;' +
+                        'border-bottom: 1px solid #ddd;' +
+                        'display: flex;' +
+                        'justify-content: space-between;' +
+                        'align-items: center;' +
+                    '}' +
+                    '.new-amenity-modal-header h3 {' +
+                        'margin: 0;' +
+                        'font-size: 24px;' +
+                    '}' +
+                    '.new-amenity-modal-close {' +
+                        'background: none;' +
+                        'border: none;' +
+                        'font-size: 32px;' +
+                        'cursor: pointer;' +
+                        'color: #999;' +
+                        'line-height: 1;' +
+                        'padding: 0;' +
+                        'width: 32px;' +
+                        'height: 32px;' +
+                    '}' +
+                    '.new-amenity-modal-close:hover {' +
+                        'color: #333;' +
+                    '}' +
+                    '.new-amenity-modal-body {' +
+                        'padding: 20px;' +
+                    '}' +
+                '</style>';
+
+                $('head').append(modalStyles);
+            }
+
+            // Close button handler
+            $(document).on('click', '.new-amenity-modal-close, .new-amenity-modal-overlay', function(e) {
+                if (e.target === this) {
+                    $('#new-amenity-modal').fadeOut(300);
+                }
+            });
+
+            // Close on ESC key
+            $(document).on('keyup', function(e) {
+                if (e.key === 'Escape' && $('#new-amenity-modal').is(':visible')) {
+                    $('#new-amenity-modal').fadeOut(300);
+                }
+            });
+        }
+
+        // Show the modal
+        $('#new-amenity-modal').fadeIn(300);
+    });
 
 });
 
