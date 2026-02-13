@@ -38,6 +38,9 @@ require_once get_theme_file_path('/libs/search_functions_elementor.php');
 require_once get_theme_file_path('/libs/filters/filters.php');
 require_once get_theme_file_path('/libs/unitcard-functions.php');
 
+// Custom HNFO functionality (amenity request system)
+require_once get_theme_file_path('/wqs/functions.php');
+
 load_theme_textdomain('wprentals', get_template_directory() . '/languages');
 
 define('ULTIMATE_NO_EDIT_PAGE_NOTICE', true);

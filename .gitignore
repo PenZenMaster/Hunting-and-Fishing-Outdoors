@@ -109,6 +109,9 @@ local-xdebuginfo.php
 !database-*.sql
 !schema-*.sql
 
+# Test files (temporary)
+test-*.php
+
 # OS Files
 .DS_Store
 .DS_Store?
