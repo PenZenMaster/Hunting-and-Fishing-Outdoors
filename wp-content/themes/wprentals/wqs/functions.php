@@ -287,3 +287,74 @@ function set_last_entry_id() {
         });
     </script>';
 }
+
+// Add amenity request modal to footer
+add_action('wp_footer', 'add_amenity_modal_html');
+
+function add_amenity_modal_html() {
+    ?>
+    <div id="new-amenity-modal" class="new-amenity-modal-overlay" style="display:none;">
+        <div class="new-amenity-modal-container">
+            <div class="new-amenity-modal-header">
+                <h3>Request New Amenity</h3>
+                <button class="new-amenity-modal-close">&times;</button>
+            </div>
+            <div class="new-amenity-modal-body">
+                <?php echo do_shortcode('[elementor-template id="3750"]'); ?>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .new-amenity-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .new-amenity-modal-container {
+            background: white;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .new-amenity-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .new-amenity-modal-header h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .new-amenity-modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+        }
+        .new-amenity-modal-close:hover {
+            color: #333;
+        }
+        .new-amenity-modal-body {
+            padding: 20px;
+        }
+    </style>
+    <?php
+}
