@@ -99,9 +99,13 @@ wp-config-local.php
 local-xdebuginfo.php
 .htaccess
 
-# Database
+# Database (backups and dumps)
 *.sql
 *.sql.gz
+
+# Exception: Allow database schema files
+!database-*.sql
+!schema-*.sql
 
 # OS Files
 .DS_Store
