@@ -25,23 +25,60 @@ wp-content/mu-plugins/index.php
 wp-content/plugins/index.php
 wp-content/themes/index.php
 
-# Uploads directory
+# Uploads directory (both standard and year-based structures)
 wp-content/uploads/
+wp-content/[0-9][0-9][0-9][0-9]/
 wp-content/blogs.dir/
 wp-content/upgrade/
 wp-content/backup-db/
 wp-content/cache/
 wp-content/backups/
+wp-content/ai1wm-backups/
+wp-content/updraft/
+
+# WordPress cache files
+wp-content/advanced-cache.php
+wp-content/object-cache.php
+wp-content/*-cache*.php
+
+# Backup and archive files in wp-content
+wp-content/*.zip
+wp-content/*.tar
+wp-content/*.tar.gz
+wp-content/*.sql
+wp-content/*.sql.gz
+
+# WordPress temporary files
+wp-content/temp-write-test-*
+wp-content/*.log
 
 # Default WordPress Themes (exclude stock themes)
 wp-content/themes/twenty*/
 
-# Default WordPress Plugins (exclude Akismet & Hello Dolly)
-wp-content/plugins/akismet/
-wp-content/plugins/hello.php
+# Custom Themes - Track these themes
+!wp-content/themes/wprentals/
+!wp-content/themes/wprentals-child/
 
-# Advanced Custom Fields Pro (if using)
-wp-content/plugins/advanced-custom-fields-pro/
+# Exclude theme zip files and demo data
+wp-content/themes/*.zip
+wp-content/themes/**/libs/plugins/*.zip
+wp-content/themes/**/wpestate_templates/**/*.zip
+
+# Exclude Redux Framework files from themes
+wp-content/themes/**/admin/redux-extensions/
+
+# Plugins - Exclude all by default, then include custom ones
+wp-content/plugins/*
+!wp-content/plugins/
+!wp-content/plugins/wprentals-core/
+!wp-content/plugins/wprentals-elementor/
+
+# Exclude plugin zip files
+wp-content/plugins/*.zip
+
+# Exclude Redux Framework files from plugins
+wp-content/plugins/**/admin/redux-extensions/
+wp-content/plugins/**/admin/redux-framework/
 
 # WordPress Plugin & Theme Editor Autosave
 *.tmp

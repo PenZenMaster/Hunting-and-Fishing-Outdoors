@@ -1,0 +1,175 @@
+.vw_half_day_session {
+
+  padding: 0 15px;
+
+  margin-bottom: 20px;
+
+}
+
+.vw-half-day .booking_clock_iconstart_hour,
+
+.vw-half-day .booking_clock_iconend_hour {
+
+  display: none !important;
+
+}
+
+.vdf_selected_day {
+
+  margin-top: 10px;
+
+}
+
+
+.wpestate-repeat-event label{
+  width: inherit !important;
+}
+
+.wpestate-repeat-event label.wpestate-calendar-switch{
+  position: relative;
+  display: inline-block;
+  width: 55px !important;
+  height: 25px;
+}
+
+.wpestate-calendar-switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}  
+.wpestate-calendar-switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.wpestate-calendar-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 17px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.wpestate-calendar-switch input:checked + .slider {
+  background-color: #2ca0ba;
+}
+.wpestate-calendar-switch input:focus + .slider {
+  box-shadow: 0 0 1px #2ca0ba;
+}
+.wpestate-calendar-switch input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}  
+.wpestate-calendar-switch .slider.round {
+  border-radius: 34px;
+}  
+.wpestate-calendar-switch .slider.round:before {
+  border-radius: 50%;
+}
+.wpestate-repeat-event {
+  display: block;
+}
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap {
+  padding: 10px 0 0;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box {
+  border: 1px solid rgba(0 0 0 / 15%);
+  margin: 0 0 20px;
+  padding: 18px 10px;
+  position: relative;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box h4.box-heading {
+  position: absolute;
+  top: -15px;
+  left: 15px;
+  background: #fff;
+  color: #000;
+  text-transform: capitalize;
+  font-size: 16px;
+  padding: 0 2px;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box .radio-wrapper {
+  display: flex;
+  gap: 20px;
+}
+.wpestate-repeat-event .repeat-week-day {
+    display: none;
+}
+.wpestate-repeat-event .repeat-week-day.active {
+    display: block;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box .radio-wrapper .big-duration {
+  padding-right: 20px;
+  border-right: 1px solid grey;
+  width: 50%;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box .radio-wrapper .radio-box {
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box .radio-wrapper .radio-box label,
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box .radio-wrapper p {
+  font-family: sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 400;
+  margin: 0;
+}
+.wpestate-repeat-event .recurrence-box-wrap .rec-main-box .radio-wrapper .radio-box-inner {
+    display: flex;
+    align-items: center;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box .radio-wrapper .radio-box.input-included {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box .radio-wrapper .radio-box.input-included .input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap .inner-wrap .rec-main-box .radio-wrapper .radio-box.input-included .input-wrap input[type="text"] {
+  width: 30px;
+  height: 25px;
+  padding-left: 3px;
+}
+
+.wpestate-repeat-event .recurrence-box-wrap {
+  display: flex;
+}
+.user_dashboard_panel .wpestate-repeat-event .small-duration  .form-control {
+  width: 80px;
+  margin-bottom: 05px !important;
+
+}
+.wpestate-repeat-event .recurrence-box-wrap .small-duration {
+    min-width: 280px;
+}
+.booking_form_request .repeat-event-section {
+    border: 1px solid #e7e9ef;
+    padding: 10px;
+    margin-bottom: 15px;
+    min-height: 100px;
+}

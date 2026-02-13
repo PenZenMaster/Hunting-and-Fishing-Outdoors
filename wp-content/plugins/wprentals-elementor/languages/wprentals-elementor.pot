@@ -1,0 +1,2000 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: WpRentals Elementor Widgets\n"
+"POT-Creation-Date: 2022-11-22 16:25+0200\n"
+"PO-Revision-Date: 2022-11-22 16:24+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 3.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: wprentals-elementor.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: plugin.php:187
+msgid "WpRentals Widgets"
+msgstr ""
+
+#: widgets/advanced-search.php:42
+msgid "WpRentals Advanced Search"
+msgstr ""
+
+#: widgets/advanced-search.php:102 widgets/availability-calendar.php:110
+#: widgets/booking-form.php:111 widgets/categories-list.php:101
+#: widgets/categories-slider.php:106 widgets/display_categories_as_tabs.php:104
+#: widgets/featured-article.php:104 widgets/featured-listing.php:104
+#: widgets/featured-owner.php:102 widgets/featured-place.php:107
+#: widgets/full_map.php:128 widgets/icon-content-box.php:90
+#: widgets/list_items_by_id.php:102 widgets/login-form.php:100
+#: widgets/login-register-buttons.php:100
+#: widgets/recent-items-slider-v1.php:112
+#: widgets/recent-items-slider-v2.php:112
+#: widgets/recent-items-slider-v3.php:112 widgets/recent-items-slider.php:109
+#: widgets/recent-items-top-bar-v1.php:227 widgets/recent-items-v1.php:112
+#: widgets/recent-items-v2.php:124 widgets/recent-items-v3.php:124
+#: widgets/recent-items.php:108 widgets/register-form.php:100
+#: widgets/simple-term-list.php:115 widgets/sliding-box.php:140
+#: widgets/sliding-box.php:317 widgets/testimonial.php:92
+#: widgets/testimonial_slider.php:75 widgets/wpestate_accordions.php:147
+#: widgets/wpestate_tabs.php:158 widgets/wprentals-grids.php:111
+msgid "Content"
+msgstr ""
+
+#: widgets/advanced-search.php:110 widgets/list_items_by_id.php:110
+#: widgets/recent-items-slider-v1.php:120
+#: widgets/recent-items-slider-v1.php:662
+#: widgets/recent-items-slider-v2.php:120
+#: widgets/recent-items-slider-v2.php:619
+#: widgets/recent-items-slider-v3.php:120
+#: widgets/recent-items-slider-v3.php:609 widgets/recent-items-slider.php:117
+#: widgets/recent-items-v1.php:119 widgets/recent-items-v1.php:660
+#: widgets/recent-items-v2.php:133 widgets/recent-items-v2.php:652
+#: widgets/recent-items-v3.php:134 widgets/recent-items-v3.php:639
+#: widgets/recent-items.php:126 widgets/sliding-box.php:104
+#: widgets/sliding-box.php:297 widgets/testimonial_slider.php:84
+msgid "Title"
+msgstr ""
+
+#: widgets/advanced-search.php:129 widgets/advanced-search.php:137
+#: widgets/availability-calendar.php:155 widgets/availability-calendar.php:163
+#: widgets/booking-form.php:187 widgets/booking-form.php:195
+#: widgets/categories-list.php:521 widgets/categories-list.php:528
+#: widgets/display_categories_as_tabs.php:575
+#: widgets/display_categories_as_tabs.php:582
+#: widgets/properties-slider-v1.php:635 widgets/properties-slider-v1.php:643
+#: widgets/recent-items-slider-v1.php:614
+#: widgets/recent-items-slider-v1.php:624
+#: widgets/recent-items-slider-v2.php:571
+#: widgets/recent-items-slider-v2.php:581
+#: widgets/recent-items-slider-v3.php:561
+#: widgets/recent-items-slider-v3.php:571 widgets/recent-items-v1.php:614
+#: widgets/recent-items-v1.php:623 widgets/recent-items-v2.php:604
+#: widgets/recent-items-v2.php:614 widgets/recent-items-v3.php:591
+#: widgets/recent-items-v3.php:601 widgets/search_form_builder.php:498
+#: widgets/sliding-box.php:366 widgets/sliding-box.php:373
+#: widgets/testimonial_slider.php:415 widgets/testimonial_slider.php:422
+#: widgets/video_player.php:324 widgets/video_player.php:332
+msgid "Box Shadow"
+msgstr ""
+
+#: widgets/advanced-search.php:154 widgets/availability-calendar.php:181
+#: widgets/booking-form.php:213 widgets/recent-items-slider-v1.php:642
+#: widgets/recent-items-slider-v2.php:599
+#: widgets/recent-items-slider-v3.php:589 widgets/recent-items-v1.php:641
+#: widgets/recent-items-v2.php:632 widgets/recent-items-v3.php:619
+#: widgets/testimonial_slider.php:233
+msgid "Colors"
+msgstr ""
+
+#: widgets/advanced-search.php:162 widgets/availability-calendar.php:189
+#: widgets/booking-form.php:221 widgets/properties-slider-v1.php:399
+#: widgets/search_form_builder.php:424 widgets/sliding-box.php:209
+msgid "Background Color"
+msgstr ""
+
+#: widgets/advanced-search.php:175 widgets/contact_form_builder.php:630
+#: widgets/recent-items.php:281 widgets/search_form_builder.php:637
+msgid "Border Color"
+msgstr ""
+
+#: widgets/advanced-search.php:186 widgets/contact_form_builder.php:647
+#: widgets/recent-items.php:256 widgets/search_form_builder.php:650
+#: widgets/video_player.php:265
+msgid "Border Width"
+msgstr ""
+
+#: widgets/advanced-search.php:198 widgets/categories-list.php:301
+#: widgets/contact_form_builder.php:661 widgets/featured-place.php:196
+#: widgets/properties-slider-v1.php:330 widgets/properties-slider-v1.php:532
+#: widgets/recent-items.php:268 widgets/search_form_builder.php:663
+#: widgets/sliding-box.php:272 widgets/testimonial_slider.php:313
+#: widgets/video_player.php:277 widgets/wprentals-grids.php:301
+msgid "Border Radius"
+msgstr ""
+
+#: widgets/advanced-search.php:211
+msgid "Button Background Color"
+msgstr ""
+
+#: widgets/advanced-search.php:224 widgets/advanced-search.php:248
+msgid "Button  Color"
+msgstr ""
+
+#: widgets/advanced-search.php:236
+msgid "Button Background Color Hover"
+msgstr ""
+
+#: widgets/advanced-search.php:267 widgets/availability-calendar.php:212
+#: widgets/booking-form.php:243 widgets/featured-place.php:221
+#: widgets/recent-items-slider-v1.php:366
+#: widgets/recent-items-slider-v2.php:351
+#: widgets/recent-items-slider-v3.php:353 widgets/recent-items-v1.php:372
+#: widgets/recent-items-v2.php:384 widgets/recent-items-v3.php:383
+#: widgets/sliding-box.php:290 widgets/wprentals-grids.php:363
+msgid "Typography"
+msgstr ""
+
+#: widgets/advanced-search.php:276 widgets/booking-form.php:252
+#: widgets/recent-items-slider-v1.php:374
+#: widgets/recent-items-slider-v2.php:359
+#: widgets/recent-items-slider-v3.php:361 widgets/recent-items-v1.php:380
+#: widgets/recent-items-v2.php:392 widgets/recent-items-v3.php:391
+msgid "Property Title"
+msgstr ""
+
+#: widgets/availability-calendar.php:50
+msgid "WpRentals Availability Calendar"
+msgstr ""
+
+#: widgets/availability-calendar.php:120 widgets/booking-form.php:121
+msgid "Id of the property"
+msgstr ""
+
+#: widgets/availability-calendar.php:130 widgets/recent-items-slider-v1.php:275
+#: widgets/recent-items-slider-v2.php:260
+#: widgets/recent-items-slider-v3.php:262
+#: widgets/recent-items-top-bar-v1.php:322 widgets/recent-items-v1.php:284
+#: widgets/recent-items-v2.php:293 widgets/recent-items-v3.php:292
+msgid "Hide Title"
+msgstr ""
+
+#: widgets/availability-calendar.php:132 widgets/booking-form.php:151
+#: widgets/booking-form.php:166 widgets/display_categories_as_tabs.php:173
+#: widgets/display_categories_as_tabs.php:411
+#: widgets/recent-items-slider-v1.php:232
+#: widgets/recent-items-slider-v1.php:247
+#: widgets/recent-items-slider-v1.php:262
+#: widgets/recent-items-slider-v1.php:277
+#: widgets/recent-items-slider-v1.php:292
+#: widgets/recent-items-slider-v1.php:308
+#: widgets/recent-items-slider-v1.php:323
+#: widgets/recent-items-slider-v1.php:338
+#: widgets/recent-items-slider-v2.php:232
+#: widgets/recent-items-slider-v2.php:247
+#: widgets/recent-items-slider-v2.php:262
+#: widgets/recent-items-slider-v2.php:277
+#: widgets/recent-items-slider-v2.php:293
+#: widgets/recent-items-slider-v2.php:308
+#: widgets/recent-items-slider-v2.php:323
+#: widgets/recent-items-slider-v3.php:234
+#: widgets/recent-items-slider-v3.php:249
+#: widgets/recent-items-slider-v3.php:264
+#: widgets/recent-items-slider-v3.php:279
+#: widgets/recent-items-slider-v3.php:295
+#: widgets/recent-items-slider-v3.php:310
+#: widgets/recent-items-slider-v3.php:325
+#: widgets/recent-items-top-bar-v1.php:180
+#: widgets/recent-items-top-bar-v1.php:279
+#: widgets/recent-items-top-bar-v1.php:294
+#: widgets/recent-items-top-bar-v1.php:309
+#: widgets/recent-items-top-bar-v1.php:324
+#: widgets/recent-items-top-bar-v1.php:339
+#: widgets/recent-items-top-bar-v1.php:354
+#: widgets/recent-items-top-bar-v1.php:369
+#: widgets/recent-items-top-bar-v1.php:384
+#: widgets/recent-items-top-bar-v1.php:627 widgets/recent-items-v1.php:241
+#: widgets/recent-items-v1.php:256 widgets/recent-items-v1.php:271
+#: widgets/recent-items-v1.php:286 widgets/recent-items-v1.php:301
+#: widgets/recent-items-v1.php:316 widgets/recent-items-v1.php:331
+#: widgets/recent-items-v1.php:346 widgets/recent-items-v2.php:265
+#: widgets/recent-items-v2.php:280 widgets/recent-items-v2.php:295
+#: widgets/recent-items-v2.php:310 widgets/recent-items-v2.php:326
+#: widgets/recent-items-v2.php:341 widgets/recent-items-v2.php:356
+#: widgets/recent-items-v3.php:264 widgets/recent-items-v3.php:279
+#: widgets/recent-items-v3.php:294 widgets/recent-items-v3.php:309
+#: widgets/recent-items-v3.php:325 widgets/recent-items-v3.php:340
+#: widgets/recent-items-v3.php:355 widgets/sliding-box.php:114
+#: widgets/wprentals-grids.php:205
+msgid "Yes"
+msgstr ""
+
+#: widgets/availability-calendar.php:133 widgets/booking-form.php:152
+#: widgets/booking-form.php:167 widgets/recent-items-slider-v1.php:233
+#: widgets/recent-items-slider-v1.php:248
+#: widgets/recent-items-slider-v1.php:263
+#: widgets/recent-items-slider-v1.php:278
+#: widgets/recent-items-slider-v1.php:293
+#: widgets/recent-items-slider-v1.php:309
+#: widgets/recent-items-slider-v1.php:324
+#: widgets/recent-items-slider-v1.php:339
+#: widgets/recent-items-slider-v2.php:233
+#: widgets/recent-items-slider-v2.php:248
+#: widgets/recent-items-slider-v2.php:263
+#: widgets/recent-items-slider-v2.php:278
+#: widgets/recent-items-slider-v2.php:294
+#: widgets/recent-items-slider-v2.php:309
+#: widgets/recent-items-slider-v2.php:324
+#: widgets/recent-items-slider-v3.php:235
+#: widgets/recent-items-slider-v3.php:250
+#: widgets/recent-items-slider-v3.php:265
+#: widgets/recent-items-slider-v3.php:280
+#: widgets/recent-items-slider-v3.php:296
+#: widgets/recent-items-slider-v3.php:311
+#: widgets/recent-items-slider-v3.php:326
+#: widgets/recent-items-top-bar-v1.php:280
+#: widgets/recent-items-top-bar-v1.php:295
+#: widgets/recent-items-top-bar-v1.php:310
+#: widgets/recent-items-top-bar-v1.php:325
+#: widgets/recent-items-top-bar-v1.php:340
+#: widgets/recent-items-top-bar-v1.php:355
+#: widgets/recent-items-top-bar-v1.php:370
+#: widgets/recent-items-top-bar-v1.php:385 widgets/recent-items-v1.php:242
+#: widgets/recent-items-v1.php:257 widgets/recent-items-v1.php:272
+#: widgets/recent-items-v1.php:287 widgets/recent-items-v1.php:302
+#: widgets/recent-items-v1.php:317 widgets/recent-items-v1.php:332
+#: widgets/recent-items-v1.php:347 widgets/recent-items-v2.php:266
+#: widgets/recent-items-v2.php:281 widgets/recent-items-v2.php:296
+#: widgets/recent-items-v2.php:311 widgets/recent-items-v2.php:327
+#: widgets/recent-items-v2.php:342 widgets/recent-items-v2.php:357
+#: widgets/recent-items-v3.php:265 widgets/recent-items-v3.php:280
+#: widgets/recent-items-v3.php:295 widgets/recent-items-v3.php:310
+#: widgets/recent-items-v3.php:326 widgets/recent-items-v3.php:341
+#: widgets/recent-items-v3.php:356 widgets/sliding-box.php:115
+#: widgets/wprentals-grids.php:204
+msgid "No"
+msgstr ""
+
+#: widgets/availability-calendar.php:221
+msgid "Section Title"
+msgstr ""
+
+#: widgets/booking-form.php:51
+msgid "WpRentals Booking Form"
+msgstr ""
+
+#: widgets/booking-form.php:141 widgets/recent-items-slider-v1.php:222
+#: widgets/recent-items-slider-v2.php:220
+#: widgets/recent-items-slider-v3.php:222
+#: widgets/recent-items-top-bar-v1.php:269 widgets/recent-items-v1.php:231
+#: widgets/recent-items-v2.php:253 widgets/recent-items-v3.php:252
+msgid "Show/Hide Data"
+msgstr ""
+
+#: widgets/booking-form.php:149
+msgid "Hide Favorites & Contact section"
+msgstr ""
+
+#: widgets/booking-form.php:164
+msgid "Hide Social section"
+msgstr ""
+
+#: widgets/categories-list.php:45
+msgid "WpRentals Categories List"
+msgstr ""
+
+#: widgets/categories-list.php:110 widgets/featured-place.php:117
+msgid "Type the category name you want to show"
+msgstr ""
+
+#: widgets/categories-list.php:120
+msgid "Categories per row"
+msgstr ""
+
+#: widgets/categories-list.php:129
+msgid "Design Style"
+msgstr ""
+
+#: widgets/categories-list.php:134 widgets/wprentals-grids.php:122
+msgid "Type 1"
+msgstr ""
+
+#: widgets/categories-list.php:135 widgets/wprentals-grids.php:123
+msgid "Type 2"
+msgstr ""
+
+#: widgets/categories-list.php:146
+msgid "Space between units"
+msgstr ""
+
+#: widgets/categories-list.php:188 widgets/featured-place.php:156
+#: widgets/wprentals-grids.php:261
+msgid "Item Settings"
+msgstr ""
+
+#: widgets/categories-list.php:196 widgets/featured-place.php:165
+#: widgets/wprentals-grids.php:270
+msgid "Item Height"
+msgstr ""
+
+#: widgets/categories-list.php:232
+msgid "Item Size"
+msgstr ""
+
+#: widgets/categories-list.php:266
+msgid "Item Margin Bottom"
+msgstr ""
+
+#: widgets/categories-list.php:325 widgets/properties-slider-v1.php:264
+#: widgets/sliding-box.php:189 widgets/testimonial_slider.php:178
+#: widgets/video_player.php:159
+msgid "Style"
+msgstr ""
+
+#: widgets/categories-list.php:333 widgets/featured-place.php:230
+#: widgets/properties-slider-v1.php:274 widgets/testimonial_slider.php:186
+#: widgets/wprentals-grids.php:372
+msgid "Title Typography"
+msgstr ""
+
+#: widgets/categories-list.php:351 widgets/featured-place.php:249
+#: widgets/recent-items-slider-v1.php:424
+#: widgets/recent-items-slider-v2.php:409
+#: widgets/recent-items-slider-v3.php:411 widgets/recent-items-v1.php:430
+#: widgets/recent-items-v2.php:442 widgets/recent-items-v3.php:441
+#: widgets/wprentals-grids.php:391
+msgid "Title Margin Bottom(px)"
+msgstr ""
+
+#: widgets/categories-list.php:381 widgets/featured-place.php:280
+#: widgets/wprentals-grids.php:422
+msgid "Tagline Margin Bottom(px)"
+msgstr ""
+
+#: widgets/categories-list.php:418 widgets/featured-place.php:367
+#: widgets/wprentals-grids.php:508
+msgid "Listings Text Typography"
+msgstr ""
+
+#: widgets/categories-list.php:438 widgets/featured-place.php:388
+#: widgets/sliding-box.php:224 widgets/testimonial_slider.php:251
+#: widgets/wprentals-grids.php:529
+msgid "Title Color"
+msgstr ""
+
+#: widgets/categories-list.php:450
+msgid "Subtitle Color"
+msgstr ""
+
+#: widgets/categories-list.php:464
+msgid "Listings Text Color"
+msgstr ""
+
+#: widgets/categories-list.php:476
+msgid "Listings Backgorund Color - Design Type2"
+msgstr ""
+
+#: widgets/categories-list.php:491
+msgid "Image Overlay Background Color"
+msgstr ""
+
+#: widgets/categories-list.php:502
+msgid "Image Overlay Background Color Hover"
+msgstr ""
+
+#: widgets/categories-slider.php:40
+msgid "WpRentals Categories Slider"
+msgstr ""
+
+#: widgets/categories-slider.php:116
+msgid ""
+"Type Categories, Actions, Cities or Areas (Neighborhoods) you want to show"
+msgstr ""
+
+#: widgets/categories-slider.php:127
+msgid "Items per row"
+msgstr ""
+
+#: widgets/contact_form_builder.php:44
+msgid "Contact Form Builder"
+msgstr ""
+
+#: widgets/contact_form_builder.php:70
+msgid "Full Name"
+msgstr ""
+
+#: widgets/contact_form_builder.php:71
+msgid "First Name"
+msgstr ""
+
+#: widgets/contact_form_builder.php:72
+msgid "Last Name"
+msgstr ""
+
+#: widgets/contact_form_builder.php:73 widgets/contact_form_builder.php:222
+#: widgets/contact_form_builder.php:223
+msgid "Email"
+msgstr ""
+
+#: widgets/contact_form_builder.php:74
+msgid "Mobile"
+msgstr ""
+
+#: widgets/contact_form_builder.php:75
+msgid "Phone"
+msgstr ""
+
+#: widgets/contact_form_builder.php:76
+msgid "Address"
+msgstr ""
+
+#: widgets/contact_form_builder.php:77 widgets/contact_form_builder.php:237
+#: widgets/contact_form_builder.php:238
+msgid "Message"
+msgstr ""
+
+#: widgets/contact_form_builder.php:78
+msgid "Booking from date"
+msgstr ""
+
+#: widgets/contact_form_builder.php:79
+msgid "Booking to date"
+msgstr ""
+
+#: widgets/contact_form_builder.php:80
+msgid "Guests"
+msgstr ""
+
+#: widgets/contact_form_builder.php:81
+msgid "Country"
+msgstr ""
+
+#: widgets/contact_form_builder.php:82
+msgid "City"
+msgstr ""
+
+#: widgets/contact_form_builder.php:83
+msgid "State"
+msgstr ""
+
+#: widgets/contact_form_builder.php:84
+msgid "Zip/Postal Code"
+msgstr ""
+
+#: widgets/contact_form_builder.php:95 widgets/contact_form_builder.php:199
+#: widgets/display_categories_as_tabs.php:114
+#: widgets/search_form_builder.php:80 widgets/search_form_builder.php:157
+msgid "Form Fields"
+msgstr ""
+
+#: widgets/contact_form_builder.php:105
+#: widgets/display_categories_as_tabs.php:124
+#: widgets/recent-items-top-bar-v1.php:170 widgets/search_form_builder.php:104
+msgid "Form Fields Label"
+msgstr ""
+
+#: widgets/contact_form_builder.php:114 widgets/search_form_builder.php:112
+msgid "Form Fields Placeholder"
+msgstr ""
+
+#: widgets/contact_form_builder.php:133
+msgid "Required"
+msgstr ""
+
+#: widgets/contact_form_builder.php:155 widgets/search_form_builder.php:132
+msgid "Column Width"
+msgstr ""
+
+#: widgets/contact_form_builder.php:158 widgets/contact_form_builder.php:354
+#: widgets/search_form_builder.php:135 widgets/search_form_builder.php:272
+msgid "Default"
+msgstr ""
+
+#: widgets/contact_form_builder.php:177
+msgid "Rows"
+msgstr ""
+
+#: widgets/contact_form_builder.php:214 widgets/contact_form_builder.php:215
+#: widgets/wprentals-grids.php:218
+msgid "Name"
+msgstr ""
+
+#: widgets/contact_form_builder.php:230 widgets/contact_form_builder.php:231
+msgid "booking_from_date"
+msgstr ""
+
+#: widgets/contact_form_builder.php:249
+msgid "Input Size"
+msgstr ""
+
+#: widgets/contact_form_builder.php:252 widgets/contact_form_builder.php:339
+msgid "Extra Small"
+msgstr ""
+
+#: widgets/contact_form_builder.php:253 widgets/contact_form_builder.php:340
+msgid "Small"
+msgstr ""
+
+#: widgets/contact_form_builder.php:254 widgets/contact_form_builder.php:341
+msgid "Medium"
+msgstr ""
+
+#: widgets/contact_form_builder.php:255 widgets/contact_form_builder.php:342
+msgid "Large"
+msgstr ""
+
+#: widgets/contact_form_builder.php:256 widgets/contact_form_builder.php:343
+msgid "Extra Large"
+msgstr ""
+
+#: widgets/contact_form_builder.php:266
+msgid "Labels"
+msgstr ""
+
+#: widgets/contact_form_builder.php:268 widgets/contact_form_builder.php:284
+#: widgets/search_form_builder.php:193 widgets/search_form_builder.php:205
+#: widgets/search_form_builder.php:219
+msgid "Show"
+msgstr ""
+
+#: widgets/contact_form_builder.php:269 widgets/contact_form_builder.php:285
+#: widgets/search_form_builder.php:194 widgets/search_form_builder.php:206
+#: widgets/search_form_builder.php:220
+msgid "Hide"
+msgstr ""
+
+#: widgets/contact_form_builder.php:282
+msgid "GDPR Agreement"
+msgstr ""
+
+#: widgets/contact_form_builder.php:296
+msgid "GDPR Agreement Text"
+msgstr ""
+
+#: widgets/contact_form_builder.php:298
+msgid "I consent to the GDPR Terms"
+msgstr ""
+
+#: widgets/contact_form_builder.php:318 widgets/search_form_builder.php:252
+msgid "Submit Button"
+msgstr ""
+
+#: widgets/contact_form_builder.php:325 widgets/search_form_builder.php:258
+msgid "Text"
+msgstr ""
+
+#: widgets/contact_form_builder.php:327 widgets/contact_form_builder.php:328
+msgid "Send Email"
+msgstr ""
+
+#: widgets/contact_form_builder.php:335
+msgid "Submit Button Size"
+msgstr ""
+
+#: widgets/contact_form_builder.php:351 widgets/search_form_builder.php:269
+msgid "Submit Button Width"
+msgstr ""
+
+#: widgets/contact_form_builder.php:374
+msgid "Button Alignment"
+msgstr ""
+
+#: widgets/contact_form_builder.php:378
+#: widgets/display_categories_as_tabs.php:201
+#: widgets/recent-items-top-bar-v1.php:417
+msgid "Left"
+msgstr ""
+
+#: widgets/contact_form_builder.php:382
+#: widgets/display_categories_as_tabs.php:205
+#: widgets/recent-items-top-bar-v1.php:421
+msgid "Center"
+msgstr ""
+
+#: widgets/contact_form_builder.php:386
+#: widgets/display_categories_as_tabs.php:209
+#: widgets/recent-items-top-bar-v1.php:425
+msgid "Right"
+msgstr ""
+
+#: widgets/contact_form_builder.php:390
+msgid "Justified"
+msgstr ""
+
+#: widgets/contact_form_builder.php:402
+msgid "Button ID"
+msgstr ""
+
+#: widgets/contact_form_builder.php:406
+msgid "Use a unique name without spaces or special characters"
+msgstr ""
+
+#: widgets/contact_form_builder.php:428
+msgid "Email Settings"
+msgstr ""
+
+#: widgets/contact_form_builder.php:434
+#, php-format
+msgid "New email from \"%s\" "
+msgstr ""
+
+#: widgets/contact_form_builder.php:438
+msgid "Email Subject"
+msgstr ""
+
+#: widgets/contact_form_builder.php:461 widgets/search_form_builder.php:314
+msgid "Form"
+msgstr ""
+
+#: widgets/contact_form_builder.php:469 widgets/search_form_builder.php:321
+#: widgets/wprentals-grids.php:316
+msgid "Form Columns Gap"
+msgstr ""
+
+#: widgets/contact_form_builder.php:492 widgets/search_form_builder.php:341
+#: widgets/wprentals-grids.php:336
+msgid "Rows Gap"
+msgstr ""
+
+#: widgets/contact_form_builder.php:513 widgets/search_form_builder.php:361
+msgid "Form Label"
+msgstr ""
+
+#: widgets/contact_form_builder.php:522
+msgid "Form Label Spacing"
+msgstr ""
+
+#: widgets/contact_form_builder.php:545 widgets/search_form_builder.php:393
+msgid "Label Text Color"
+msgstr ""
+
+#: widgets/contact_form_builder.php:583 widgets/search_form_builder.php:521
+msgid "Field Style"
+msgstr ""
+
+#: widgets/contact_form_builder.php:591 widgets/search_form_builder.php:528
+msgid "Field Text Color"
+msgstr ""
+
+#: widgets/contact_form_builder.php:615 widgets/search_form_builder.php:581
+msgid "Field Background Color"
+msgstr ""
+
+#: widgets/contact_form_builder.php:684
+msgid "GDPR"
+msgstr ""
+
+#: widgets/contact_form_builder.php:692
+msgid "Text Color"
+msgstr ""
+
+#: widgets/contact_form_builder.php:728 widgets/search_form_builder.php:683
+msgid "Button"
+msgstr ""
+
+#: widgets/contact_form_builder.php:738 widgets/search_form_builder.php:695
+msgid "Normal State"
+msgstr ""
+
+#: widgets/contact_form_builder.php:745 widgets/contact_form_builder.php:822
+#: widgets/search_form_builder.php:701 widgets/search_form_builder.php:781
+msgid "Submit Button Background Color"
+msgstr ""
+
+#: widgets/contact_form_builder.php:761 widgets/contact_form_builder.php:834
+#: widgets/search_form_builder.php:715 widgets/search_form_builder.php:792
+msgid "Submit Button Text Color"
+msgstr ""
+
+#: widgets/contact_form_builder.php:789 widgets/search_form_builder.php:751
+msgid "Submit Button Border Radius"
+msgstr ""
+
+#: widgets/contact_form_builder.php:801 widgets/search_form_builder.php:762
+msgid "Submit Button Text Padding"
+msgstr ""
+
+#: widgets/contact_form_builder.php:815 widgets/search_form_builder.php:775
+msgid "Hover State"
+msgstr ""
+
+#: widgets/contact_form_builder.php:846 widgets/search_form_builder.php:817
+msgid "Submit Button Border Color"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:47
+msgid "WpRentals Display Categories As Tabs"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:90
+#: widgets/display_categories_as_tabs.php:150
+#: widgets/recent-items-top-bar-v1.php:211
+msgid "Categories"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:91
+msgid "Rent Categories"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:92
+msgid "Cities"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:93
+msgid "Neighborhood"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:94
+msgid "Amenities & Features"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:95
+msgid "Status"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:133
+#: widgets/recent-items-top-bar-v1.php:192 widgets/search_form_builder.php:121
+#: widgets/search_form_builder.php:293 widgets/video_player.php:103
+#: widgets/video_player.php:110 widgets/wpestate_accordions.php:122
+#: widgets/wpestate_tabs.php:133
+msgid "Icon"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:162
+msgid "Items per row (1, 2, 3, 4 or 6)"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:171
+msgid "Hide Terms with no listings"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:174
+#: widgets/display_categories_as_tabs.php:412
+#: widgets/recent-items-top-bar-v1.php:181
+#: widgets/recent-items-top-bar-v1.php:628
+msgid "no"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:190
+msgid "Tab Items Settings"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:197
+#: widgets/recent-items-top-bar-v1.php:413
+msgid "Alignment"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:223
+msgid "Tab item Content Padding "
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:235
+#: widgets/recent-items-top-bar-v1.php:451
+msgid "Tab item Margin "
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:247
+#: widgets/recent-items-top-bar-v1.php:463
+msgid "Tab Item Border Radius"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:260
+#: widgets/display_categories_as_tabs.php:486
+#: widgets/recent-items-top-bar-v1.php:476
+msgid "Tab Item Background Color"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:273
+#: widgets/display_categories_as_tabs.php:297
+#: widgets/recent-items-top-bar-v1.php:489
+msgid "Tab Item Font Color"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:284
+#: widgets/recent-items-top-bar-v1.php:500
+msgid "Tab Item Active Background Color"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:309
+#: widgets/recent-items-top-bar-v1.php:525
+msgid "Tab Item Typography"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:330
+#: widgets/recent-items-top-bar-v1.php:546
+msgid "Tab item Icon Margin "
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:344
+#: widgets/recent-items-top-bar-v1.php:560
+msgid "Tab Item Icon Color"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:362
+#: widgets/recent-items-top-bar-v1.php:578
+msgid "Tab Item Active Icon Color"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:376
+#: widgets/properties-slider-v1.php:344 widgets/recent-items-top-bar-v1.php:592
+#: widgets/search_form_builder.php:845 widgets/video_player.php:167
+msgid "Icon Size"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:408
+#: widgets/recent-items-top-bar-v1.php:624
+msgid "Put Icon above label"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:427
+msgid "Tab Content Settings"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:434
+msgid "Tab Content Padding "
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:446
+msgid "Tab Content Margin"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:458
+msgid "List Element Margin"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:471
+msgid "Tab Content Border Radius"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:499
+msgid "Term Font Color"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:511
+msgid "Term Second row Font Color"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:526
+msgid "Term Typography"
+msgstr ""
+
+#: widgets/display_categories_as_tabs.php:547
+msgid "Second Row Typography"
+msgstr ""
+
+#: widgets/featured-article.php:40
+msgid "WpRentals Featured Article"
+msgstr ""
+
+#: widgets/featured-article.php:95 widgets/featured-listing.php:95
+#: widgets/featured-place.php:100
+msgid "type1"
+msgstr ""
+
+#: widgets/featured-article.php:96 widgets/featured-listing.php:96
+#: widgets/featured-place.php:101
+msgid "type2"
+msgstr ""
+
+#: widgets/featured-article.php:97 widgets/featured-listing.php:97
+#: widgets/featured-place.php:102
+msgid "type3"
+msgstr ""
+
+#: widgets/featured-article.php:114
+msgid "Id of the article"
+msgstr ""
+
+#: widgets/featured-article.php:125 widgets/featured-listing.php:125
+#: widgets/wpestate_tabs.php:204
+msgid "Type"
+msgstr ""
+
+#: widgets/featured-listing.php:40
+msgid "WpRentals Featured Listing"
+msgstr ""
+
+#: widgets/featured-listing.php:114
+msgid "Listing Id"
+msgstr ""
+
+#: widgets/featured-owner.php:40
+msgid "WpRentals Featured Owner"
+msgstr ""
+
+#: widgets/featured-owner.php:112
+msgid "Owner Id"
+msgstr ""
+
+#: widgets/featured-owner.php:123
+msgid "Notes"
+msgstr ""
+
+#: widgets/featured-owner.php:131 widgets/featured-place.php:128
+msgid "Design Type"
+msgstr ""
+
+#: widgets/featured-place.php:42
+msgid "WpRentals Featured Category"
+msgstr ""
+
+#: widgets/featured-place.php:137
+msgid "Featured label"
+msgstr ""
+
+#: widgets/featured-place.php:312 widgets/wprentals-grids.php:454
+msgid "Listings Number margin Bottom"
+msgstr ""
+
+#: widgets/featured-place.php:344 widgets/wprentals-grids.php:485
+msgid "Tagline Typography "
+msgstr ""
+
+#: widgets/featured-place.php:402 widgets/wprentals-grids.php:543
+msgid "Tagline Color"
+msgstr ""
+
+#: widgets/featured-place.php:415 widgets/wprentals-grids.php:555
+msgid "Listings text Color"
+msgstr ""
+
+#: widgets/featured-place.php:430 widgets/wprentals-grids.php:570
+msgid "Discover Text Typography"
+msgstr ""
+
+#: widgets/featured-place.php:451 widgets/wprentals-grids.php:591
+msgid "Discover text Color"
+msgstr ""
+
+#: widgets/featured-place.php:466 widgets/wprentals-grids.php:605
+msgid "Image Overlay Backgorund Color"
+msgstr ""
+
+#: widgets/full_map.php:46
+msgid "WpRentals Map with Listings"
+msgstr ""
+
+#: widgets/full_map.php:140
+msgid "Map Height"
+msgstr ""
+
+#: widgets/full_map.php:151
+msgid "List of categories (*only for properties)"
+msgstr ""
+
+#: widgets/full_map.php:162
+msgid "List of action categories (*only for properties)"
+msgstr ""
+
+#: widgets/full_map.php:173
+msgid "List of city  (*only for properties)"
+msgstr ""
+
+#: widgets/full_map.php:183
+msgid "List of areas (*only for properties)"
+msgstr ""
+
+#: widgets/full_map.php:198
+msgid "Map Style from Snazy Maps"
+msgstr ""
+
+#: widgets/icon-content-box.php:40
+msgid "WpRentals Icon Content Box"
+msgstr ""
+
+#: widgets/icon-content-box.php:98
+msgid "Box Title"
+msgstr ""
+
+#: widgets/icon-content-box.php:106 widgets/testimonial.php:117
+msgid "Image"
+msgstr ""
+
+#: widgets/icon-content-box.php:115
+msgid "Content of the box"
+msgstr ""
+
+#: widgets/icon-content-box.php:123
+msgid "The link with http:// in front"
+msgstr ""
+
+#: widgets/icon-content-box.php:131
+msgid "Icon/Image Postion"
+msgstr ""
+
+#: widgets/icon-content-box.php:141
+msgid "Title Font Size"
+msgstr ""
+
+#: widgets/list_items_by_id.php:40
+msgid "WpRentals List Items by Id"
+msgstr ""
+
+#: widgets/list_items_by_id.php:120 widgets/recent-items.php:134
+msgid "What type of items"
+msgstr ""
+
+#: widgets/list_items_by_id.php:130
+msgid "Items IDs"
+msgstr ""
+
+#: widgets/list_items_by_id.php:140 widgets/properties-slider-v1.php:254
+#: widgets/recent-items-slider-v1.php:133
+#: widgets/recent-items-slider-v2.php:133
+#: widgets/recent-items-slider-v3.php:133 widgets/recent-items-slider.php:170
+#: widgets/recent-items-top-bar-v1.php:235 widgets/recent-items-v1.php:127
+#: widgets/recent-items-v2.php:143 widgets/recent-items-v3.php:142
+#: widgets/recent-items.php:144
+msgid "No of items"
+msgstr ""
+
+#: widgets/list_items_by_id.php:148 widgets/recent-items-top-bar-v1.php:244
+#: widgets/recent-items-v1.php:136 widgets/recent-items-v2.php:152
+#: widgets/recent-items-v3.php:151 widgets/recent-items.php:153
+msgid "No of items per row"
+msgstr ""
+
+#: widgets/list_items_by_id.php:159 widgets/recent-items-v1.php:145
+#: widgets/recent-items-v2.php:161 widgets/recent-items-v3.php:160
+#: widgets/recent-items.php:162
+msgid "Link to global listing"
+msgstr ""
+
+#: widgets/login-form.php:40
+msgid "WpRentals Login Form"
+msgstr ""
+
+#: widgets/login-form.php:110 widgets/login-register-buttons.php:110
+msgid "Register link text"
+msgstr ""
+
+#: widgets/login-form.php:120 widgets/login-register-buttons.php:120
+msgid "Register page url"
+msgstr ""
+
+#: widgets/login-register-buttons.php:40
+msgid "WpRentals Login & Register Button"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:46
+msgid "WpRentals Property Slider"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:155 widgets/recent-items-slider-v1.php:165
+#: widgets/recent-items-slider-v2.php:165
+#: widgets/recent-items-slider-v3.php:165
+#: widgets/recent-items-top-bar-v1.php:151 widgets/recent-items-v1.php:166
+#: widgets/recent-items-v2.php:185 widgets/recent-items-v3.php:184
+#: widgets/recent-items.php:183
+msgid "Filters"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:168
+msgid "List of categories "
+msgstr ""
+
+#: widgets/properties-slider-v1.php:179
+msgid "List of action categories "
+msgstr ""
+
+#: widgets/properties-slider-v1.php:190
+msgid "List of city  "
+msgstr ""
+
+#: widgets/properties-slider-v1.php:200
+msgid "List of areas "
+msgstr ""
+
+#: widgets/properties-slider-v1.php:212
+msgid "List of Property Status "
+msgstr ""
+
+#: widgets/properties-slider-v1.php:224
+msgid "List of Property Features "
+msgstr ""
+
+#: widgets/properties-slider-v1.php:235 widgets/recent-items-slider-v1.php:141
+#: widgets/recent-items-slider-v2.php:141
+#: widgets/recent-items-slider-v3.php:141 widgets/recent-items-slider.php:178
+#: widgets/recent-items-v1.php:216 widgets/recent-items-v2.php:236
+#: widgets/recent-items-v3.php:235 widgets/recent-items.php:233
+msgid "Show featured listings only?"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:244
+msgid "Items IDs - will override the above filters"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:284
+msgid "Price Typography"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:292
+msgid "Location Typography"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:302 widgets/properties-slider-v1.php:311
+#: widgets/testimonial_slider.php:195
+msgid "Content Typography"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:321
+msgid "Owner name Font Size"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:366
+msgid "Owner Image Size"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:390
+msgid "Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:415
+msgid "Title Font Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:430
+msgid "Price Font Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:444
+msgid "Content Font Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:458
+msgid "Location Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:474
+msgid "Details Font Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:487
+msgid "Icon  Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:500
+msgid "Owner Name Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:524 widgets/testimonial_slider.php:305
+msgid "Arrows Style"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:545 widgets/testimonial_slider.php:326
+msgid "Arrow Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:558 widgets/testimonial_slider.php:339
+msgid "Arrow Background Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:573 widgets/testimonial_slider.php:354
+msgid "Arrow Color Hover"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:586 widgets/testimonial_slider.php:367
+msgid "Arrow Background Color Hover"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:600 widgets/testimonial_slider.php:381
+msgid "Dot Color"
+msgstr ""
+
+#: widgets/properties-slider-v1.php:614 widgets/testimonial_slider.php:395
+msgid "Dot Color Active"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:43
+msgid "WpRentals Recent Item Slider v1"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:150
+#: widgets/recent-items-slider-v2.php:150
+#: widgets/recent-items-slider-v3.php:150 widgets/recent-items-slider.php:187
+msgid "Auto scroll period"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:173
+#: widgets/recent-items-slider-v2.php:173
+#: widgets/recent-items-slider-v3.php:173 widgets/recent-items-slider.php:125
+#: widgets/recent-items-v1.php:174 widgets/recent-items-v2.php:193
+#: widgets/recent-items-v3.php:192 widgets/recent-items.php:191
+msgid "List of category names (*only for properties)"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:183
+#: widgets/recent-items-slider-v2.php:183
+#: widgets/recent-items-slider-v3.php:183 widgets/recent-items-slider.php:135
+#: widgets/recent-items-v1.php:184 widgets/recent-items-v2.php:203
+#: widgets/recent-items-v3.php:202 widgets/recent-items.php:201
+msgid "List of action names (*only for properties)"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:193
+#: widgets/recent-items-slider-v2.php:193
+#: widgets/recent-items-slider-v3.php:193 widgets/recent-items-slider.php:145
+#: widgets/recent-items-v1.php:194 widgets/recent-items-v2.php:213
+#: widgets/recent-items-v3.php:212 widgets/recent-items.php:211
+msgid "List of city names (*only for properties)"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:203
+#: widgets/recent-items-slider-v2.php:203
+#: widgets/recent-items-slider-v3.php:203 widgets/recent-items-slider.php:155
+#: widgets/recent-items-v1.php:205 widgets/recent-items-v2.php:224
+#: widgets/recent-items-v3.php:223 widgets/recent-items.php:222
+msgid "List of area names (*only for properties)"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:230
+#: widgets/recent-items-top-bar-v1.php:277 widgets/recent-items-v1.php:239
+msgid "Hide Owner Thumb"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:245
+#: widgets/recent-items-slider-v2.php:230
+#: widgets/recent-items-slider-v3.php:232
+#: widgets/recent-items-top-bar-v1.php:292 widgets/recent-items-v1.php:254
+#: widgets/recent-items-v2.php:263 widgets/recent-items-v3.php:262
+msgid "Hide Add to Favorites"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:260
+#: widgets/recent-items-slider-v2.php:245
+#: widgets/recent-items-slider-v3.php:247
+#: widgets/recent-items-top-bar-v1.php:307 widgets/recent-items-v1.php:269
+#: widgets/recent-items-v2.php:278 widgets/recent-items-v3.php:277
+msgid "Hide Featured Label"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:290
+#: widgets/recent-items-slider-v2.php:275
+#: widgets/recent-items-slider-v3.php:277
+#: widgets/recent-items-top-bar-v1.php:337 widgets/recent-items-v1.php:299
+#: widgets/recent-items-v2.php:308 widgets/recent-items-v3.php:307
+msgid "Hide Location"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:306
+#: widgets/recent-items-slider-v2.php:291
+#: widgets/recent-items-top-bar-v1.php:352 widgets/recent-items-v1.php:314
+#: widgets/recent-items-v2.php:324
+msgid "Hide Categories"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:321
+#: widgets/recent-items-slider-v2.php:306
+#: widgets/recent-items-slider-v3.php:308
+#: widgets/recent-items-top-bar-v1.php:367 widgets/recent-items-v1.php:329
+#: widgets/recent-items-v2.php:339 widgets/recent-items-v3.php:338
+msgid "Hide Price"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:336
+#: widgets/recent-items-slider-v2.php:321
+#: widgets/recent-items-slider-v3.php:323
+#: widgets/recent-items-top-bar-v1.php:382 widgets/recent-items-v1.php:344
+#: widgets/recent-items-v2.php:354 widgets/recent-items-v3.php:353
+msgid "Hide Review"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:384
+#: widgets/recent-items-slider-v2.php:369
+#: widgets/recent-items-slider-v3.php:371 widgets/recent-items-v1.php:390
+#: widgets/recent-items-v2.php:402 widgets/recent-items-v3.php:401
+msgid "Property location & category"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:394
+#: widgets/recent-items-slider-v2.php:379
+#: widgets/recent-items-slider-v3.php:381 widgets/recent-items-v1.php:400
+#: widgets/recent-items-v2.php:412 widgets/recent-items-v3.php:411
+msgid "Property Price"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:417
+#: widgets/recent-items-slider-v2.php:402
+#: widgets/recent-items-slider-v3.php:404 widgets/recent-items-v1.php:423
+#: widgets/recent-items-v2.php:435 widgets/recent-items-v3.php:434
+msgid "Spaces & Sizes"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:455
+#: widgets/recent-items-slider-v2.php:440 widgets/recent-items-v1.php:460
+#: widgets/recent-items-v2.php:473
+msgid "Property Location Margin Bottom(px)"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:485
+#: widgets/recent-items-slider-v2.php:470 widgets/recent-items-v1.php:490
+#: widgets/recent-items-v2.php:503
+msgid "Property Categories Margin Bottom(px)"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:515 widgets/recent-items-v1.php:520
+msgid "Owner Thumb position(only left & top)"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:528 widgets/recent-items-v1.php:531
+msgid "Property Price position(only right & bottom)"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:543
+#: widgets/recent-items-slider-v2.php:528
+#: widgets/recent-items-slider-v3.php:518 widgets/recent-items-v1.php:543
+#: widgets/recent-items-v2.php:561 widgets/recent-items-v3.php:548
+msgid "Icons size"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:572 widgets/recent-items-v1.php:572
+msgid "Owner thumb size"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:650
+#: widgets/recent-items-slider-v2.php:607
+#: widgets/recent-items-slider-v3.php:597 widgets/recent-items-v1.php:649
+#: widgets/recent-items-v2.php:640 widgets/recent-items-v3.php:627
+msgid "Unit Background"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:674
+#: widgets/recent-items-slider-v2.php:631
+#: widgets/recent-items-slider-v3.php:621 widgets/recent-items-v1.php:672
+#: widgets/recent-items-v2.php:664 widgets/recent-items-v3.php:651
+msgid "Location & Category Color"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:688
+#: widgets/recent-items-slider-v2.php:645
+#: widgets/recent-items-slider-v3.php:635 widgets/recent-items-v1.php:686
+#: widgets/recent-items-v2.php:678 widgets/recent-items-v3.php:665
+msgid "Price"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:700
+#: widgets/recent-items-slider-v2.php:657
+#: widgets/recent-items-slider-v3.php:659 widgets/recent-items-v1.php:698
+#: widgets/recent-items-v2.php:690 widgets/recent-items-v3.php:689
+msgid "Featured Label Color"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:712
+#: widgets/recent-items-slider-v2.php:669
+#: widgets/recent-items-slider-v3.php:671 widgets/recent-items-v1.php:710
+#: widgets/recent-items-v2.php:702 widgets/recent-items-v3.php:701
+msgid "Featured Label Background Color"
+msgstr ""
+
+#: widgets/recent-items-slider-v1.php:725
+#: widgets/recent-items-slider-v2.php:682
+#: widgets/recent-items-slider-v3.php:684 widgets/recent-items-v1.php:723
+#: widgets/recent-items-v2.php:715 widgets/recent-items-v3.php:714
+msgid "Review Stars Color"
+msgstr ""
+
+#: widgets/recent-items-slider-v2.php:43
+msgid "WpRentals Recent Item Slider v2"
+msgstr ""
+
+#: widgets/recent-items-slider-v2.php:500 widgets/recent-items-v2.php:533
+msgid "Add to favorites position(only bottom & right)"
+msgstr ""
+
+#: widgets/recent-items-slider-v2.php:513
+#: widgets/recent-items-slider-v3.php:503 widgets/recent-items-v2.php:546
+#: widgets/recent-items-v3.php:533
+msgid "Property Price position(only left & bottom)"
+msgstr ""
+
+#: widgets/recent-items-slider-v3.php:43
+msgid "WpRentals Recent Item Slider v3"
+msgstr ""
+
+#: widgets/recent-items-slider-v3.php:293 widgets/recent-items-v3.php:323
+msgid "Hide Details"
+msgstr ""
+
+#: widgets/recent-items-slider-v3.php:442 widgets/recent-items-v3.php:472
+msgid "Property Category Margin Bottom(px)"
+msgstr ""
+
+#: widgets/recent-items-slider-v3.php:472 widgets/recent-items-v3.php:502
+msgid "Property Description Margin Bottom(px)"
+msgstr ""
+
+#: widgets/recent-items-slider-v3.php:647 widgets/recent-items-v3.php:677
+msgid "Price Background Color"
+msgstr ""
+
+#: widgets/recent-items-slider.php:40
+msgid "WpRentals Recent Item Slider"
+msgstr ""
+
+#: widgets/recent-items-top-bar-v1.php:54
+msgid "WpRentals Recent Listings with Filters"
+msgstr ""
+
+#: widgets/recent-items-top-bar-v1.php:159
+msgid "Category Terms"
+msgstr ""
+
+#: widgets/recent-items-top-bar-v1.php:177
+msgid ""
+"Load listings from this category in the inital display (all listings load if "
+"none is selected )"
+msgstr ""
+
+#: widgets/recent-items-top-bar-v1.php:406
+msgid "Filters Settings"
+msgstr ""
+
+#: widgets/recent-items-top-bar-v1.php:439
+msgid "Top  item Content Padding "
+msgstr ""
+
+#: widgets/recent-items-top-bar-v1.php:513
+msgid "Active Tab Item Font Color"
+msgstr ""
+
+#: widgets/recent-items-v1.php:44
+msgid "WpRentals Recent Items v1"
+msgstr ""
+
+#: widgets/recent-items-v1.php:154 widgets/recent-items-v2.php:172
+#: widgets/recent-items-v3.php:171 widgets/recent-items.php:171
+msgid "Random Pick ?"
+msgstr ""
+
+#: widgets/recent-items-v2.php:49
+msgid "WpRentals Recent Items v2"
+msgstr ""
+
+#: widgets/recent-items-v3.php:49
+msgid "WpRentals Recent Items v3"
+msgstr ""
+
+#: widgets/recent-items.php:40
+msgid "WpRentals Recent Items"
+msgstr ""
+
+#: widgets/recent-items.php:115
+msgid ""
+"Use without spaces between listings? (If yes, title or link to global "
+"listing will not show)"
+msgstr ""
+
+#: widgets/recent-items.php:247
+msgid "Settings"
+msgstr ""
+
+#: widgets/register-form.php:40
+msgid "WpRentals Register Form"
+msgstr ""
+
+#: widgets/search_form_builder.php:48
+msgid "Search Form Builder"
+msgstr ""
+
+#: widgets/search_form_builder.php:89
+msgid "How it will Compare"
+msgstr ""
+
+#: widgets/search_form_builder.php:171 widgets/search_form_builder.php:172
+msgid "Property Category"
+msgstr ""
+
+#: widgets/search_form_builder.php:178 widgets/search_form_builder.php:179
+msgid "Property City"
+msgstr ""
+
+#: widgets/search_form_builder.php:191
+msgid "Show Labels"
+msgstr ""
+
+#: widgets/search_form_builder.php:203
+msgid "Show Amenities and Features fields?"
+msgstr ""
+
+#: widgets/search_form_builder.php:217
+msgid "Show Section Title"
+msgstr ""
+
+#: widgets/search_form_builder.php:229
+msgid "Section Title Text"
+msgstr ""
+
+#: widgets/search_form_builder.php:231
+msgid "Advanced Search"
+msgstr ""
+
+#: widgets/search_form_builder.php:233
+msgid "Search form Title"
+msgstr ""
+
+#: widgets/search_form_builder.php:260 widgets/search_form_builder.php:261
+msgid "Search Properties"
+msgstr ""
+
+#: widgets/search_form_builder.php:369
+msgid "Form Label Margin Bottom"
+msgstr ""
+
+#: widgets/search_form_builder.php:441
+msgid "Form Padding "
+msgstr ""
+
+#: widgets/search_form_builder.php:453
+msgid "Form Border Radius"
+msgstr ""
+
+#: widgets/search_form_builder.php:465 widgets/sliding-box.php:196
+msgid "Padding"
+msgstr ""
+
+#: widgets/search_form_builder.php:505
+msgid "Box Shadow Form"
+msgstr ""
+
+#: widgets/search_form_builder.php:558
+msgid "Dropdown Typography"
+msgstr ""
+
+#: widgets/search_form_builder.php:567
+msgid "Field icon Color"
+msgstr ""
+
+#: widgets/search_form_builder.php:594
+msgid "Field Padding"
+msgstr ""
+
+#: widgets/search_form_builder.php:610
+msgid "Price slider Color"
+msgstr ""
+
+#: widgets/search_form_builder.php:623
+msgid "Price slider Track Color"
+msgstr ""
+
+#: widgets/search_form_builder.php:724
+msgid "icon Color"
+msgstr ""
+
+#: widgets/search_form_builder.php:804
+msgid "Hover Color icon"
+msgstr ""
+
+#: widgets/search_form_builder.php:865
+msgid "Icon Size Padding"
+msgstr ""
+
+#: widgets/simple-term-list.php:40
+msgid "WpRentals Simple Term List"
+msgstr ""
+
+#: widgets/simple-term-list.php:125
+msgid "Category"
+msgstr ""
+
+#: widgets/simple-term-list.php:136
+msgid "List style type"
+msgstr ""
+
+#: widgets/simple-term-list.php:145
+msgid "Show Term Count"
+msgstr ""
+
+#: widgets/sliding-box.php:47
+msgid "Wprentals Sliding Box"
+msgstr ""
+
+#: widgets/sliding-box.php:112
+msgid "Open Box"
+msgstr ""
+
+#: widgets/sliding-box.php:124
+msgid "Read Me Text"
+msgstr ""
+
+#: widgets/sliding-box.php:132
+msgid "Read Me Link text"
+msgstr ""
+
+#: widgets/sliding-box.php:148 widgets/testimonial_slider.php:126
+msgid "Choose Image"
+msgstr ""
+
+#: widgets/sliding-box.php:160
+msgid "Boxes"
+msgstr ""
+
+#: widgets/sliding-box.php:172
+msgid "Learn More"
+msgstr ""
+
+#: widgets/sliding-box.php:240
+msgid "Font Color"
+msgstr ""
+
+#: widgets/sliding-box.php:256
+msgid "Read Me Color"
+msgstr ""
+
+#: widgets/sliding-box.php:337
+msgid "Read Me"
+msgstr ""
+
+#: widgets/testimonial.php:40
+msgid "WpRentals Testimonial"
+msgstr ""
+
+#: widgets/testimonial.php:101
+msgid "Client Name"
+msgstr ""
+
+#: widgets/testimonial.php:109
+msgid "Title Client"
+msgstr ""
+
+#: widgets/testimonial.php:126
+msgid "Testimonial Text "
+msgstr ""
+
+#: widgets/testimonial.php:134
+msgid "Testimonial Type"
+msgstr ""
+
+#: widgets/testimonial.php:144
+msgid "Stars for Type 2"
+msgstr ""
+
+#: widgets/testimonial_slider.php:49
+msgid "Testimonial Slider"
+msgstr ""
+
+#: widgets/testimonial_slider.php:91
+msgid "Person Name"
+msgstr ""
+
+#: widgets/testimonial_slider.php:99
+msgid "Person Position"
+msgstr ""
+
+#: widgets/testimonial_slider.php:107
+msgid "Stars (1 to 5)"
+msgstr ""
+
+#: widgets/testimonial_slider.php:116
+msgid "Testimonial Text"
+msgstr ""
+
+#: widgets/testimonial_slider.php:139
+msgid "Repeater List"
+msgstr ""
+
+#: widgets/testimonial_slider.php:144
+msgid "Testimonial #1"
+msgstr ""
+
+#: widgets/testimonial_slider.php:145 widgets/testimonial_slider.php:149
+msgid "Testimonial content. Click the edit button to change this text."
+msgstr ""
+
+#: widgets/testimonial_slider.php:148
+msgid "Testimonial #2"
+msgstr ""
+
+#: widgets/testimonial_slider.php:205
+msgid "Name Typography"
+msgstr ""
+
+#: widgets/testimonial_slider.php:215
+msgid "Position Typography"
+msgstr ""
+
+#: widgets/testimonial_slider.php:240
+msgid "Background"
+msgstr ""
+
+#: widgets/testimonial_slider.php:262
+msgid "Content Color"
+msgstr ""
+
+#: widgets/testimonial_slider.php:273
+msgid "Name Color"
+msgstr ""
+
+#: widgets/testimonial_slider.php:284
+msgid "Position Color"
+msgstr ""
+
+#: widgets/video_player.php:43
+msgid "WpRentals Video Player"
+msgstr ""
+
+#: widgets/video_player.php:123
+msgid "Video Location"
+msgstr ""
+
+#: widgets/video_player.php:127
+msgid "YouTube"
+msgstr ""
+
+#: widgets/video_player.php:128
+msgid "Vimeo"
+msgstr ""
+
+#: widgets/video_player.php:129
+msgid "Local"
+msgstr ""
+
+#: widgets/video_player.php:138
+msgid "Video Id( if youtube or vimeo)"
+msgstr ""
+
+#: widgets/video_player.php:147
+msgid "Video path (if filled will be used instead of vimeo or youtube videos)"
+msgstr ""
+
+#: widgets/video_player.php:194
+msgid "Content Area Padding"
+msgstr ""
+
+#: widgets/video_player.php:210
+msgid "Icon Background"
+msgstr ""
+
+#: widgets/video_player.php:223
+msgid "Icon Color"
+msgstr ""
+
+#: widgets/video_player.php:236
+msgid "Background Color on Hover"
+msgstr ""
+
+#: widgets/video_player.php:249
+msgid "Icon Color on Hover"
+msgstr ""
+
+#: widgets/video_player.php:289
+msgid "Border Color "
+msgstr ""
+
+#: widgets/video_player.php:304
+msgid "Border Color on Hover"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:40
+msgid "WpRentals Accordions"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:102
+msgid "Elements"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:111 widgets/wpestate_tabs.php:122
+msgid "Title & Description"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:113 widgets/wpestate_accordions.php:114
+msgid "Accordion Title"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:127
+msgid "Accordion Icon"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:139 widgets/wpestate_tabs.php:150
+msgid "Template"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:148 widgets/wpestate_accordions.php:149
+msgid "Accordion Content"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:164
+msgid "accordion Items"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:169
+msgid "Item #1"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:170 widgets/wpestate_accordions.php:174
+#: widgets/wpestate_tabs.php:181 widgets/wpestate_tabs.php:185
+msgid ""
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, "
+"luctus nec ullamcorper mattis, pulvinar dapibus leo."
+msgstr ""
+
+#: widgets/wpestate_accordions.php:173
+msgid "Item #2"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:184 widgets/wpestate_tabs.php:195
+msgid "View"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:197
+msgid "Items"
+msgstr ""
+
+#: widgets/wpestate_accordions.php:205 widgets/wpestate_tabs.php:229
+msgid "Navigation Width"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:46
+msgid "WpRentals Tabs"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:113 widgets/wpestate_tabs.php:221
+msgid "Tabs"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:124 widgets/wpestate_tabs.php:125
+msgid "Tab Title"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:138
+msgid "Tab Icon"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:159 widgets/wpestate_tabs.php:160
+msgid "Tab Content"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:175
+msgid "Tabs Items"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:180
+msgid "Tab #1"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:184
+msgid "Tab #2"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:208
+msgid "Horizontal"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:209
+msgid "Vertical"
+msgstr ""
+
+#: widgets/wpestate_tabs.php:258
+msgid "Active Color"
+msgstr ""
+
+#: widgets/wprentals-grids.php:48
+msgid "WpRentals Grids"
+msgstr ""
+
+#: widgets/wprentals-grids.php:119
+msgid "Select Grid Type"
+msgstr ""
+
+#: widgets/wprentals-grids.php:124
+msgid "Type 3"
+msgstr ""
+
+#: widgets/wprentals-grids.php:125
+msgid "Type 4"
+msgstr ""
+
+#: widgets/wprentals-grids.php:126
+msgid "Type 5"
+msgstr ""
+
+#: widgets/wprentals-grids.php:127
+msgid "Type 6"
+msgstr ""
+
+#: widgets/wprentals-grids.php:137
+msgid "Select Design Type"
+msgstr ""
+
+#: widgets/wprentals-grids.php:140
+msgid "Design Type 1"
+msgstr ""
+
+#: widgets/wprentals-grids.php:141
+msgid "Design Type 2"
+msgstr ""
+
+#: widgets/wprentals-grids.php:142
+msgid "Design Type 3"
+msgstr ""
+
+#: widgets/wprentals-grids.php:152
+msgid "Pick Categories"
+msgstr ""
+
+#: widgets/wprentals-grids.php:201
+msgid "Hide Empty"
+msgstr ""
+
+#: widgets/wprentals-grids.php:215
+msgid "Order By"
+msgstr ""
+
+#: widgets/wprentals-grids.php:219
+msgid "ID"
+msgstr ""
+
+#: widgets/wprentals-grids.php:220
+msgid "Count"
+msgstr ""
+
+#: widgets/wprentals-grids.php:231
+msgid "Order"
+msgstr ""
+
+#: widgets/wprentals-grids.php:234
+msgid "ASC"
+msgstr ""
+
+#: widgets/wprentals-grids.php:235
+msgid "DESC"
+msgstr ""
+
+#: widgets/wprentals-grids.php:245
+msgid " Number of Items to Show"
+msgstr ""
+
+#. translators: 1: Plugin name 2: Elementor
+#: wprentals-elementor.php:127
+#, php-format
+msgid "\"%1$s\" requires \"%2$s\" to be installed and activated."
+msgstr ""
+
+#: wprentals-elementor.php:128 wprentals-elementor.php:175
+msgid "WpRentals Elementor"
+msgstr ""
+
+#: wprentals-elementor.php:129 wprentals-elementor.php:152
+msgid "Elementor"
+msgstr ""
+
+#. translators: 1: Plugin name 2: Elementor 3: Required Elementor version
+#. translators: 1: Plugin name 2: PHP 3: Required PHP version
+#: wprentals-elementor.php:150 wprentals-elementor.php:174
+#, php-format
+msgid "\"%1$s\" requires \"%2$s\" version %3$s or greater."
+msgstr ""
+
+#: wprentals-elementor.php:151
+msgid "WpRentals Elementor "
+msgstr ""
+
+#: wprentals-elementor.php:176
+msgid "PHP"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WpRentals Elementor Widgets"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "https://wpestate.org/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Elementor widgets for WpRentals"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "WpEstate"
+msgstr ""
