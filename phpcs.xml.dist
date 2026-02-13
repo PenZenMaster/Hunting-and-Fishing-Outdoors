@@ -2,9 +2,11 @@
 <ruleset name="HNFO WordPress Coding Standards">
     <description>Coding standards for HNFO WordPress project</description>
 
-    <!-- What to scan -->
-    <file>./wp-content/plugins</file>
-    <file>./wp-content/themes</file>
+    <!-- What to scan - ONLY our custom code -->
+    <file>./wp-content/themes/wprentals-child</file>
+    <!-- Uncomment below if you want to enforce standards on custom plugins -->
+    <!-- <file>./wp-content/plugins/wprentals-core</file> -->
+    <!-- <file>./wp-content/plugins/wprentals-elementor</file> -->
 
     <!-- Exclude patterns -->
     <exclude-pattern>*/node_modules/*</exclude-pattern>
@@ -15,8 +17,11 @@
     <exclude-pattern>*.min.js</exclude-pattern>
     <exclude-pattern>*.min.css</exclude-pattern>
 
-    <!-- Exclude default WordPress themes and plugins -->
+    <!-- Exclude ALL third-party code -->
+    <exclude-pattern>*/wp-content/themes/wprentals/*</exclude-pattern>
     <exclude-pattern>*/wp-content/themes/twenty*/*</exclude-pattern>
+    <exclude-pattern>*/wp-content/plugins/wprentals-core/*</exclude-pattern>
+    <exclude-pattern>*/wp-content/plugins/wprentals-elementor/*</exclude-pattern>
     <exclude-pattern>*/wp-content/plugins/akismet/*</exclude-pattern>
     <exclude-pattern>*/wp-content/plugins/hello.php</exclude-pattern>
 
