@@ -17,6 +17,8 @@
 !.phpunit.result.cache
 !tests/
 !.github/
+!database-*.sql
+!install-*.php
 
 # Track wp-content (but exclude default themes/plugins)
 !wp-content/
