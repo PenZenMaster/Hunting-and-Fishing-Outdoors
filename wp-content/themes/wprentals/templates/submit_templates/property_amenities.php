@@ -270,7 +270,10 @@ function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submis
             $term_meta["category_featured_image"]
                 ? $term_meta["category_featured_image"]
                 : "";
-        $cat_ft_image = $category_featured_image;
+        // Only overwrite if option has a value (preserves term meta if option is empty)
+        if (!empty($category_featured_image)) {
+            $cat_ft_image = $category_featured_image;
+        }
     }
     // End code change for amenity image displaying
     
