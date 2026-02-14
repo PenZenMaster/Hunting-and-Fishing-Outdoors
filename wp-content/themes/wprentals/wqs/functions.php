@@ -133,6 +133,9 @@ function approve_add_new_amenity() {
             update_term_meta($term_id, 'is_hunt_fishing', 'Hunting and Fishing');
             update_term_meta($term_id, 'is_stay_and_fish', 'Stay and Fish');
 
+			// Clear amenities cache so new term appears immediately
+			delete_transient( 'wpestate_get_features_array' );
+
 			// Security: Properly prepared DELETE statement
 			$wpdb->query(
 				$wpdb->prepare(
@@ -174,6 +177,9 @@ function approve_add_new_amenity() {
             update_term_meta($term_id, 'is_hunting', 'Hunting');
             update_term_meta($term_id, 'is_hunt_fishing', 'Hunting and Fishing');
             update_term_meta($term_id, 'is_stay_and_fish', 'Stay and Fish');
+
+			// Clear amenities cache so new term appears immediately
+			delete_transient( 'wpestate_get_features_array' );
 
 			// Security: Properly prepared DELETE statement
 			$wpdb->query(
