@@ -23,6 +23,9 @@ add_action( 'wp_enqueue_scripts', 'wpestate_chld_thm_cfg_parent_css' );
 load_child_theme_textdomain('wprentals', get_stylesheet_directory().'/languages');
 // END ENQUEUE PARENT ACTION
 
+// Custom HNFO functionality (amenity request system)
+require_once get_stylesheet_directory() . '/wqs/functions.php';
+
 
 // add_action('init','admin_vd_check');
 // function admin_vd_check() {

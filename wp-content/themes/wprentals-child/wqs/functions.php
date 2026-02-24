@@ -3,10 +3,10 @@
 function enqueue_wqs_script()
 {
 
-    wp_enqueue_script('wqs-script', get_template_directory_uri() . '/wqs/js/custom-script.js', array('jquery'), '1.3', true);
+    wp_enqueue_script('wqs-script', get_stylesheet_directory_uri() . '/wqs/js/custom-script.js', array('jquery'), '1.3', true);
 
     if (is_singular('estate_property')) {}
-    wp_enqueue_style('wqs-style', get_template_directory_uri() . '/wqs/css/custom-style.css', array(), '4.2', 'all');
+    wp_enqueue_style('wqs-style', get_stylesheet_directory_uri() . '/wqs/css/custom-style.css', array(), '4.2', 'all');
 
 }
 add_action('wp_enqueue_scripts', 'enqueue_wqs_script');
@@ -127,6 +127,8 @@ function approve_add_new_amenity() {
             );
             $term_id = intval($create_amenities["term_id"]);
             update_term_meta($term_id, 'category_featured_image', $add_amenity_img_url);
+            // Basic, Features, Includes apply to all property types
+            update_term_meta( $term_id, 'taxonomy_terms', array( 50, 3, 51, 2, 364 ) );
             update_term_meta($term_id, 'is_fishing', 'Fishing');
             update_term_meta($term_id, 'is_hunt_camp', 'Hunt Camp');
             update_term_meta($term_id, 'is_hunting', 'Hunting');
@@ -172,6 +174,14 @@ function approve_add_new_amenity() {
             );
             $term_id = intval($create_amenities["term_id"]);
             update_term_meta($term_id, 'category_featured_image', $add_amenity_img_url);
+            // Type of Fish: Fishing, Hunting And Fishing, Stay and Fish
+            // Type of Game: Hunting, Hunt Camp, Hunting And Fishing
+            if ( 'Type of Fish' === $add_amenity_category ) {
+                $taxonomy_terms = array( 50, 2, 364 );
+            } else {
+                $taxonomy_terms = array( 51, 3, 2 );
+            }
+            update_term_meta( $term_id, 'taxonomy_terms', $taxonomy_terms );
             update_term_meta($term_id, 'is_fishing', 'Fishing');
             update_term_meta($term_id, 'is_hunt_camp', 'Hunt Camp');
             update_term_meta($term_id, 'is_hunting', 'Hunting');

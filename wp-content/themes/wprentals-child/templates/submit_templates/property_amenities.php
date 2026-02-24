@@ -260,12 +260,23 @@ function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submis
     }
     $value_label = $term->name;
     $cat_ft_image = get_term_meta($term->term_id, 'category_featured_image', true);
+
+    // Begin code change for amenity image displaying
     if (is_object($term)) {
         $t_id = $term->term_id;
         $term_meta = get_option("taxonomy_$t_id");
-        $category_featured_image = isset($term_meta["category_featured_image"]) && $term_meta["category_featured_image"] ? $term_meta["category_featured_image"] : "";
-        $cat_ft_image = $category_featured_image;
+        $category_featured_image =
+            isset($term_meta["category_featured_image"]) &&
+            $term_meta["category_featured_image"]
+                ? $term_meta["category_featured_image"]
+                : "";
+        // Only overwrite if option has a value (preserves term meta if option is empty)
+        if (!empty($category_featured_image)) {
+            $cat_ft_image = $category_featured_image;
+        }
     }
+    // End code change for amenity image displaying
+    
 
     $saved_terms = get_term_meta($term->term_id, 'taxonomy_terms', true);
 

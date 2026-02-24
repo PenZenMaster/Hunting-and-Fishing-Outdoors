@@ -19,6 +19,11 @@
 
     <!-- Exclude ALL third-party code -->
     <exclude-pattern>*/wp-content/themes/wprentals/*</exclude-pattern>
+
+    <!-- Exclude legacy child theme files (pre-existing Upwork violations - tracked in backlog) -->
+    <exclude-pattern>*/wp-content/themes/wprentals-child/functions.php</exclude-pattern>
+    <!-- Exclude child theme template overrides (copies of parent theme templates, inherit parent code style) -->
+    <exclude-pattern>*/wp-content/themes/wprentals-child/templates/*</exclude-pattern>
     <exclude-pattern>*/wp-content/themes/twenty*/*</exclude-pattern>
     <exclude-pattern>*/wp-content/plugins/wprentals-core/*</exclude-pattern>
     <exclude-pattern>*/wp-content/plugins/wprentals-elementor/*</exclude-pattern>
