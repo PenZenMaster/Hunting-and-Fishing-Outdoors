@@ -200,7 +200,7 @@ if (is_array($parsed_features)) {
             // End code comment for amenity filter not working            
 
             if (count($item['childs']) > 0) {
-                $multi_return_string_part = '<div data-attr="' . $category->name . '"  class="listing_detail  col-md-12 feature_block_' . $item['name'] . ' ">';
+                $multi_return_string_part = '<div data-attr="' . esc_attr($category_name) . '"  class="listing_detail  col-md-12 feature_block_' . $item['name'] . ' ">';
                 $multi_return_string_part .= '<div class="feature_chapter_name  col-md-12">' . $item['name'] . '</div>';
 
                 $multi_return_string_part_check = '';
