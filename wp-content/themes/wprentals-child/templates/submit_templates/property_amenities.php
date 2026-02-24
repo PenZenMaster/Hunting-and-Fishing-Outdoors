@@ -374,37 +374,26 @@ function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submis
                 </div>
                 <div class="col-12">
                     <?php
-                    $taxonomy = 'property_action_category'; // Specify the taxonomy you want to target
-                    $terms = get_terms(array('taxonomy' => $taxonomy, 'hide_empty' => false));
-                    $saved_term_id = '';
-                    
-                    $prop_action_category_array     =   get_the_terms($edit_id, 'property_action_category');
-
-                    if (isset($term->term_id)) {
-                        $saved_terms = get_term_meta($term->term_id, 'taxonomy_terms', true);                        
-                        $saved_terms = array();
-                        if (!empty($saved_terms)) {
-                            // Begin code comment for amenity filter not working  
-
-                           // $saved_term_id = is_string($saved_terms) ? (array) $saved_terms : $saved_terms; // Convert $saved_terms to an array if it's a string
-                           // End code comment for amenity filter not working  
-                        } else {                            
-                            $saved_term_id = array(); // Set to an empty array if $saved_terms is empty                            
-                            // Begin code change for amenity filter not working
-                            if (is_array($prop_action_category_array)) {
-                                foreach ($prop_action_category_array as $key => $value) {
-                                    $saved_term_id[] = $value->term_id;
-                                }
-                            }
-                            // End code change for amenity filter not working
+                    // Listing type is set on the Description page. These indicators
+                    // drive the JS amenity filter only and cannot be changed here.
+                    $taxonomy               = 'property_action_category';
+                    $all_action_terms       = get_terms(array('taxonomy' => $taxonomy, 'hide_empty' => false));
+                    $prop_action_category_array = get_the_terms($edit_id, 'property_action_category');
+                    $active_cat_ids         = array();
+                    if (is_array($prop_action_category_array)) {
+                        foreach ($prop_action_category_array as $cat) {
+                            $active_cat_ids[] = $cat->term_id;
                         }
-
-                        foreach ($terms as $term) {
-
-                            $checked = in_array($term->term_id, $saved_term_id) ? 'checked' : '';
-                            echo '<label>';
-                            echo '<input type="checkbox" class="filter_amenities" name="taxonomy_terms[]" value="' . $term->term_id . '" ' . $checked . '>';
-                            echo $term->name;
+                    }
+                    if (is_array($all_action_terms) && ! empty($all_action_terms)) {
+                        echo '<p class="dashboard_chapter_label" style="font-size:13px;margin-bottom:4px;">' . esc_html__('Listing Type (set on Description page):', 'wprentals') . '</p>';
+                        foreach ($all_action_terms as $term) {
+                            $checked = in_array($term->term_id, $active_cat_ids) ? 'checked' : '';
+                            // disabled: read-only — category is managed on Description page.
+                            // No name attribute: value is never submitted with the form.
+                            echo '<label style="opacity:' . ($checked ? '1' : '0.45') . ';cursor:default;">';
+                            echo '<input type="checkbox" class="filter_amenities" value="' . intval($term->term_id) . '" ' . esc_attr($checked) . ' disabled>';
+                            echo esc_html($term->name);
                             echo '</label><br>';
                         }
                     }
