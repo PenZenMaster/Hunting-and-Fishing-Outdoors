@@ -278,11 +278,22 @@ function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submis
     $saved_terms = get_term_meta($term->term_id, 'taxonomy_terms', true);
 
     $new_class = '';
-	if (is_array($saved_terms)) {
-    foreach ($saved_terms as $value) {
-        $new_class .= ' wqst_' . $value;
-		}
-	}
+    if (is_array($saved_terms) && ! empty($saved_terms)) {
+        foreach ($saved_terms as $value) {
+            $new_class .= ' wqst_' . intval($value);
+        }
+    } else {
+        // No taxonomy_terms set: treat as applicable to all property categories
+        // so the JS filter can show this amenity for any selection.
+        static $all_action_cat_ids = null;
+        if (null === $all_action_cat_ids) {
+            $fetched = get_terms(array('taxonomy' => 'property_action_category', 'hide_empty' => false, 'fields' => 'ids'));
+            $all_action_cat_ids = is_array($fetched) ? $fetched : array();
+        }
+        foreach ($all_action_cat_ids as $cat_id) {
+            $new_class .= ' wqst_' . intval($cat_id);
+        }
+    }
     $imgtype = substr($cat_ft_image, strripos($cat_ft_image, ".") + 1, 4);
     $additionalClass = '';
     if ($imgtype == 'jpg') {
@@ -355,7 +366,7 @@ function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submis
                 <div class="col-12">
                     <?php
                     $taxonomy = 'property_action_category'; // Specify the taxonomy you want to target
-                    $terms = get_terms($taxonomy);
+                    $terms = get_terms(array('taxonomy' => $taxonomy, 'hide_empty' => false));
                     $saved_term_id = '';
                     
                     $prop_action_category_array     =   get_the_terms($edit_id, 'property_action_category');
