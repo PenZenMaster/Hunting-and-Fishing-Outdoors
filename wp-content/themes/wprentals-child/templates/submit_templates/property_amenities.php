@@ -207,15 +207,12 @@ if (is_array($parsed_features)) {
                 if (is_array($item['childs'])) {
                     foreach ($item['childs'] as $key_ch => $child) {
                         $term = get_term_by('name', $child, 'property_features');
-                        //$action_hunt_fish_cat = get_term_meta($term->term_id, 'is_hunt_fishing', true);
-                        $taxonomy_terms  =  get_term_meta($term->term_id, 'taxonomy_terms', true);
-                        if($category_name != '' ){
-                            //if (!empty($taxonomy_terms) && in_array(2,$taxonomy_terms)) {
-                            // if ($action_hunt_fish_cat != '') {
-                                $temp = wpestate_display_feature_submit($edit_id, $moving_array, $term, $submission_page_fields);
-                                $multi_return_string_part .= $temp;
-                                $multi_return_string_part_check .= $temp;
-                            //}
+                        // Category-specific filtering is disabled (all branches commented out above).
+                        // Show all amenities unconditionally so hosts can always select features.
+                        if ($term) {
+                            $temp = wpestate_display_feature_submit($edit_id, $moving_array, $term, $submission_page_fields);
+                            $multi_return_string_part .= $temp;
+                            $multi_return_string_part_check .= $temp;
                         }
                     }
                 }
