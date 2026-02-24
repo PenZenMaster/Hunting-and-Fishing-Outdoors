@@ -1156,7 +1156,7 @@ function wpestate_allin_one_owner_insert_book_internal() {
                 'listing_edit'              :   listing_edit,
                 'array_feeds'               :   array_feeds,
                 'array_labels'              :   array_labels,
-                'security'                  :   nonce
+                'security'                  :   nonce,
 
                 'booking_repeat_event_type': booking_repeat_event_type,
                 'booking_repeat_pattern': booking_repeat_pattern,
