@@ -42,6 +42,7 @@ wp-content/cache/
 wp-content/backups/
 wp-content/ai1wm-backups/
 wp-content/updraft/
+wp-content/upgrade-temp-backup/
 
 # WordPress cache files
 wp-content/advanced-cache.php
