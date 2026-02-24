@@ -373,11 +373,13 @@ function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submis
                            // End code comment for amenity filter not working  
                         } else {                            
                             $saved_term_id = array(); // Set to an empty array if $saved_terms is empty                            
-                            // Begin code change for amenity filter not working  
-                            foreach ($prop_action_category_array as $key => $value) {
-                                $saved_term_id[] = $value->term_id;
+                            // Begin code change for amenity filter not working
+                            if (is_array($prop_action_category_array)) {
+                                foreach ($prop_action_category_array as $key => $value) {
+                                    $saved_term_id[] = $value->term_id;
+                                }
                             }
-                            // End code change for amenity filter not working  
+                            // End code change for amenity filter not working
                         }
 
                         foreach ($terms as $term) {
