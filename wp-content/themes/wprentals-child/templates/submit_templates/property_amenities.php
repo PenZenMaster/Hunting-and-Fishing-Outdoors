@@ -207,10 +207,8 @@ if (is_array($parsed_features)) {
                 if (is_array($item['childs'])) {
                     foreach ($item['childs'] as $key_ch => $child) {
                         $term = get_term_by('name', $child, 'property_features');
-                        // Category-specific filtering is disabled (all branches commented out above).
-                        // Show all amenities unconditionally so hosts can always select features.
                         if ($term) {
-                            $temp = wpestate_display_feature_submit($edit_id, $moving_array, $term, $submission_page_fields);
+                            $temp = wpestate_display_feature_submit($edit_id, $moving_array, $term, $submission_page_fields, $item['name']);
                             $multi_return_string_part .= $temp;
                             $multi_return_string_part_check .= $temp;
                         }
@@ -224,7 +222,7 @@ if (is_array($parsed_features)) {
 
             } else {
                 $term = get_term_by('name', $item['name'], 'property_features');
-                $single_return_string .= wpestate_display_feature_submit($edit_id, $moving_array, $term, $submission_page_fields);
+                $single_return_string .= wpestate_display_feature_submit($edit_id, $moving_array, $term, $submission_page_fields, $item['name']);
             }
         //}
     }
@@ -236,7 +234,7 @@ if ($single_return_string != '') {
     $list_to_show = $list_to_show . '<div class="listing_detail col-md-12 feature_block_others "><div class="feature_chapter_name  col-md-12">' . esc_html__('Other Features', 'wprentals') . '</div>' . $single_return_string . '</div>';
 }
 
-function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submission_page_fields)
+function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submission_page_fields, $parent_feature_name = '')
 {
 
     $post_var_name = $term->slug;
@@ -283,14 +281,25 @@ function wpestate_display_feature_submit($edit_id, $moving_array, $term, $submis
             $new_class .= ' wqst_' . intval($value);
         }
     } else {
-        // No taxonomy_terms set: treat as applicable to all property categories
-        // so the JS filter can show this amenity for any selection.
-        static $all_action_cat_ids = null;
-        if (null === $all_action_cat_ids) {
-            $fetched = get_terms(array('taxonomy' => 'property_action_category', 'hide_empty' => false, 'fields' => 'ids'));
-            $all_action_cat_ids = is_array($fetched) ? $fetched : array();
+        // No taxonomy_terms set: infer applicable property categories from the
+        // parent feature block name so the JS filter behaves correctly.
+        // "Type of fish" -> Fishing(50), Hunting And Fishing(2), Stay and Fish(364)
+        // "Type of game" -> Hunting(51), Hunt Camp(3), Hunting And Fishing(2)
+        // Anything else (Basic, Features, Includes, etc.) -> all categories.
+        $parent_lower = strtolower($parent_feature_name);
+        if (false !== strpos($parent_lower, 'fish')) {
+            $fallback_ids = array(50, 2, 364);
+        } elseif (false !== strpos($parent_lower, 'game')) {
+            $fallback_ids = array(51, 3, 2);
+        } else {
+            static $all_action_cat_ids = null;
+            if (null === $all_action_cat_ids) {
+                $fetched = get_terms(array('taxonomy' => 'property_action_category', 'hide_empty' => false, 'fields' => 'ids'));
+                $all_action_cat_ids = is_array($fetched) ? $fetched : array();
+            }
+            $fallback_ids = $all_action_cat_ids;
         }
-        foreach ($all_action_cat_ids as $cat_id) {
+        foreach ($fallback_ids as $cat_id) {
             $new_class .= ' wqst_' . intval($cat_id);
         }
     }

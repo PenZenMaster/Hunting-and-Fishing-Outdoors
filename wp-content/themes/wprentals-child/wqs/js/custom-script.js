@@ -121,19 +121,25 @@ jQuery(document).ready(function ($) {
     $('#filter_amenities input[type="checkbox"]').on('change', function () {
 
     });
-    // Begin code change for amenity filter not working  
+    // Begin code change for amenity filter not working
     function set_amenities_property() {
         var selectedValues = $('input[type="checkbox"].filter_amenities:checked').map(function () {
             return this.value;
         }).get();
 
+        var $filteredBlocks = $('.listing_detail:not(.feature_block_Includes):not(.feature_block_Features):not(.feature_block_Basic)');
 
         if (selectedValues.length === 0) {
-            $('.listing_detail:not(.feature_block_Includes):not(.feature_block_Features):not(.feature_block_Basic) .waitem').show();
+            $filteredBlocks.show();
+            $filteredBlocks.find('.waitem').show();
         } else {
-            $('.listing_detail:not(.feature_block_Includes):not(.feature_block_Features):not(.feature_block_Basic) .waitem').hide();
+            $filteredBlocks.find('.waitem').hide();
             $.each(selectedValues, function (index, value) {
                 $('.wqst_' + value).show();
+            });
+            // Hide parent feature blocks whose children are all hidden.
+            $filteredBlocks.each(function () {
+                $(this).toggle($(this).find('.waitem:visible').length > 0);
             });
         }
 
