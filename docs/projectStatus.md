@@ -1,6 +1,6 @@
 # Project Status - HNFO WordPress Development
 
-**Last Updated:** 2026-02-13 18:55
+**Last Updated:** 2026-02-23 16:00
 **Project:** Hunting and Fishing Outdoors Website
 **Repository:** https://github.com/[username]/Hunting-and-Fishing-Outdoors
 **Environment:** http://hnfo-development.local/
@@ -9,58 +9,78 @@
 
 ## Current Sprint
 
-### ✅ Completed
+### Completed
 
-1. **Amenity Request System - Complete** ✅
-   - Fixed non-functional "Click Here" button
-   - Created complete HTML form with AJAX submission
-   - Fixed security vulnerabilities (SQL injection, XSS)
-   - Email notifications with approve/deny workflow
-   - Cache clearing for immediate display
-   - Image display fix
-   - Comprehensive documentation
-   - **Status:** Production-ready, fully tested
+1. **Amenity Request System - Complete** (prev. session)
+   - Full end-to-end workflow functional and tested
+   - Security hardened (SQL injection, XSS, auth checks)
+   - Cache clearing, image display, email notifications all working
    - **Commits:** a43953b, fce1827, 072471f, 049d945, 6b0c5da, ea9ef2d, ccbd0ef, ac961c3
 
-2. **Theme Integration** ✅
-   - Loaded wqs/functions.php in main theme
-   - Removed duplicate insecure code from child theme
-   - Fixed code organization
+2. **Project Infrastructure** (this session)
+   - Project-level CLAUDE.md with startup/checkpoint/shutdown protocols
+   - .gitignore cleaned (upgrade-temp-backup excluded)
+   - **Commits:** c5f912d, 42e6ac3
 
-3. **Documentation** ✅
-   - Created AMENITY-SYSTEM-FIXED.md (207 lines)
-   - Workflow, schema, configuration documented
-   - Testing checklist complete
+3. **Parent Theme Refactor - Complete** (this session)
+   - All custom code moved from parent theme to child theme
+   - Parent theme is now upgrade-safe
+   - git mv used throughout - full history preserved
+   - PHPCS config updated for legacy exclusions
+   - **Commit:** 0295dd6
 
-### 🟡 In Progress
+4. **Category Filtering Fix - Complete** (this session)
+   - `taxonomy_terms` meta now set on approval for all categories:
+     - Basic / Features / Includes -> all property types [50, 3, 51, 2, 364]
+     - Type of Fish -> Fishing, Hunting And Fishing, Stay and Fish [50, 2, 364]
+     - Type of Game -> Hunting, Hunt Camp, Hunting And Fishing [51, 3, 2]
+   - **Included in:** 0295dd6
+   - **Status:** Needs live-site testing to confirm
 
-1. **Category Filtering for Amenities** 🟡
-   - **Issue:** New amenities don't show for correct property types
-   - **Root Cause:** taxonomy_terms field empty
-   - **Blocked On:** Need property category IDs from Administration Guide
-   - **Next Step:** Update approval function to set taxonomy_terms
-   - **Effort:** ~30 minutes once unblocked
-   - **Priority:** High
+### In Progress
 
-### 📋 Deferred / Backlog
+- None
 
-1. **Theme Upgrade Planning** 📋
+### Deferred / Backlog
+
+1. **Live Site Testing - Category Filtering** (High)
+   - Test amenity request modal still works after refactor
+   - Submit test amenity, approve, verify taxonomy_terms is set
+   - Verify filtering by property type works correctly
+   - Priority: High - do this at start of next session
+
+2. **PHPCS Cleanup for Moved Files** (Medium)
+   - `wprentals-child/add-new-amenities.php` - 190 violations (text domain, escaping, inline scripts)
+   - `wprentals-child/wqs/functions.php` - violations from original code
+   - Will block pre-commit if these files are staged
+   - Priority: Medium - before next functional change to these files
+
+3. **Remove Diagnostic/Temp Files** (Medium)
+   - check-amenity-terms.php, check-amenity-meta.php, check-property-categories.php
+   - edit-amenities.php, clear-amenities-cache.php
+   - Priority: Medium
+
+4. **Verify Against Administration Guide** (Medium)
+   - `D:\local\HNFO-DEV\Administration Guide for Hunting and Fishing Outdoors Website.docx`
+   - Confirm implementation matches documented workflow
+   - Priority: Medium
+
+5. **Child Theme functions.php Cleanup** (Low)
+   - 301 legacy coding standard violations remain
+   - Gradual cleanup - dedicated commit
+   - Priority: Low
+
+6. **Theme Upgrade Planning** (Low)
    - THEME_COMPARISON.md exists (900 lines)
    - Migration strategy needed
    - Estimated: 104-164 hours
-   - Priority: Medium
-
-2. **Child Theme Code Cleanup** 📋
-   - 301 coding standard violations remain
-   - Legacy code from Upwork
    - Priority: Low
 
-3. **Security Audit** 📋
-   - Continue reviewing Upwork code
-   - Multiple incomplete implementations found
+7. **Security Audit** (Medium)
+   - Continue reviewing remaining Upwork code
    - Priority: Medium
 
-4. **Test Coverage** 📋
+8. **Test Coverage** (Low)
    - Expand PHPUnit tests for custom functionality
    - Currently: 14 tests, 21 assertions
    - Priority: Low
@@ -69,125 +89,60 @@
 
 ## Next Session Items
 
-### Immediate (Start Here)
-
-1. **Get Property Category IDs**
-   - Ask user to check check-property-categories.php
-   - OR extract from Administration Guide .docx
-   - Needed: IDs for all property types
-
-2. **Fix Category Filtering**
-   - Update approve_add_new_amenity() function
-   - Set taxonomy_terms based on amenity category
-   - Test filtering works correctly
-   - Clear transient cache
-
-3. **Clean Up Test Files**
-   - Remove temporary diagnostic files
-   - Or move to admin tools section
-
-### Follow-Up
-
-4. **Verify Against Admin Guide**
-   - Review documented amenity workflow
-   - Ensure implementation matches
-   - Document any discrepancies
-
-5. **Optional Enhancements**
-   - Default SVG fallback in approval
-   - Taxonomy_terms checkboxes in request form
-   - Admin dashboard widget
+### Start Here
+1. **Test refactor on live site** - verify everything still works after moving to child theme
+2. **PHPCS cleanup** - fix violations in moved files before next functional commit
 
 ---
 
 ## Project Health
 
 ### Code Quality
-- ✅ Pre-commit hooks active (PHPCS + PHPUnit)
-- ✅ Pre-push hooks active (full test suite)
-- ✅ All quality gates passing
-- 🟡 Child theme has legacy violations (warning-only)
+- All quality gates passing (14/14 tests)
+- Pre-commit: blocks on PHPCS + PHPUnit failures
+- Pre-push: warning-only for PHPCS, blocks on test failures
+- `wprentals-child/wqs/` fully enforced by PHPCS
+- `wprentals-child/functions.php` + `templates/` excluded (legacy/overrides)
+
+### Architecture
+- Parent theme: upgrade-safe (no custom code)
+- Child theme: owns all customizations
+- Template overrides: proper WordPress hierarchy
 
 ### Security
-- ✅ Fixed 14+ vulnerabilities this session
-- ✅ Input sanitization implemented
-- ✅ Authorization checks in place
-- 🟡 Continue auditing Upwork code
+- Fixed 14+ vulnerabilities (prev. session)
+- Input sanitization, authorization checks, nonces in place
+- Continue auditing remaining Upwork code
 
 ### Testing
-- ✅ PHPUnit: 14 tests passing
-- ✅ Manual testing: Amenity system end-to-end
-- 🟡 Need automated tests for custom features
-
-### Documentation
-- ✅ README.md
-- ✅ AMENITY-SYSTEM-FIXED.md
-- ✅ database-new-amenities.sql
-- ✅ Checkpoint system active
-- 🟡 Need API documentation
+- PHPUnit: 14 tests passing
+- Manual testing: Amenity system end-to-end (prev. session)
+- Category filtering: needs live test
 
 ---
 
 ## Technical Debt
 
-1. **Incomplete Upwork Implementations** 🔴
-   - Pattern: Features 10-50% complete
-   - Found: Amenity system, possibly others
-   - Action: Continue discovery and completion
+1. **PHPCS violations in moved files** (Medium)
+   - add-new-amenities.php: ~190 errors
+   - wqs/functions.php: violations from original Upwork code
+   - Action: Clean up before next functional change
 
-2. **Dual Image Storage System** 🟡
-   - Term meta + Options table
-   - Works but confusing
-   - Action: Document thoroughly
-
-3. **Child Theme Violations** 🟡
-   - 301 errors (down from 509)
-   - Legacy code issues
+2. **Child Theme functions.php Violations** (Low)
+   - 301 errors (legacy Upwork code)
    - Action: Gradual cleanup
 
-4. **Cache Strategy** 🟡
-   - 4-hour amenity cache
-   - May be too aggressive
+3. **Incomplete Upwork Implementations** (Medium)
+   - Pattern: features 10-50% complete
+   - Action: Continue discovery and completion
+
+4. **Dual Image Storage System** (Low)
+   - Term meta + Options table
+   - Works but confusing; document thoroughly
+
+5. **Cache Strategy** (Low)
+   - 4-hour amenity cache may be too aggressive
    - Action: Monitor and adjust
-
----
-
-## Recent Wins
-
-1. ✅ Completed entire amenity request system (7 major issues)
-2. ✅ Fixed critical security vulnerabilities
-3. ✅ User confirmed system working end-to-end
-4. ✅ Comprehensive documentation created
-5. ✅ Cache clearing prevents 4-hour delays
-6. ✅ Image display now working
-
----
-
-## Blockers
-
-1. **Category Filtering** 🔴
-   - Need property category IDs
-   - User has Administration Guide with info
-   - Blocked: Waiting for user input
-
----
-
-## Metrics
-
-### This Session
-- Commits: 8
-- Files Modified: 6
-- Files Created: 5
-- Issues Fixed: 7
-- Security Fixes: 14+
-- Lines Added: ~800
-- Lines Removed: ~100
-
-### Overall
-- Total Commits: 9 (including initial setup)
-- Test Coverage: 14 tests
-- Code Quality: All gates passing
-- Production Status: Amenity system ready
 
 ---
 
@@ -203,5 +158,5 @@
 
 ---
 
-*Status updated: 2026-02-13 18:55*
-*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-02-13_1855.md*
+*Status updated: 2026-02-23 16:00*
+*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-02-23_1600.md*
