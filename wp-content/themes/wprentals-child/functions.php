@@ -26,6 +26,30 @@ load_child_theme_textdomain('wprentals', get_stylesheet_directory().'/languages'
 // Custom HNFO functionality (amenity request system)
 require_once get_stylesheet_directory() . '/wqs/functions.php';
 
+// Half-day / same-day booking overrides (migrated from parent 3.11.4 for upgrade safety).
+// Both functions are guarded with if(!function_exists()), so loading here ensures the
+// child-theme version wins over whatever the upgraded parent ships.
+require_once get_stylesheet_directory() . '/libs/ajax-half-day-booking.php';
+
+/**
+ * Enqueue the half-day price-save JS patch.
+ *
+ * Uses $.ajaxPrefilter to inject missing half-day fields into the
+ * wpestate_ajax_update_listing_price AJAX call. Safe alongside both
+ * WPRentals 3.11.4 (already sends the fields -- prefilter skips them)
+ * and 3.17.0+ (removed the fields -- prefilter adds them back).
+ */
+function hnfo_enqueue_half_day_price_save_js() {
+    wp_enqueue_script(
+        'hnfo-half-day-price-save',
+        get_stylesheet_directory_uri() . '/js/half-day-price-save.js',
+        array( 'jquery' ),
+        '1.00',
+        true
+    );
+}
+add_action( 'wp_enqueue_scripts', 'hnfo_enqueue_half_day_price_save_js' );
+
 
 // add_action('init','admin_vd_check');
 // function admin_vd_check() {

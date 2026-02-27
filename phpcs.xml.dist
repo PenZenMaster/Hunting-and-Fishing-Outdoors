@@ -24,6 +24,8 @@
     <exclude-pattern>*/wp-content/themes/wprentals-child/functions.php</exclude-pattern>
     <!-- Exclude child theme template overrides (copies of parent theme templates, inherit parent code style) -->
     <exclude-pattern>*/wp-content/themes/wprentals-child/templates/*</exclude-pattern>
+    <!-- Exclude child theme lib overrides (faithful copies of parent theme AJAX functions, inherit parent code style) -->
+    <exclude-pattern>*/wp-content/themes/wprentals-child/libs/*</exclude-pattern>
     <exclude-pattern>*/wp-content/themes/twenty*/*</exclude-pattern>
     <exclude-pattern>*/wp-content/plugins/wprentals-core/*</exclude-pattern>
     <exclude-pattern>*/wp-content/plugins/wprentals-elementor/*</exclude-pattern>
