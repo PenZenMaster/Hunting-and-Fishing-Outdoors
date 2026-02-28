@@ -31,7 +31,7 @@ if ( $amenity_entry_id > 0 ) {
 	// Security: Properly prepared statement
 	$new_amenities_data = $wpdb->get_results(
 		$wpdb->prepare(
-			"SELECT * FROM new_amenities WHERE new_amenity_entry_id = %d",
+			'SELECT * FROM new_amenities WHERE new_amenity_entry_id = %d',
 			$amenity_entry_id
 		)
 	);
@@ -58,74 +58,73 @@ if ( $amenity_entry_id > 0 ) {
 ?>
 <style type="text/css">
 .vdf_add_amenity_content .vdf_col {
-    text-align: center;
+	text-align: center;
 }
 
 .vdf_amnty_btns {
-    display: inline-flex;
-    padding-top: 30px;
+	display: inline-flex;
+	padding-top: 30px;
 }
 
 .vdf_amnty_btns .vdf_amnty_btns_1,
 .vdf_amnty_btns .vdf_amnty_btns_2 {
-    margin: 0 20px;
+	margin: 0 20px;
 }
 
 .vdf_amnty_btns .vdf_amnty_btns_1 .vdf_approve {
-    padding: 8px 15px;
-    border: none;
-    background: darkslateblue;
-    color: #fff;
-    border-radius: 7px;
-    cursor: pointer;
+	padding: 8px 15px;
+	border: none;
+	background: darkslateblue;
+	color: #fff;
+	border-radius: 7px;
+	cursor: pointer;
 }
 
 .vdf_amnty_btns .vdf_amnty_btns_2 .vdf_deny {
-    padding: 8px 15px;
-    border: none;
-    color: #000;
-    border-radius: 7px;
-    cursor: pointer;
+	padding: 8px 15px;
+	border: none;
+	color: #000;
+	border-radius: 7px;
+	cursor: pointer;
 }
 
 #vdf_cnfrm_main01 p {
-    display: none;
+	display: none;
 }
 
 .vdf_amnty_details_main {
-    width: 24%;
-    margin: auto;
-    text-align: left;
+	width: 24%;
+	margin: auto;
+	text-align: left;
 }
 
 .vdf_amnty_dtls_content {
-    display: flex;
+	display: flex;
 }
 
 .vdf_amnty_names {
-    width: 55%;
-    font-weight: 600;
+	width: 55%;
+	font-weight: 600;
 }
 
 .vdf_amnty_values {
-    width: 50%;
+	width: 50%;
 }
 
 .vdf_amnty_values a {
-    text-decoration: none;
+	text-decoration: none;
 }
 
 .vdf_open_error p {
-    text-align: center;
-    font-size: 20px;
-    font-weight: 600;
+	text-align: center;
+	font-size: 20px;
+	font-weight: 600;
 }
 </style>
 <?php
-function add_amenity($add_amenity_name, $add_amenity_category, $add_amenity_description)
-{
+function add_amenity( $add_amenity_name, $add_amenity_category, $add_amenity_description ) {
 
-    echo '<div class="vdf_add_amenity_main">
+	echo '<div class="vdf_add_amenity_main">
         <div class="vdf_add_amenity_content">
             <div class="vdf_container">
                 <div class="vdf_row">
@@ -167,12 +166,10 @@ function add_amenity($add_amenity_name, $add_amenity_category, $add_amenity_desc
             </div>
         </div>
     </div>';
-
 }
-function add_amenity_other($add_amenity_name, $add_amenity_category, $add_amenity_description, $add_amenity_img_url)
-{
+function add_amenity_other( $add_amenity_name, $add_amenity_category, $add_amenity_description, $add_amenity_img_url ) {
 
-    echo '<div class="vdf_add_amenity_main">
+	echo '<div class="vdf_add_amenity_main">
         <div class="vdf_add_amenity_content">
             <div class="vdf_container">
                 <div class="vdf_row">
@@ -217,114 +214,108 @@ function add_amenity_other($add_amenity_name, $add_amenity_category, $add_amenit
             </div>
         </div>
     </div>';
-
 }
-function add_amenity_error()
-{
+function add_amenity_error() {
 
-    echo '<div class="vdf_opn_again_err">
+	echo '<div class="vdf_opn_again_err">
         <div class="vdf_open_error">
             <p>This request is no longer available because it has been already processed.</p>
         </div>
     </div>';
-
 }
 // var_dump($add_amenity_category);
 // var_dump($add_amenity_name);
 // var_dump($add_amenity_description);
 // var_dump($add_amenity_slug);
 // var_dump($add_amenity_img_url);
-if ($add_amenity_category == 'Basic' || $add_amenity_category == 'Includes' || $add_amenity_category == 'Features') {
+if ( $add_amenity_category == 'Basic' || $add_amenity_category == 'Includes' || $add_amenity_category == 'Features' ) {
 
-    if ($add_amenity_name != '' && $add_amenity_category != '' && $add_amenity_description != '' && $add_amenity_slug != '') {
-        add_amenity($add_amenity_name, $add_amenity_category, $add_amenity_description);
-    } else {
-        add_amenity_error();
-    }
+	if ( $add_amenity_name != '' && $add_amenity_category != '' && $add_amenity_description != '' && $add_amenity_slug != '' ) {
+		add_amenity( $add_amenity_name, $add_amenity_category, $add_amenity_description );
+	} else {
+		add_amenity_error();
+	}
+} elseif ( $add_amenity_name != '' && $add_amenity_category != '' && $add_amenity_description != '' && $add_amenity_slug != '' && $add_amenity_img_url != '' ) {
+		add_amenity_other( $add_amenity_name, $add_amenity_category, $add_amenity_description, $add_amenity_img_url );
 } else {
-    if ($add_amenity_name != '' && $add_amenity_category != '' && $add_amenity_description != '' && $add_amenity_slug != '' && $add_amenity_img_url != '') {
-        add_amenity_other($add_amenity_name, $add_amenity_category, $add_amenity_description, $add_amenity_img_url);
-    } else {
-        add_amenity_error();
-    }
-
+	add_amenity_error();
 }
 
 ?>
 <script src="https://code.jquery.com/jquery-3.6.3.min.js"
-    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+	integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-    jQuery('#vdf_approve01').click(function() {
-        jQuery(this).parent().parent().css('display', 'none');
-        jQuery("#vdf_cnfrm_main01 #vdf_appr_confrm01").css('display', 'block');
-        var amenity_url = window.location.href
-        //console.log(amenity_url);
-        var amnty_id_positon = amenity_url.indexOf('=');
-        var amenity_entry_id = amenity_url.substring(amnty_id_positon + 1, 70);
-        console.log(amenity_entry_id);
-        //console.log(amenity_entry_id);
-        jQuery.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: '<?php echo admin_url("admin-ajax.php"); ?>',
-            data: {
-                action: 'approve_add_new_amenity',
-                amenity_entry_id: amenity_entry_id
-            },
-            success: function(response) {
-                var data = response;
-                console.log(data);
-                // if (data == 'Fail') {
-                //   jQuery(".vdf_opn_again_err").css('display','block');
-                //   jQuery(".vdf_amnty_btns").css('display','none');
-                //   jQuery(".vdf_cnfrm_main").css('display','none');
-                // }
-                // else{
-                //   jQuery(".vdf_opn_again_err").css('display','none');
-                //   jQuery(this).parent().parent().css('display','none');
-                //   jQuery("#vdf_cnfrm_main01 #vdf_appr_confrm01").css('display','block');
-                // }
-            },
-            error: function(xhr, status, error, response) {
-                console.log(error);
-                var err = eval("(" + xhr.responseText + ")");
-                console.log(xhr);
-            }
-        });
+	jQuery('#vdf_approve01').click(function() {
+		jQuery(this).parent().parent().css('display', 'none');
+		jQuery("#vdf_cnfrm_main01 #vdf_appr_confrm01").css('display', 'block');
+		var amenity_url = window.location.href
+		//console.log(amenity_url);
+		var amnty_id_positon = amenity_url.indexOf('=');
+		var amenity_entry_id = amenity_url.substring(amnty_id_positon + 1, 70);
+		console.log(amenity_entry_id);
+		//console.log(amenity_entry_id);
+		jQuery.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+			data: {
+				action: 'approve_add_new_amenity',
+				amenity_entry_id: amenity_entry_id
+			},
+			success: function(response) {
+				var data = response;
+				console.log(data);
+				// if (data == 'Fail') {
+				//   jQuery(".vdf_opn_again_err").css('display','block');
+				//   jQuery(".vdf_amnty_btns").css('display','none');
+				//   jQuery(".vdf_cnfrm_main").css('display','none');
+				// }
+				// else{
+				//   jQuery(".vdf_opn_again_err").css('display','none');
+				//   jQuery(this).parent().parent().css('display','none');
+				//   jQuery("#vdf_cnfrm_main01 #vdf_appr_confrm01").css('display','block');
+				// }
+			},
+			error: function(xhr, status, error, response) {
+				console.log(error);
+				var err = eval("(" + xhr.responseText + ")");
+				console.log(xhr);
+			}
+		});
 
-    });
+	});
 });
 </script>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-    jQuery('#vdf_deny01').click(function() {
-        jQuery(this).parent().parent().css('display', 'none');
-        jQuery("#vdf_cnfrm_main01 #vdf_deny_confrm01").css('display', 'block');
-        var amenity_url = window.location.href
-        //console.log(amenity_url);
-        var amnty_id_positon = amenity_url.indexOf('=');
-        var amenity_entry_id = amenity_url.substring(amnty_id_positon + 1, 70);
-        //console.log(amenity_entry_id);
-        jQuery.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: '<?php echo admin_url("admin-ajax.php"); ?>',
-            data: {
-                action: 'deny_add_new_amenity',
-                amenity_entry_id: amenity_entry_id
-            },
-            success: function(response) {
-                var data = response;
-                console.log(data);
-            },
-            error: function(xhr, status, error, response) {
-                console.log(error);
-                var err = eval("(" + xhr.responseText + ")");
-                console.log(xhr);
-            }
-        });
+	jQuery('#vdf_deny01').click(function() {
+		jQuery(this).parent().parent().css('display', 'none');
+		jQuery("#vdf_cnfrm_main01 #vdf_deny_confrm01").css('display', 'block');
+		var amenity_url = window.location.href
+		//console.log(amenity_url);
+		var amnty_id_positon = amenity_url.indexOf('=');
+		var amenity_entry_id = amenity_url.substring(amnty_id_positon + 1, 70);
+		//console.log(amenity_entry_id);
+		jQuery.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+			data: {
+				action: 'deny_add_new_amenity',
+				amenity_entry_id: amenity_entry_id
+			},
+			success: function(response) {
+				var data = response;
+				console.log(data);
+			},
+			error: function(xhr, status, error, response) {
+				console.log(error);
+				var err = eval("(" + xhr.responseText + ")");
+				console.log(xhr);
+			}
+		});
 
-    });
+	});
 });
 </script>

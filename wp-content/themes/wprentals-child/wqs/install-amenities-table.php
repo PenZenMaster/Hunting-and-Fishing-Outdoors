@@ -14,7 +14,7 @@
 // Prevent direct access
 if ( ! defined( 'ABSPATH' ) ) {
 	// Load WordPress if running standalone
-	require_once dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/wp-load.php';
+	require_once dirname( dirname( dirname( __DIR__ ) ) ) . '/wp-load.php';
 }
 
 // Security check
@@ -40,7 +40,7 @@ if ( $table_exists ) {
 	echo "<table border='1' cellpadding='5'>\n";
 	echo "<tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th><th>Extra</th></tr>\n";
 	foreach ( $columns as $column ) {
-		echo "<tr>";
+		echo '<tr>';
 		echo "<td>{$column->Field}</td>";
 		echo "<td>{$column->Type}</td>";
 		echo "<td>{$column->Null}</td>";
@@ -87,7 +87,7 @@ if ( $table_exists ) {
 		echo "<table border='1' cellpadding='5'>\n";
 		echo "<tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th><th>Extra</th></tr>\n";
 		foreach ( $columns as $column ) {
-			echo "<tr>";
+			echo '<tr>';
 			echo "<td>{$column->Field}</td>";
 			echo "<td>{$column->Type}</td>";
 			echo "<td>{$column->Null}</td>";
@@ -108,7 +108,7 @@ if ( $table_exists ) {
 		echo "<h2>✗ Error Creating Table</h2>\n";
 		echo "<p>There was an error creating the table. Check your database permissions.</p>\n";
 		if ( $wpdb->last_error ) {
-			echo "<p><strong>Error:</strong> " . esc_html( $wpdb->last_error ) . "</p>\n";
+			echo '<p><strong>Error:</strong> ' . esc_html( $wpdb->last_error ) . "</p>\n";
 		}
 	}
 }
@@ -125,7 +125,7 @@ echo "<li><strong>Deny:</strong> Admin denies → deletes from table</li>\n";
 echo "</ul>\n";
 
 echo "<h3>How to Run This Script:</h3>\n";
-echo "<p>Option 1: Visit this URL directly (admin only): <code>" . esc_url( get_template_directory_uri() . '/wqs/install-amenities-table.php' ) . "</code></p>\n";
+echo '<p>Option 1: Visit this URL directly (admin only): <code>' . esc_url( get_template_directory_uri() . '/wqs/install-amenities-table.php' ) . "</code></p>\n";
 echo "<p>Option 2: Run via SSH: <code>php -f wp-content/themes/wprentals/wqs/install-amenities-table.php</code></p>\n";
 echo "<p>Option 3: Copy the SQL and run it in phpMyAdmin/database tool</p>\n";
 
