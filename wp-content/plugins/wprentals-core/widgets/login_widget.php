@@ -39,7 +39,7 @@ class Wpestate_Login_widget extends WP_Widget {
                     <div class="login_form" id="login-div">
                         <div class="loginalert" id="login_message_area_wd" >'.$mess.'</div>
 
-                        <input type="text" class="form-control" name="log" id="login_user_wd" placeholder="'.esc_html__( 'Username','wprentals-core').'"/>
+                        <input type="text" class="form-control" name="log" id="login_user_wd" placeholder="'.esc_html__( 'Username/Email','wprentals-core').'"/>
                             
                         <div class="password_holder">
                             <input type="password" class="form-control" name="pwd" id="login_pwd_wd" placeholder="'.esc_html__( 'Password','wprentals-core').'"/>
@@ -66,15 +66,15 @@ class Wpestate_Login_widget extends WP_Widget {
 
               <h3 class="widget-title-sidebar"  id="register-div-title">'.esc_html__( 'Register','wprentals-core').'</h3>
                 <div class="login_form" id="register-div">
-                    <div class="loginalert" id="register_message_area_wd" ></div>
-                    <input type="text" name="user_login_register" id="user_login_register_wd" class="form-control" placeholder="'.esc_html__( 'Username','wprentals-core').'"/>
-                    <input type="text" name="user_email_register" id="user_email_register_wd" class="form-control" placeholder="'.esc_html__( 'Email','wprentals-core').'"  />';
+                    <div class="loginalert" id="register_message_area_wd" ></div>';
+        $display .= '<input type="text" name="user_login_register" id="user_login_register_wd" class="form-control" placeholder="'.esc_html__( 'Username','wprentals-core').'"/>';
+        $display .= '<input type="text" name="user_email_register" id="user_email_register_wd" class="form-control" placeholder="'.esc_html__( 'Email','wprentals-core').'"  />';
 
                     $enable_user_pass_status= esc_html ( wprentals_get_option('wp_estate_enable_user_pass','') );
                     if($enable_user_pass_status == 'yes'){
                         $display.='<div class="password_holder"><input type="password" name="user_password" id="user_password_wd" class="form-control" placeholder="'.esc_html__( 'Password','wprentals-core').'" size="20" /> <i class=" far fa-eye-slash show_hide_password"></i></div>';
                         $display.='<div class="password_holder"><input type="password" name="user_password_retype" id="user_password_retype_wd" class="form-control" placeholder="'.esc_html__( 'Retype Password','wprentals-core').'" size="20" /> <i class=" far fa-eye-slash show_hide_password"></i></div>';
-
+                        $display .= '<span class="password-strength"></span>';
                     }
                     $wp_estate_enable_user_phone= esc_html ( wprentals_get_option('wp_estate_enable_user_phone','') );
                     if($wp_estate_enable_user_phone=='yes'){
@@ -143,7 +143,7 @@ class Wpestate_Login_widget extends WP_Widget {
 
                 $activeprofile= $activedash = $activeadd = $activefav = $active_main='';
 
-								$dash_main           		=   wpestate_get_template_link('user_dashboard_main.php');
+                $dash_main           		=   wpestate_get_template_link('user_dashboard_main.php');
                 $add_link               =   wpestate_get_template_link('user_dashboard_add_step1.php');
                 $dash_profile           =   wpestate_get_template_link('user_dashboard_profile.php');
                 $dash_link              =   wpestate_get_template_link('user_dashboard.php');
@@ -153,6 +153,8 @@ class Wpestate_Login_widget extends WP_Widget {
                 $dash_bookings          =   wpestate_get_template_link('user_dashboard_my_bookings.php');
                 $dash_inbox             =   wpestate_get_template_link('user_dashboard_inbox.php');
                 $dash_invoices          =   wpestate_get_template_link('user_dashboard_invoices.php');
+
+
                 $home_url               =   esc_url( home_url('/') );
                 $no_unread=  intval(get_user_meta($userID,'unread_mess',true));
                 $logged_display='

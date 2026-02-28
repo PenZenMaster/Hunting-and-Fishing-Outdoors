@@ -6,8 +6,10 @@ use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Text_Shadow;
-use Elementor\Group_Control_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Core\Schemes\Typography;
+use Elementor\Group_Control_Typography;
+
 
 if (!defined('ABSPATH'))
     exit; // Exit if accessed directly
@@ -184,14 +186,17 @@ class Wprentals_Categories_Slider extends Widget_Base {
         );
 
         $this->add_responsive_control(
-                'item_border_radius', [
-            'label' => esc_html__('Border Radius', 'rentals-elementor'),
-            'type' => Controls_Manager::DIMENSIONS,
-            'size_units' => ['px', '%'],
-            'selectors' => [
-                '{{WRAPPER}} .places_wrapper' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-            ],
-                ]
+            'item_border_radius',
+            [
+                'label' => esc_html__('Border Radius', 'rentals-elementor'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .places_wrapper, {{WRAPPER}} .estate_places_slider' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .estate_places_slider .places_slider_wrapper_type_1' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .places_slider_wrapper_type_1 .places_cover' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
         );
 
         $this->end_controls_section();
@@ -212,7 +217,9 @@ class Wprentals_Categories_Slider extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'tax_title',
             'label' => esc_html__('Title Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}} .places_slider_wrapper_type_1 h4 a,{{WRAPPER}} .featured_listing_title',
             'fields_options' => [
                 // Inner control name
@@ -293,7 +300,9 @@ class Wprentals_Categories_Slider extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'tax_listings',
             'label' => esc_html__('Listings Text Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}} .places_slider_type_1_listings_no,{{WRAPPER}} .place_counter',
             'fields_options' => [
                 // Inner control name

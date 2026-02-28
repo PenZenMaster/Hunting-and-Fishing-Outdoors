@@ -10,24 +10,24 @@ class Wpestate_Social_widget_top extends WP_Widget {
 	
         function form($instance){
 		$defaults = array(  
-                                    'facebook'      => esc_html__('Facebook Link:','wprentals_core'),
-                                    'whatsup'       => esc_html__('WhatsApp Link:','wprentals_core'),
-                                    'telegram'      => esc_html__('Telegram Link:','wprentals_core'),
-                                    'tiktok'        => esc_html__('TikTok Link:','wprentals_core'),
-                                    'rss'           => esc_html__('Rss Link:','wprentals_core'),
-                                    'twitter'       => esc_html__('X - Twiter Link:','wprentals_core'),
-                                    'dribbble'      => esc_html__('Dribble Link:','wprentals_core'),
-                                    'google'        => esc_html__('Google+ Link:','wprentals_core'),
-                                    'linkedIn'      => esc_html__('Linkdin Link:','wprentals_core'),
+                                    'facebook'      => esc_html__('Facebook Link:','wprentals-core'),
+                                    'whatsup'       => esc_html__('WhatsApp Link:','wprentals-core'),
+                                    'telegram'      => esc_html__('Telegram Link:','wprentals-core'),
+                                    'tiktok'        => esc_html__('TikTok Link:','wprentals-core'),
+                                    'rss'           => esc_html__('Rss Link:','wprentals-core'),
+                                    'twitter'       => esc_html__('X - Twiter Link:','wprentals-core'),
+                                    'dribbble'      => esc_html__('Dribble Link:','wprentals-core'),
+                                    'google'        => esc_html__('Google+ Link:','wprentals-core'),
+                                    'linkedIn'      => esc_html__('Linkdin Link:','wprentals-core'),
                                
-                                    'tumblr'        => esc_html__('Tumblr Link:','wprentals_core'),
-                                    'pinterest'     => esc_html__('Pinterest Link:','wprentals_core'),
+                                    'tumblr'        => esc_html__('Tumblr Link:','wprentals-core'),
+                                    'pinterest'     => esc_html__('Pinterest Link:','wprentals-core'),
                                  
                                  
-                                    'youtube'       => esc_html__('Youtube Link:','wprentals_core'),
-                                    'vimeo'         => esc_html__('Vimeo Link:','wprentals_core'),
-                                    'instagram'     => esc_html__('Instagram Link:','wprentals_core'),
-                                    'foursquare'    => esc_html__('FourthSquare Link:','wprentals_core'),
+                                    'youtube'       => esc_html__('Youtube Link:','wprentals-core'),
+                                    'vimeo'         => esc_html__('Vimeo Link:','wprentals-core'),
+                                    'instagram'     => esc_html__('Instagram Link:','wprentals-core'),
+                                    'foursquare'    => esc_html__('FourthSquare Link:','wprentals-core'),
                                     );
 		
                 

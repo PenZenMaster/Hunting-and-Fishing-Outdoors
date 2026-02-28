@@ -4,9 +4,9 @@ namespace ElementorWpRentals\Widgets;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Typography;
-use Elementor\Scheme_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH'))
     exit; // Exit if accessed directly
@@ -125,7 +125,7 @@ class Wprentals_Booking_Form extends Widget_Base {
         $this->start_controls_section(
                 'hide_show_section',
                 [
-                    'label' => esc_html__('Show/Hide Data', 'residence-elementor'),
+                    'label' => esc_html__('Show/Hide Data', 'rentals-elementor'),
                     'tab' => Controls_Manager::TAB_CONTENT,
                 ]
         );
@@ -133,10 +133,10 @@ class Wprentals_Booking_Form extends Widget_Base {
         $this->add_control(
                 'hide_contact',
                 [
-                    'label' => esc_html__('Hide Favorites & Contact section', 'residence-elementor'),
+                    'label' => esc_html__('Hide Favorites & Contact section', 'rentals-elementor'),
                     'type' => Controls_Manager::SWITCHER,
-                    'label_on' => esc_html__('Yes', 'residence-elementor'),
-                    'label_off' => esc_html__('No', 'residence-elementor'),
+                    'label_on' => esc_html__('Yes', 'rentals-elementor'),
+                    'label_off' => esc_html__('No', 'rentals-elementor'),
                     'return_value' => 'none',
                     'default' => '',
                     'selectors' => [
@@ -148,10 +148,10 @@ class Wprentals_Booking_Form extends Widget_Base {
         $this->add_control(
                 'hide_social',
                 [
-                    'label' => esc_html__('Hide Social section', 'residence-elementor'),
+                    'label' => esc_html__('Hide Social section', 'rentals-elementor'),
                     'type' => Controls_Manager::SWITCHER,
-                    'label_on' => esc_html__('Yes', 'residence-elementor'),
-                    'label_off' => esc_html__('No', 'residence-elementor'),
+                    'label_on' => esc_html__('Yes', 'rentals-elementor'),
+                    'label_off' => esc_html__('No', 'rentals-elementor'),
                     'return_value' => 'none',
                     'default' => '',
                     'selectors' => [
@@ -165,7 +165,7 @@ class Wprentals_Booking_Form extends Widget_Base {
         $this->start_controls_section(
                 'section_grid_stylew',
                 [
-                    'label' => esc_html__('Style', 'residence-elementor'),
+                    'label' => esc_html__('Style', 'rentals-elementor'),
                     'tab' => Controls_Manager::TAB_STYLE,
                 ]
         );
@@ -189,7 +189,7 @@ class Wprentals_Booking_Form extends Widget_Base {
         $this->start_controls_section(
                 'section_grid_box_shadow',
                 [
-                    'label' => esc_html__('Box Shadow', 'residence-elementor'),
+                    'label' => esc_html__('Box Shadow', 'rentals-elementor'),
                     'tab' => Controls_Manager::TAB_STYLE,
                 ]
         );
@@ -197,7 +197,7 @@ class Wprentals_Booking_Form extends Widget_Base {
                 Group_Control_Box_Shadow::get_type(),
                 [
                     'name' => 'box_shadow',
-                    'label' => esc_html__('Box Shadow', 'residence-elementor'),
+                    'label' => esc_html__('Box Shadow', 'rentals-elementor'),
                     'selector' => '{{WRAPPER}} .booking_form_request',
                 ]
         );
@@ -215,7 +215,7 @@ class Wprentals_Booking_Form extends Widget_Base {
         $this->start_controls_section(
                 'section_grid_colors',
                 [
-                    'label' => esc_html__('Colors', 'residence-elementor'),
+                    'label' => esc_html__('Colors', 'rentals-elementor'),
                     'tab' => Controls_Manager::TAB_STYLE,
                 ]
         );
@@ -223,7 +223,7 @@ class Wprentals_Booking_Form extends Widget_Base {
         $this->add_control(
                 'unit_color',
                 [
-                    'label' => esc_html__('Background Color', 'residence-elementor'),
+                    'label' => esc_html__('Background Color', 'rentals-elementor'),
                     'type' => Controls_Manager::COLOR,
                     'default' => '',
                     'selectors' => [
@@ -242,7 +242,7 @@ class Wprentals_Booking_Form extends Widget_Base {
         $this->start_controls_section(
                 'typography_section',
                 [
-                    'label' => esc_html__('Typography', 'residence-elementor'),
+                    'label' => esc_html__('Typography', 'rentals-elementor'),
                     'tab' => Controls_Manager::TAB_STYLE,
                 ]
         );
@@ -251,8 +251,10 @@ class Wprentals_Booking_Form extends Widget_Base {
                 Group_Control_Typography::get_type(),
                 [
                     'name' => 'property_title',
-                    'label' => esc_html__('Property Title', 'residence-elementor'),
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                    'label' => esc_html__('Property Title', 'rentals-elementor'),
+                     'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+                     ],
                     'selector' => '{{WRAPPER}} .booking_form_request h3',
                 ]
         );

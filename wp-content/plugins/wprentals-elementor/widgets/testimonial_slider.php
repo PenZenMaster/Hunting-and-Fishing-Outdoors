@@ -5,12 +5,10 @@ namespace ElementorWpRentals\Widgets;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Repeater;
-use Elementor\Scheme_Color;
-use Elementor\Group_Control_Typography;
-use Elementor\Scheme_Typography;
-use Elementor\Group_Control_Border;
+use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Box_Shadow;
-
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH'))
     exit; // Exit if accessed directly
@@ -154,14 +152,6 @@ class WpRentals_Testimonial_Slider extends Widget_Base {
 		);
         
         
-        
-        
-        
-        
-        
-
-
-
 
         $this->end_controls_section();
         
@@ -179,23 +169,42 @@ class WpRentals_Testimonial_Slider extends Widget_Base {
             'tab' => Controls_Manager::TAB_STYLE,
                 ]
         );
-
-        $this->add_group_control(
-                Group_Control_Typography::get_type(), [
-            'name' => 'testimonial_title',
-            'label' => esc_html__('Title Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
-            'selector' => '{{WRAPPER}} .item_testimonial_title',
+        $this->add_control(
+                'hide_image',
+                [
+                    'label' => esc_html__('Hide image?', 'rentals-elementor'),
+                    'type' => Controls_Manager::SWITCHER,
+                    'label_on' => esc_html__('Yes', 'rentals-elementor'),
+                    'label_off' => esc_html__('No', 'rentals-elementor'),
+                    'return_value' => 'none',
+                    'default' => '',
+                    'selectors' => [
+                        '{{WRAPPER}}  .wpestate_testimonial_slider .item_testimonal_image' => 'display: {{VALUE}};',
+                        '{{WRAPPER}}  .wpestate_testimonial_slider .item_testimonial_content' => 'width:100%;',
+                    ],
                 ]
         );
+        $this->add_group_control(
+            Group_Control_Typography::get_type(), [
+            'name' => 'testimonial_title',
+            'label' => esc_html__('Title Typography', 'rentals-elementor'),
+             'global' => [
+                'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
+                'selector' => '{{WRAPPER}} .item_testimonial_title',
+            ]
+        );
+        
         
           $this->add_group_control(
-                Group_Control_Typography::get_type(), [
+            Group_Control_Typography::get_type(), [
             'name' => 'testimonial_content',
             'label' => esc_html__('Content Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
-            'selector' => '{{WRAPPER}} .item_testimonial_text',
-                ]
+             'global' => [
+                'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
+                'selector' => '{{WRAPPER}} .item_testimonial_text p',
+            ]
         );
 
           
@@ -203,7 +212,9 @@ class WpRentals_Testimonial_Slider extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'testimonial_name',
             'label' => esc_html__('Name Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}} .item_testimonial_name',
                 ]
         );
@@ -213,10 +224,70 @@ class WpRentals_Testimonial_Slider extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'testimonial_postion',
             'label' => esc_html__('Position Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}} .item_testimonial_job',
                 ]
         );
+              
+              
+            $this->add_responsive_control(
+                'teext-align', [
+            'label' => __('Text Alignment', 'rentals-elementor'),
+            'type' => Controls_Manager::CHOOSE,
+            'options' => [
+                'left' => [
+                    'title' => __('Left', 'rentals-elementor'),
+                    'icon' => 'eicon-text-align-left',
+                ],
+                'center' => [
+                    'title' => __('Center', 'rentals-elementor'),
+                    'icon' => 'eicon-text-align-center',
+                ],
+                'right' => [
+                    'title' => __('Right', 'rentals-elementor'),
+                    'icon' => 'eicon-text-align-right',
+                ],
+            ],
+            'selectors' => [
+                '{{WRAPPER}} .wpestate_testimonial_slider .item_testimonial_content' => '       text-align: {{VALUE}};',
+            ],
+                ]
+        );
+                      
+                      
+	$this->add_responsive_control(
+            'item_width',
+            [
+                        'label' => esc_html__('Item width', 'rentals-elementor'),
+                        'type' => Controls_Manager::SLIDER,
+                        'range' => [
+                                        'px' => [
+                                                        'min' => 300,
+                                                        'max' => 2000,
+                                        ],
+                        ],
+                        'devices' => [ 'desktop', 'tablet', 'mobile' ],
+                        'desktop_default' => [
+                                        'size' => '770',
+                                        'unit' => 'px',
+                        ],
+                        'tablet_default' => [
+                                        'size' => '',
+                                        'unit' => 'px',
+                        ],
+                        'mobile_default' => [
+                                        'size' => '',
+                                        'unit' => 'px',
+                        ],
+                        'selectors' => [
+                                '{{WRAPPER}} .wpestate_testimonial_slider .item' => 'max-width: {{SIZE}}{{UNIT}}!important;,width: {{SIZE}}{{UNIT}}!important',
+                                '{{WRAPPER}} .wpestate_testimonial_slider' => 'max-width: {{SIZE}}{{UNIT}}!important;width: {{SIZE}}{{UNIT}}!important',
+
+                                ],
+                    ]
+            );
 
         
         $this->end_controls_section();

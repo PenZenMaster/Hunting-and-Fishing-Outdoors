@@ -204,12 +204,32 @@ if (!function_exists('wpestate_full_map_shortcode')):
             $map_style_encoded = rawurldecode(base64_decode($map_style));
         }
 
+        $tax_control='';
+        
+        if( is_tax() ){
+            $is_map_taxonomy_elementor=1;
+            $queried = get_queried_object();
+            if ( isset( $queried->term_id ) ) {
+                $term_id = $queried->term_id;
+            }
+            $term        = get_term( $term_id );
+            $term_meta   = get_option( "taxonomy_{$term_id}" );
+   
+            $term_lat    = isset( $term_meta['term_latitude'] ) ? $term_meta['term_latitude'] : '';
+            $term_long   = isset( $term_meta['term_longitude'] ) ? $term_meta['term_longitude'] : '';
+            $zoom_level  = isset( $term_meta['page_custom_zoom'] ) ? $term_meta['page_custom_zoom'] : '';
+            $camera      = isset( $term_meta['google_camera_angle'] ) ? $term_meta['google_camera_angle'] : '';
+            $term_geojson = isset( $term_meta['term_geojson'] ) ? $term_meta['term_geojson'] : '';
+
+            $tax_control = ' data-term_zoom='.intval($zoom_level).' data-term_lat='.esc_html($term_lat).'  data-term_long='.esc_html($term_long).' data-term_geojson="'.esc_html($term_geojson).'" ';
+        }
+        
 
         ob_start();
 
         include( locate_template('templates/google_maps_base.php') );
         $return_string = ob_get_contents();
-        $return_string .= '<div id="wpestate_full_map_control_data"  data-zoom="' . $map_zoom . '"></div>';
+        $return_string .= '<div id="wpestate_full_map_control_data"  '.esc_attr($tax_control ).' data-zoom="' . esc_attr($map_zoom) . '"></div>';
         ob_end_clean();
 
         if (!wp_script_is('googlemap', 'enqueued')) {
@@ -232,9 +252,9 @@ if (!function_exists('wpestate_full_map_shortcode')):
             $return_string .= 'jQuery(document).ready(function(){
 
                         if (typeof google === "object" && typeof google.maps === "object") {
-                            google.maps.event.addDomListener(window, "load", wpresidence_initialize_map_contact);
+                            google.maps.event.addDomListener(window, "load", wprentals_initialize_map_contact);
                         }else{
-                            wpresidence_initialize_map_contact_leaflet();
+                            wprentals_initialize_map_contact_leaflet();
                         }
                     });
                     //]]>
@@ -268,6 +288,10 @@ if (!function_exists('wpestate_full_map_shortcode')):
     }
 
 endif;
+
+
+
+
 
 /*
  *
@@ -894,9 +918,17 @@ if (!function_exists('wpestate_list_items_by_id_function')):
                     'blogtype' => 2,
                 ), $attributes);
         $transient_ids = '';
+        
+        
+
         if (isset($attributes['ids'])) {
-            $ids = $transient_ids = $attributes['ids'];
-            $ids_array = explode(',', $ids);
+            if(is_array($attributes['ids'])){
+                $ids_array        =   $attributes['ids'];
+                $transient_ids  =   implode(',', $attributes['ids']);
+            }else{
+                $ids = $transient_ids = $attributes['ids'];
+                $ids_array = explode(',', $ids);
+            }
         }
 
         if (defined('ICL_LANGUAGE_CODE')) {
@@ -918,6 +950,8 @@ if (!function_exists('wpestate_list_items_by_id_function')):
         }
         if (isset($attributes['blogtype'])) {
             $blogtype = $attributes['blogtype'];
+        }else{
+             $blogtype=1;
         }
 
 
@@ -976,6 +1010,7 @@ if (!function_exists('wpestate_list_items_by_id_function')):
             'post__in' => $ids_array,
         );
 
+        
         $recent_posts = false;
         if (function_exists('wpestate_request_transient_cache')) {
             $recent_posts = wpestate_request_transient_cache('wpestate_list_items_by_id_' . $transient_ids);
@@ -1089,7 +1124,7 @@ if (!function_exists('wpestate_login_form_function')):
         <div class="loginalert" id="login_message_area_sh" >' . $mess . '</div>
 
                 <div class="loginrow">
-                    <input type="text" class="form-control" name="log" id="login_user_sh" placeholder="' . esc_html__('Username', 'wprentals-core') . '" size="20" />
+                    <input type="text" class="form-control" name="log" id="login_user_sh" placeholder="' . esc_html__('Username/Email', 'wprentals-core') . '" size="20" />
                 </div>
 
                 <div class="loginrow password_holder">
@@ -1152,8 +1187,8 @@ if (!function_exists('wpestate_register_form_function')):
         $register_nonce = wp_nonce_field('register_ajax_nonce', 'security-register', true, false);
         $return_string = '
         <div class="login_form shortcode-login">
-                <div class="loginalert" id="register_message_area' . $type . '" ></div>
-
+                <div class="loginalert" id="register_message_area' . $type . '" ></div>';
+        $return_string .= '
                 <div class="loginrow">
                     <input type="text" name="user_login_register" id="user_login_register' . $type . '" class="form-control" placeholder="' . esc_html__('Username', 'wprentals-core') . '" size="20" />
                 </div>';
@@ -1177,6 +1212,7 @@ if (!function_exists('wpestate_register_form_function')):
                 <input type="password" name="user_password_retype" id="user_password_retype' . $type . '" class="form-control" placeholder="' . esc_html__('Retype Password', 'wprentals-core') . '" size="20" />
                 <i class=" far fa-eye-slash show_hide_password"></i>
             </div>';
+            $return_string .= '<span class="password-strength"></span>';
         } else {
             $return_string .= '
             <div class="loginrow ">
@@ -1389,31 +1425,66 @@ if (!function_exists('wpestate_featured_property')):
             $price_per_guest_from_one = floatval(get_post_meta($prop_id, 'price_per_guest_from_one', true));
             $rental_type = wprentals_get_option('wp_estate_item_rental_type');
             $booking_type = wprentals_return_booking_type($prop_id);
-
+            $currency_code              =   wprentals_get_option('wp_estate_currency_symbol', '');
+            if($price_per_guest_from_one==1){
+                $price          =   floatval( get_post_meta($prop_id, 'extra_price_per_guest', true) );
+            }else{
+                $price          =   floatval( get_post_meta($prop_id, 'property_price', true) );
+            }
+            
+         
+            
             if ($price_per_guest_from_one == 1) {
                 $featured_propr_price = wpestate_show_price($prop_id, $wpestate_currency, $wpestate_where_currency, 1) . ' <div class="featured_price_label">' . esc_html__('per guest', 'wprentals-core') . '</div>';
             } else {
                 $featured_propr_price = wpestate_show_price($prop_id, $wpestate_currency, $wpestate_where_currency, 1) . ' <div class="featured_price_label"><span class="pernight">' . wpestate_show_labels('per_night2', $rental_type, $booking_type) . '</span></div>';
             }
             $featured_propr_stars = '';
-
+            $review_number='';
             if (wpestate_has_some_review($prop_id) !== 0) {
                 $featured_propr_stars = wpestate_display_property_rating($prop_id);
+                $total_stars = wpestate_calculate_property_rating($prop_id);
+                
+                $tmp_rating = json_decode($total_stars, TRUE);
+                $review_number = number_format( ($tmp_rating['rating']),2,'.');
             }
-
-
-            $return_string .= '<div class="featured_property_type3">
-                <div class="featured_prop_img_type3" style="background-image:url(' . $preview[0] . ')">
+   
+            ob_start();
+            ?>
+            <div class="featured_property_type3">
+                <div class="featured_prop_img_type3" style="background-image:url('<?php echo esc_url($preview[0]);?>')">
                     <div class="featured_propery_type3_cover"></div>
                          <div class="featured_propery_type3_title_wrapper">
-                            <div class="featured_property_price">' . $featured_propr_price . '</div>
-                            <div class="featured_property_stars">' . $featured_propr_stars . '</div>
-                            <a href="' . $link . '" target="' . esc_attr(wprentals_get_option('wp_estate_prop_page_new_tab', '')) . '" ><h2>' . $title . '</h2></a>
+                            <div class="featured_property_price">
+                                <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                <link itemprop="url" href="<?php echo esc_url( $link );?>"/>
+                                <meta itemprop="priceCurrency" content="<?php echo esc_html($currency_code);?>" />
+                                <span itemprop="price" content="<?php echo floatval($price);?> ">
+                                <?php echo $featured_propr_price ;?>
+                            
+                            </div>
+                            
+                             
+                             
+                            <div class="featured_property_stars">
+                                <meta itemprop="ratingValue" content="<?php echo floatval($review_number);?>"/>
+                                <?php echo $featured_propr_stars ;?>
+                            </div>
+                            <a href="<?php echo esc_url($link);?>" target="<?php echo esc_attr(wprentals_get_option('wp_estate_prop_page_new_tab', ''));?>" >
+                                <h2><?php  echo esc_html($title);?></h2>
+                            </a>
 
-                            <div class="featured_read_more"><a href="' . $link . '" target="' . esc_attr(wprentals_get_option('wp_estate_prop_page_new_tab', '')) . '" >' . __('discover more', 'wprentals-core') . '</a> <i class="fas fa-chevron-right"></i></div>
+                            <div class="featured_read_more">
+                                <a href="<?php echo esc_url($link);?>" target="<?php echo esc_attr(wprentals_get_option('wp_estate_prop_page_new_tab', ''));?>" ><?php esc_html_e('discover more', 'wprentals-core');?></a> <i class="fas fa-chevron-right"></i></div>
                          </div>
                     </div>
-                 </div>';
+                </div>    
+            </div>
+            
+            <?php
+            $return_string= ob_get_contents();
+            ob_end_clean();  
+            
             return $return_string;
         }
 

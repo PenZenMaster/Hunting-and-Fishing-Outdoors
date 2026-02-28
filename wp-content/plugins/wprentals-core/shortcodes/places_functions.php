@@ -6,6 +6,44 @@
  *
  */
 
+if ( ! function_exists( 'wprentals_get_taxonomy_term_meta' ) ) {
+    function wprentals_get_taxonomy_term_meta( $term_id ) {
+        $term_id = intval( $term_id );
+
+        if ( ! $term_id ) {
+            return array();
+        }
+
+        $meta = get_option( 'taxonomy_' . $term_id );
+        $meta = is_array( $meta ) ? $meta : array();
+
+        $term_meta_keys = array(
+            'category_featured_image',
+            'category_attach_id',
+            'category_tax',
+            'category_tagline',
+        );
+
+        foreach ( $term_meta_keys as $key ) {
+            $value = get_term_meta( $term_id, $key, true );
+
+            if ( '' !== $value && null !== $value ) {
+                $meta[ $key ] = $value;
+            }
+        }
+
+        if ( isset( $meta['category_attach_id'] ) ) {
+            $meta['category_attach_id'] = intval( $meta['category_attach_id'] );
+
+            if ( ! $meta['category_attach_id'] ) {
+                unset( $meta['category_attach_id'] );
+            }
+        }
+
+        return $meta;
+    }
+}
+
 if (!function_exists('wpestate_places_list_functionas_tabs')):
 
     function wpestate_places_list_functionas_tabs($attributes, $content = null) {
@@ -66,14 +104,14 @@ if (!function_exists('wpestate_places_list_functionas_tabs')):
                     ob_end_clean();
                 }
 
-                $tab_items .= '<a href="#' . sanitize_title(trim($place_tax['field_type'])) . '" role="tab" data-toggle="tab">';
+                $tab_items .= '<a href="#wpestate_cat_as_tabs_' . sanitize_title(trim($place_tax['field_type'])) . '" role="tab" data-toggle="tab">';
 
                 $tab_items .= $item_icon;
                 $tab_items .= esc_html($place_tax['field_label']) . '</a>';
 
                 $tab_items .= '</li>';
 
-                $tab_content .= '<div role="tabpanel" class=" wpestate_categories_as_tabs_panel tab-pane ' . esc_attr($class_active) . '" id="' . sanitize_title($place_tax['field_type']) . '">
+                $tab_content .= '<div role="tabpanel" class=" wpestate_categories_as_tabs_panel tab-pane ' . esc_attr($class_active) . '" id="wpestate_cat_as_tabs_' . sanitize_title($place_tax['field_type']) . '">
             ' . wpestate_show_tax_items($place_tax['field_type'], $row_number_col, $attributes['show_zero_terms']) . '
             </div>';
                 $class_active = '';
@@ -112,7 +150,7 @@ if (!function_exists('wpestate_show_tax_items')):
             foreach ($terms as $term) {
                 $return_string .= '<div class="col-md-' . esc_attr($row_number_col) . '">'
                         . '<a class="wpestate_categories_as_tabs_term" href="' . esc_url(get_term_link($term)) . '">' . esc_attr($term->name) . '</a> '
-                        . '<span class="places_list_tab_term-count">' . $term->count . ' ' . esc_html__('properties', 'wpresidence-core') . '</span></div>';
+                        . '<span class="places_list_tab_term-count">' . $term->count . ' ' . esc_html__('properties', 'wprentals-core') . '</span></div>';
             }
         }
         return $return_string;
@@ -186,28 +224,42 @@ if (!function_exists('wpestate_featured_place')):
         $category_attach_id = '';
         $category_tax = '';
         $category_featured_image = '';
+        $meta_featured_image = '';
         $category_name = '';
         $category_featured_image_url = '';
-        $term_meta = get_option("taxonomy_$place_id");
+        $term_meta = wprentals_get_taxonomy_term_meta( $place_id );
         $category_tagline = '';
 
         if (isset($term_meta['category_featured_image'])) {
             $category_featured_image = $term_meta['category_featured_image'];
+
+            if (!is_array($category_featured_image)) {
+                $meta_featured_image = $category_featured_image;
+            }
         }
 
         if (isset($term_meta['category_attach_id'])) {
             $category_attach_id = $term_meta['category_attach_id'];
             $category_featured_image = wp_get_attachment_image_src($category_attach_id, 'wpestate_property_featured');
-            $category_featured_image_url = $category_featured_image[0];
+            $category_featured_image_url ='';
+            if( isset($category_featured_image[0]) ){
+                $category_featured_image_url = $category_featured_image[0];
+            }
         }
+
+        if ($category_featured_image_url == '' && $meta_featured_image != '') {
+            $category_featured_image_url = $meta_featured_image;
+        }
+        $term = get_term($place_id);
+        if (isset($term->name)) {
+            $category_name = $term->name;
+            $category_count = $term->count;
+        }
+
 
         if (isset($term_meta['category_tax'])) {
             $category_tax = $term_meta['category_tax'];
-            $term = get_term($place_id, $category_tax);
-            if (isset($term->name)) {
-                $category_name = $term->name;
-                $category_count = $term->count;
-            }
+           
         }
 
         if (isset($term_meta['category_tagline'])) {
@@ -326,13 +378,18 @@ if (!function_exists('wpestate_places_list_function')):
                 $category_attach_id = '';
                 $category_tax = '';
                 $category_featured_image = '';
+                $meta_featured_image = '';
                 $category_name = '';
                 $category_featured_image_url = '';
-                $term_meta = get_option("taxonomy_$place_id");
+                $term_meta = wprentals_get_taxonomy_term_meta( $place_id );
                 $category_tagline = '';
 
                 if (isset($term_meta['category_featured_image'])) {
                     $category_featured_image = $term_meta['category_featured_image'];
+
+                    if (!is_array($category_featured_image)) {
+                        $meta_featured_image = $category_featured_image;
+                    }
                 }
 
                 if (isset($term_meta['category_attach_id'])) {
@@ -346,6 +403,10 @@ if (!function_exists('wpestate_places_list_function')):
                     if(isset( $category_featured_image[0])){
                         $category_featured_image_url = $category_featured_image[0];
                     }
+                }
+
+                if ($category_featured_image_url == '' && $meta_featured_image != '') {
+                    $category_featured_image_url = $meta_featured_image;
                 }
                 $category_count = 0;
                 if (isset($term_meta['category_tax'])) {

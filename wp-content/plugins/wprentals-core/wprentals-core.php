@@ -1,415 +1,192 @@
 <?php
 /*
- *  Plugin Name: WpRentals -Theme Core Functionality
- *  Plugin URI:  https://themeforest.net/user/wpestate
- *  Description: Adds functionality to WpRentals
- *  Version:     3.11.4
- *  Author:      wpestate
- *  Author URI:  https://wpestate.org
- *  License:     GPL2
- *  Text Domain: wprentals-core
- *  Domain Path: /languages
+Plugin Name: WPRentals - Theme Core Functionality
+Plugin URI: https://themeforest.net/user/wpestate
+Description: Adds functionality to WPRentals Theme
+Version: 3.17.0
+Author: wpestate
+Author URI: https://wpestate.org
+License: GPL2
+Text Domain: wprentals-core
+Domain Path: /languages
+*/
+
+
+ /** 
+ * Main plugin file that initializes all WPRentals functionality.
+ * Handles constants definition, file loading, and basic plugin setup. 1
  *
-*/
-
-define('WPESTATE_PLUGIN_URL',  plugins_url() );
-define('WPESTATE_PLUGIN_DIR_URL',  plugin_dir_url(__FILE__) );
-define('WPESTATE_PLUGIN_PATH',  plugin_dir_path(__FILE__) );
-define('WPESTATE_PLUGIN_BASE',  plugin_basename(__FILE__) );
-
-add_action( 'wp_enqueue_scripts', 'wpestate_rentals_enqueue_styles' );
-add_action( 'admin_enqueue_scripts', 'wpestate_rentals_enqueue_styles_admin');
-add_action( 'plugins_loaded', 'wpestate_rentals_functionality_loaded' );
-register_activation_hook( __FILE__, 'wpestate_rentals_functionality_plugin_activated' );
-register_deactivation_hook( __FILE__, 'wpestate_rentals_deactivate' );
-
-require_once WPESTATE_PLUGIN_PATH.'/widgets/twitter-api-wordpress.php';
-
-
-
-function wpestate_rentals_functionality_loaded(){
-    $my_theme   =   wp_get_theme();
-    $version    =   floatval( $my_theme->get( 'Version' ));
-    $theme_name =   $my_theme->name;
-    $deactivate =   false;
-
-    if($version< 2 && $version!=1){
-        $deactivate=true;
-    }
-    if (strpos(strtolower($theme_name), 'wprentals') === false) {
-         $deactivate=true;
-    }
-
-    if($deactivate){
-        deactivate_plugins( plugin_basename( __FILE__ ) );
-        wp_die( 'WpRentals Core plugin requires  WpRentals 2.01 or higher.','wprentals-core' );
-    }
-    load_plugin_textdomain( 'wprentals-core', false, dirname( WPESTATE_PLUGIN_BASE ) . '/languages' );
-    wpestate_shortcodes();
-    add_action('widgets_init', 'register_wpestate_widgets' );
-    add_action('wp_footer', 'wpestate_core_add_to_footer');
-
-
-
-}
-
-function wpestate_rentals_functionality_plugin_activated(){
-
-}
-
-function wpestate_rentals_deactivate(){
-}
-
-
-function wpestate_rentals_enqueue_styles() {
-}
-
-
-function wpestate_rentals_enqueue_styles_admin(){
-}
-
-
-require_once(WPESTATE_PLUGIN_PATH . 'misc/metaboxes.php');
-require_once(WPESTATE_PLUGIN_PATH . 'misc/plugin_help_functions.php');
-require_once(WPESTATE_PLUGIN_PATH . 'misc/emailfunctions.php');
-require_once(WPESTATE_PLUGIN_PATH . 'misc/sms_functions.php');
-require_once(WPESTATE_PLUGIN_PATH . 'misc/3rd_party_code.php');
-require_once(WPESTATE_PLUGIN_PATH . 'misc/update_functions.php');
-require_once(WPESTATE_PLUGIN_PATH . 'resources/rcapi_functions.php');
-
-require_once(WPESTATE_PLUGIN_PATH . 'widgets.php');
-require_once(WPESTATE_PLUGIN_PATH . 'shortcodes/shortcodes_install.php');
-require_once(WPESTATE_PLUGIN_PATH . 'shortcodes/shortcodes.php');
-require_once(WPESTATE_PLUGIN_PATH . 'post-types/agents.php');
-require_once(WPESTATE_PLUGIN_PATH . 'post-types/booking.php');
-require_once(WPESTATE_PLUGIN_PATH . 'post-types/invoices.php');
-require_once(WPESTATE_PLUGIN_PATH . 'post-types/membership.php');
-require_once(WPESTATE_PLUGIN_PATH . 'post-types/messages.php');
-require_once(WPESTATE_PLUGIN_PATH . 'post-types/property.php');
-require_once(WPESTATE_PLUGIN_PATH . 'post-types/searches.php');
-require_once WPESTATE_PLUGIN_PATH.'resources/src/Google_Client.php';
-require_once WPESTATE_PLUGIN_PATH.'resources/src/contrib/Google_Oauth2Service.php';
-require_once WPESTATE_PLUGIN_PATH.'classes/wpestate_email.php';
-require_once WPESTATE_PLUGIN_PATH.'classes/wpestate_func.php';
-
-
-add_action('init','wprentals_init_redux',30);
-function wprentals_init_redux(){
-
-    require_once WPESTATE_PLUGIN_PATH . 'admin/admin-init.php';
-    Redux::init("wprentals_admin");
-
-
-    $enable_stripe_status   =   esc_html ( wprentals_get_option('wp_estate_enable_stripe','') );
-
-    if($enable_stripe_status==='yes'  && !class_exists('\Stripe\Stripe')  ){
-        require_once(WPESTATE_PLUGIN_PATH.'resources/stripe-php-master/init.php');
-    }
-
-    $yelp_client_id         =   wprentals_get_option('wp_estate_yelp_client_id','');
-    $yelp_client_secret     =   wprentals_get_option('wp_estate_yelp_client_secret','');
-    if($yelp_client_id!=='' || $yelp_client_secret!=='' ){
-        require_once(WPESTATE_PLUGIN_PATH.'resources/yelp_fusion.php');
-    }
-
-
-    $facebook_status    =   esc_html( wprentals_get_option('wp_estate_facebook_login','') );
-    if($facebook_status=='yes'){
-        require_once WPESTATE_PLUGIN_PATH.'resources/facebook_sdk5/Facebook/autoload.php';
-    }
-
-    $twiter_status       =   esc_html( wprentals_get_option('wp_estate_twiter_login','') );
-    if($twiter_status=='yes'){
-        require_once WPESTATE_PLUGIN_PATH.'resources/twitteroauth/vendor/autoload.php';
-    }
-
-    $google_status              = esc_html( wprentals_get_option('wp_estate_google_login','') );
-
-
-    if($facebook_status=='yes' ||$twiter_status=='yes' ||  $google_status =='yes'){
-        require_once WPESTATE_PLUGIN_PATH.'classes/tweet_login.php';
-        global $wpestate_social_login;
-        $wpestate_social_login =new Wpestate_Social_Login();
-
-    }
-
-
-    require_once WPESTATE_PLUGIN_PATH.'classes/wpestate_global_payments.php';
-
-
-    global $wpestate_global_payments;
-    $wpestate_global_payments =new Wpestate_Global_Payments();
-
-
-
-}
-
-
-
-
-
-function wpestate_return_imported_data(){
-    return  @unserialize(base64_decode( trim($_POST['import_theme_options']) ) );
-}
-
-function wpestate_return_imported_data_encoded($return_exported_data){
-    return base64_encode( serialize( $return_exported_data) );
-}
-
-
-
-add_action( 'plugins_loaded', 'wpestate_check_current_user' );
-function wpestate_check_current_user() {
-    $current_user = wp_get_current_user();
-    if (!current_user_can('manage_options') ) {
-        show_admin_bar(false);
-    }
-}
-
-function wpestate_check_license_plugin(){
-    $theme_activated    =   get_option('is_theme_activated','');
-
-    if($theme_activated!='is_active'){
-        return false;
-    }else{
-        return true;
-    }
-
-}
-add_action( 'after_setup_theme', 'wprentals_create_helper_content' );
-function wprentals_create_helper_content() {
-
-    global $pagenow;
-
-    $my_theme = wp_get_theme();
-    $theme_version= floatval( $my_theme->get( 'Version' ));
-
-
-
-    if ( get_option('wprentals_theme_setup')!=='yes') {
-
-
-         ////////////////////  insert sales and rental categories
-        $actions = array(   'Entire home',
-                            'Private room',
-                            'Shared room'
-                        );
-
-        foreach ($actions as $key) {
-            $my_cat = array(
-                'description' => $key,
-                'slug' =>sanitize_title($key)
-            );
-
-
-            if(!term_exists($key, 'property_action_category', $my_cat) ){
-                $return =  wp_insert_term($key, 'property_action_category',$my_cat);
-            }
-        }
-
-        ////////////////////  insert listings type categories
-        $actions = array(   'Apartment',
-                            'B & B',
-                            'Cabin',
-                            'Condos',
-                            'Dorm',
-                            'House',
-                            'Condos',
-                            'Villa',
-                        );
-
-        foreach ($actions as $key) {
-            $my_cat = array(
-                'description' => $key,
-                'slug' =>sanitize_title($key)
-            );
-
-            if(!term_exists($key, 'property_category') ){
-                wp_insert_term($key, 'property_category');
-            }
-        }
-
-
-        wprentals_create_default_pages_on_install();
-
-        update_option('wprentals_theme_setup','yes');
-    }// end if activated
-
-
-
-}
-
-
-/*
-/
-/ Create default pages on installation
-/
-*/
-
-
-function wprentals_create_default_pages_on_install(){
-
-
-       $page_creation=array(
-               array(
-                   'name'      =>'Advanced Search',
-                   'template'  =>'advanced_search_results.php',
-               ),
-
-               array(
-                   'name'      =>'My Listings',
-                   'template'  =>'user_dashboard.php',
-               ),
-                array(
-                   'name'      =>'Edit Listing',
-                   'template'  =>'user_dashboard_edit_listing.php',
-               ),
-               array(
-                   'name'      =>'Add New Listing',
-                   'template'  =>'user_dashboard_add_step1.php',
-               ),
-               array(
-                   'name'      =>'Favorites',
-                   'template'  =>'user_dashboard_favorite.php',
-               ),
-               array(
-                   'name'      =>'My Inbox',
-                   'template'  =>'user_dashboard_inbox.php',
-               ),
-               array(
-                   'name'      =>'Dashboard',
-                   'template'  =>'user_dashboard_main.php',
-               ),
-               array(
-                   'name'      =>'Invoices',
-                   'template'  =>'user_dashboard_invoices.php',
-               ),
-               array(
-                   'name'      =>'My Profile',
-                   'template'  =>'user_dashboard_profile.php',
-               ),
-
-               array(
-                   'name'      =>'Dashboard - Subscriptions',
-                   'template'  =>'user_dashboard_packs.php',
-               ),
-               array(
-                   'name'      =>'My Bookings',
-                   'template'  =>'user_dashboard_my_bookings.php',
-               ),
-               array(
-                    'name'      =>'My Reservations',
-                    'template'  =>'user_dashboard_my_reservations.php',
-                ),
-                array(
-                    'name'      =>'My Reviews',
-                    'template'  =>'user_dashboard_my_reviews.php',
-                ),
-                array(
-                     'name'      =>'All in One Calendar',
-                     'template'  =>'user_dashboard_allinone.php',
-                 ),
-
-
-       );
-
-
-       foreach($page_creation as $key=>$template){
-         if (wpestate_get_template_link($template['template'],1 )=='' ||
-              wpestate_get_template_link($template['template'],1 )==home_url('/') ){
-
-               $my_post = array(
-                   'post_title'    => $template['name'],
-                   'post_type'     => 'page',
-                   'post_status'   => 'publish',
-               );
-               $new_id = wp_insert_post($my_post);
-               update_post_meta($new_id, '_wp_page_template', $template['template'] );
-
-           }
-       }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-add_action( 'redux/loaded', 'remove_demo' );
-/**
- * Removes the demo link and the notice of integrated demo from the redux-framework plugin
+ * @package     WPRentals
+ * @subpackage  Core
+ * @version     4.0
+ * @author      wpestate
+ * @copyright   Copyright (c) 2024, WPEstate
+ * @license     GPL2+
+ *
+ * Required Core Files:
+ * @uses includes/class-wprentals-loader.php     - Core loader class
+ * @uses includes/core-functions.php             - Essential plugin functions
+ * @uses includes/enqueue-scripts.php            - Script and style registration
+ * @uses includes/init-redux.php                 - Redux framework initialization
+ * @uses includes/helper-functions.php           - Utility functions
+ * @uses includes/meta-functions.php             - Meta related functions
+ *
  */
-if ( ! function_exists( 'remove_demo' ) ) {
-    function remove_demo() {
-        // Used to hide the demo mode link from the plugin page. Only used when Redux is a plugin.
-        if ( class_exists( 'ReduxFrameworkPlugin' ) ) {
-            remove_filter( 'plugin_row_meta', array(
-                ReduxFrameworkPlugin::instance(),
-                'plugin_metalinks'
-            ), null, 2 );
 
-            // Used to hide the activation notice informing users of the demo panel. Only used when Redux is a plugin.
-            remove_action( 'admin_notices', array( ReduxFrameworkPlugin::instance(), 'admin_notices' ) );
-        }
-    }
+
+/**
+ * Define plugin constants
+ * These constants are used throughout the plugin for file paths and URLs
+ */
+// Base plugin URL
+if (!defined('WPESTATE_PLUGIN_URL')) {
+    define('WPESTATE_PLUGIN_URL', plugins_url());
+}
+
+// Plugin directory URL
+if (!defined('WPESTATE_PLUGIN_DIR_URL')) {
+    define('WPESTATE_PLUGIN_DIR_URL', plugin_dir_url(__FILE__));
+}
+
+// Plugin directory path
+if (!defined('WPESTATE_PLUGIN_PATH')) {
+    define('WPESTATE_PLUGIN_PATH', plugin_dir_path(__FILE__));
+}
+
+// Plugin base name
+if (!defined('WPESTATE_PLUGIN_BASE')) {
+    define('WPESTATE_PLUGIN_BASE', plugin_basename(__FILE__));
 }
 
 
-function noo_enable_vc_auto_theme_update() {
-	if( function_exists('vc_updater') ) {
-		$vc_updater = vc_updater();
-		remove_filter( 'upgrader_pre_download', array( $vc_updater, 'preUpgradeFilter' ), 10 );
-		if( function_exists( 'vc_license' ) ) {
-			if( !vc_license()->isActivated() ) {
-				remove_filter( 'pre_set_site_transient_update_plugins', array( $vc_updater->updateManager(), 'check_update' ), 10 );
-			}
-		}
-	}
+
+/**
+ * Load required core files
+ * Each file contains specific functionality grouped by purpose
+ */
+$core_files = array(
+    'includes/class-wprentals-loader.php',  // Core loader class
+    'includes/core-functions.php',          // Essential functions
+    'includes/enqueue-scripts.php',         // Script handling
+    'includes/init-redux.php',              // Redux framework
+    'includes/helper-functions.php',        // Utility functions
+    'includes/meta-functions.php',          // Meta functions
+    'includes/property/property_functions.php',   // Property admin functions
+    'includes/property/property-simple-detail.php', // Property detail helpers for widgets
+    'shortcodes/shortcodes_install.php',          // Shortcodes installation
+);
+
+
+
+
+foreach ($core_files as $file) {
+    $file_path = WPESTATE_PLUGIN_PATH . $file;
+    if (file_exists($file_path)) {
+        require_once $file_path;
+    } else {
+        error_log(
+            sprintf(
+                /* translators: %s: The file path that is missing */
+                esc_html__('WPRentals: Required file %s not found', 'wprentals-core'),
+                $file_path
+            )
+        );
+    }
 }
-add_action('vc_after_init', 'noo_enable_vc_auto_theme_update');
-
-
-
-add_action('wp_head', 'wpestate_add_custom_meta_to_header');
-
-function wpestate_add_custom_meta_to_header(){
-    global $post;
-    if( is_tax() ) {
-        print '<meta name="description" content="'.strip_tags( term_description('', get_query_var( 'taxonomy' ) )).'" >';
-    }
-
-    if(is_singular('wpestate_invoice') || is_singular('wpestate_message')){
-        echo '<meta name="robots" content="noindex">';
-    }
-
-   if(is_singular('wpestate_booking') || is_singular('wpestate_invoice')){
-        print '<meta name="robots" content="noindex">';
-    }
-
-    if ( is_singular('estate_property') ){
-        $image_id       =   get_post_thumbnail_id();
-        $share_img      =   wp_get_attachment_image_src( $image_id, 'full');
-        $the_post       =   get_post($post->ID); 
-        $share_img_path =   '';
-        
-        if( isset($share_img[0]) ){
-            $share_img_path= $share_img[0];
-        }
-        ?>
-
-        
-
-        <meta property="og:image" content="<?php print esc_url($share_img_path); ?>"/>
-        <meta property="og:image:secure_url" content="<?php print esc_url($share_img_path); ?>" />
-        <meta property="og:description"  content=" <?php print wp_strip_all_tags( $the_post->post_content);?>" />
-    <?php }
-
+// Load the Elementor design studio integration if available.
+$studio_bootstrap = WPESTATE_PLUGIN_PATH . 'wprentals-studio/wprentals-elementor-design-studio.php';
+if (file_exists($studio_bootstrap)) {
+    require_once $studio_bootstrap;
 }
+// Initialize the loader - it will handle its own timing now
+WpRentals_Loader::get_instance();
+/**
+ * Register core plugin hooks
+ * These hooks initialize the plugin's basic functionality
+ */
+
+
+/**
+ * Plugin activation handler
+ * Triggers on plugin activation
+ *
+ * @since 4.0
+ * @return void
+ */
+
+function wpestate_rentals_functionality_plugin_activated() {
+    do_action('wpestate_rentals_plugin_activated');
+}
+
+/**
+ * Plugin deactivation handler
+ * Triggers on plugin deactivation
+ *
+ * @since 4.0
+ * @return void
+ */
+
+function wpestate_rentals_deactivate() {
+    do_action('wpestate_rentals_plugin_deactivate');
+}
+/**
+ * Flush rewrite rules after the plugin is updated to keep custom slugs valid.
+ *
+ * @since 4.0
+ * @param WP_Upgrader $upgrader The upgrader instance.
+ * @param array       $options  Details about the upgrade process.
+ * @return void
+ */
+function wpestate_rentals_flush_rewrite_rules_on_update($upgrader, $options) {
+    if (empty($options['action']) || 'update' !== $options['action']) {
+        return;
+    }
+
+    if (empty($options['type']) || 'plugin' !== $options['type']) {
+        return;
+    }
+
+    $updated_plugins = array();
+
+    if (!empty($options['plugin'])) {
+        $updated_plugins[] = $options['plugin'];
+    }
+
+    if (!empty($options['plugins']) && is_array($options['plugins'])) {
+        $updated_plugins = array_merge($updated_plugins, $options['plugins']);
+    }
+
+    if (in_array(WPESTATE_PLUGIN_BASE, $updated_plugins, true)) {
+        update_option('wpestate_rentals_flush_rewrite_rules', '1');
+    }
+}
+
+/**
+ * Flush rewrite rules after the custom post types have been registered.
+ *
+ * @since 4.0
+ * @return void
+ */
+function wpestate_rentals_maybe_flush_rewrite_rules() {
+    if (!get_option('wpestate_rentals_flush_rewrite_rules')) {
+        return;
+    }
+
+    flush_rewrite_rules();
+    delete_option('wpestate_rentals_flush_rewrite_rules');
+}
+
+
+
+add_action('wp_enqueue_scripts', 'wpestate_rentals_enqueue_styles');
+add_action('admin_enqueue_scripts', 'wpestate_rentals_enqueue_styles_admin');
+add_action('plugins_loaded', 'wpestate_rentals_functionality_loaded');
+register_activation_hook(__FILE__, 'wpestate_rentals_functionality_plugin_activated');
+register_deactivation_hook(__FILE__, 'wpestate_rentals_deactivate');
+
+
+add_action('init', 'wpestate_rentals_maybe_flush_rewrite_rules', 20);
+add_action('upgrader_process_complete', 'wpestate_rentals_flush_rewrite_rules_on_update', 10, 2);
+
+
+

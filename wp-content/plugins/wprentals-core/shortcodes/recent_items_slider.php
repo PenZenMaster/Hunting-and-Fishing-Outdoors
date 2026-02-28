@@ -51,7 +51,7 @@ function wpestate_slider_recent_posts_pictures($attributes, $content = null) {
         $title=$attributes['title'];
     }
       
-      print_r($attributes);
+
       $attributes = shortcode_atts(
                 array(
                     'title'                 =>  '',
@@ -68,7 +68,7 @@ function wpestate_slider_recent_posts_pictures($attributes, $content = null) {
                 ), $attributes) ;
       
       
-      print_r($attributes);
+
 
     if ( isset($attributes['category_ids']) ){
         $category=$attributes['category_ids'];
@@ -253,7 +253,7 @@ function wpestate_slider_recent_posts_pictures($attributes, $content = null) {
     }
 
     
-    print_r($args);
+
     
     if( $recent_posts===false){
 

@@ -1,6 +1,6 @@
 <?php
 namespace ElementorWpRentals\Widgets;
-
+use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
@@ -263,9 +263,8 @@ class WpRentals_Tabs extends Widget_Base
                     '{{WRAPPER}} #tab_prpg.wpestate_elementor_tabs li a:hover'=> 'border-bottom: 3px solid {{VALUE}};color: {{VALUE}};',
 
                 ],
-                'scheme' => [
-                    'type' =>  \Elementor\Core\Schemes\Color::get_type(),
-                    'value' => \Elementor\Core\Schemes\Color::COLOR_4,
+                'global' => [
+                    'default' => Global_Colors::COLOR_ACCENT,
                 ],
             ]
         );

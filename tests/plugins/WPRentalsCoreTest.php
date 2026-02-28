@@ -36,10 +36,14 @@ class WPRentalsCoreTest extends PolyfillsTestCase {
 	public function test_required_plugin_files_exist() {
 		$plugin_dir = dirname( __DIR__, 2 ) . '/wp-content/plugins/wprentals-core';
 
-		// Check for common plugin files
+		// Core plugin entry point and key subdirectories present in 3.17.0.
+		// Note: admin/admin-init.php and admin/options-init.php were removed in
+		// the 3.17.0 restructure; real-estate-menu.php and white-label.php are
+		// the new equivalents.
 		$required_files = [
-			'admin/admin-init.php',
-			'admin/options-init.php',
+			'wprentals-core.php',
+			'admin/real-estate-menu.php',
+			'admin/white-label.php',
 		];
 
 		foreach ( $required_files as $file ) {

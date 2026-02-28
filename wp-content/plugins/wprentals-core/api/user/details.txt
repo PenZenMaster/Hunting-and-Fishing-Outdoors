@@ -1,0 +1,191 @@
+# WPRentals User Role & Capability System
+## Technical Documentation
+
+### System Overview
+The WPRentals user management system consists of four main components that handle user roles, capabilities, and permissions within the WordPress rental property management system:
+
+1. `user.php` - Core initialization and constants
+2. `role-management.php` - Role creation and removal
+3. `capability-management.php` - Dynamic capability handling
+4. `user-role-assignment.php` - User-role relationships
+
+### Execution Flow
+
+#### 1. Plugin Activation
+When the plugin is activated, the following sequence occurs:
+
+```
+Plugin Activation
+↓
+wprentals_create_custom_roles()
+↓
+wprentals_update_capability_state()
+↓
+wprentals_activate_capability_updates()
+```
+
+This creates the basic role structure and sets initial capabilities.
+
+#### 2. Runtime Operation
+During normal operation, the system maintains roles and capabilities through several mechanisms:
+
+a) Admin Settings Changes:
+```
+Update wp_estate_separate_users setting
+↓
+wprentals_update_renter_caps() triggered
+↓
+Capabilities updated and state stored
+```
+
+b) User Role Assignment:
+```
+Admin assigns role
+↓
+wprentals_core_set_role_to_user()
+↓
+Role assigned with security checks
+```
+
+### Component Details
+
+#### 1. Role Management (role-management.php)
+- **Primary Purpose**: Creates and maintains custom roles (Owner, Renter)
+- **Key Functions**:
+  - `wprentals_create_custom_roles()`: Creates initial roles with baseline capabilities
+  - `wprentals_remove_user_role()`: Cleanup during deactivation
+  - `wprentals_repair_role_capabilities()`: Recovery function for corrupted roles
+
+**Security Features**:
+- Nonce verification
+- Capability checks
+- Rate limiting
+- Input sanitization
+
+#### 2. Capability Management (capability-management.php)
+- **Primary Purpose**: Handles dynamic capability updates based on settings
+- **State Management**:
+  - Stores capability state in wp_options
+  - Only updates when necessary
+  - Prevents redundant operations
+
+**Key Workflows**:
+1. Setting Change Detection:
+   - Monitors wp_estate_separate_users option
+   - Triggers updates only on changes
+   - Maintains state consistency
+
+2. Capability Sync:
+   - Regular admin checks for sync
+   - Automatic repair if mismatched
+   - Logged for debugging
+
+#### 3. User Role Assignment (user-role-assignment.php)
+- **Primary Purpose**: Handles user-role relationships
+- **Security Measures**:
+  - Prevents privilege escalation
+  - Validates role assignments
+  - Rate limits modifications
+
+### Important Considerations
+
+#### 1. Role Hierarchy
+```
+Administrator
+↓
+Owner/Property Manager
+↓
+Renter
+↓
+Subscriber
+```
+
+#### 2. Capability Groups
+- Property Management
+- Booking Operations
+- Invoice Access
+- Message Management
+- Search Functionality
+- Agent Management
+
+#### 3. Security Measures
+- All role modifications require nonce verification
+- Rate limiting prevents abuse
+- Capability changes are logged
+- Input sanitization on all operations
+- Role escalation prevention
+
+### Common Operations
+
+#### 1. Adding a New User Role
+```php
+wprentals_core_set_role_to_user($user_id, 'owner');
+```
+
+#### 2. Checking User Capabilities
+```php
+wprentals_core_user_has_role($user_id, WPRENTALS_ROLE_RENTER);
+```
+
+#### 3. Updating Renter Capabilities
+```php
+wprentals_update_renter_caps($old_value, $new_value);
+```
+
+### Debugging
+
+#### 1. Error Logs
+The system logs important operations to WordPress error log:
+- Role creation/deletion
+- Capability modifications
+- Failed security checks
+- Rate limit violations
+
+#### 2. State Verification
+Check capability state:
+```php
+get_option('wprentals_renter_caps_state');
+```
+
+### Performance Considerations
+
+1. **Capability Updates**:
+   - Only run when settings change
+   - Cached state prevents redundant checks
+   - Admin-only verification routines
+
+2. **Role Operations**:
+   - Rate limited to prevent abuse
+   - Batched capability assignments
+   - Efficient cleanup routines
+
+### Extension Points
+
+1. **Filters**:
+   - `wprentals_role_post_types`: Modify manageable post types
+   - Custom capability validation
+
+2. **Actions**:
+   - `wprentals_before_roles_creation`
+   - `wprentals_after_roles_creation`
+   - `wprentals_before_roles_removal`
+   - `wprentals_after_roles_removal`
+
+### Best Practices
+
+1. **Role Modifications**:
+   - Always use provided functions
+   - Verify capabilities before assignment
+   - Handle errors appropriately
+
+2. **Capability Management**:
+   - Don't modify capabilities directly
+   - Use state management functions
+   - Log significant changes
+
+3. **Security**:
+   - Always verify nonces
+   - Check user capabilities
+   - Sanitize all inputs
+   - Rate limit operations
+

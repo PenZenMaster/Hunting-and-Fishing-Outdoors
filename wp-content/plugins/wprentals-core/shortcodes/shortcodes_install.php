@@ -103,14 +103,41 @@ function wpestate_register_shortcodes() {
     add_shortcode('simple_term_list','wpestate_simple_term_list');
     add_shortcode('booking_form','wpestate_booking_form');
     add_shortcode('full_map','wpestate_full_map_shortcode');
-    
     add_shortcode('availability_calendar','wpestate_availability_calendar');
+
+
 }
 
 
-add_action( 'init', 'wprentals_autocomplete_populate',1 );
+add_action( 'init', 'wprentals_autocomplete_populate',5 );
 
-function wprentals_autocomplete_populate () {
+/**
+ * Populates global arrays for property taxonomy autocomplete functionality.
+ * 
+ * This function initializes and populates global arrays used for property filtering 
+ * and autocomplete features. It handles four main taxonomies:
+ * - property_city
+ * - property_area
+ * - property_category
+ * - property_action_category
+ * 
+ * Each taxonomy's terms are cached using WordPress transients for 12 hours to optimize
+ * performance and reduce database queries.
+ * 
+ * @since 1.0.0
+ * @uses get_transient() To retrieve cached taxonomy terms
+ * @uses set_transient() To cache taxonomy terms
+ * @global array $all_tax Combined array of all taxonomy terms
+ * @global array $wprentals_property_category_values Property category terms
+ * @global array $wprentals_all_tax_labels Labels for all taxonomy terms
+ * @global array $wprentals_property_action_category_values Property action terms
+ * @global array $wprentals_property_city_values Property city terms
+ * @global array $wprentals_property_area_values Property area terms
+ */
+
+
+function wprentals_autocomplete_populate() {
+    // Declare globals
     global $all_tax;
     global $wprentals_property_category_values;
     global $wprentals_all_tax_labels;
@@ -118,96 +145,103 @@ function wprentals_autocomplete_populate () {
     global $wprentals_property_city_values;
     global $wprentals_property_area_values;
 
-    $city_array=array();
-    $area_array=array();
-    $all_places=array();
-    $all_tax=array();
-    $global_categories=array();
-    $category_array=array();
-    $action_array=array();
-
-    $wprentals_property_city_values=array();
-    $wprentals_property_area_values =array();
-
+    // Initialize arrays
+    $all_tax = array();
+    $wprentals_property_city_values = array();
+    $wprentals_property_area_values = array();
     $wprentals_property_category_values = array();
     $wprentals_property_action_category_values = array();
+    $wprentals_all_tax_labels = array();
 
-
-    $terms_city = get_terms( array(
+    // Process property cities
+    $terms_city = get_transient('wpestate_city_terms');
+    if ($terms_city === false) {
+        $terms_city = get_terms(array(
             'taxonomy' => 'property_city',
             'hide_empty' => false,
-        ) );
-
-    foreach($terms_city as $term){
-        $places[$term->name]= $term->term_id;
-        $temp_array=array();
-        $temp_array['label'] = $term->name;
-        $temp_array['value'] = $term->term_id;
-
-        $all_tax[]                      =   $temp_array;
-        $wprentals_all_tax_labels[$term->term_id] =   $term->name;
-        $wprentals_property_city_values[]         =   $temp_array;
+        ));
+        set_transient('wpestate_city_terms', $terms_city, 12 * HOUR_IN_SECONDS);
+    }
+    
+    if (is_array($terms_city)) {
+        foreach ($terms_city as $term) {
+            $temp_array = array(
+                'label' => $term->name,
+                'value' => $term->term_id
+            );
+            $all_tax[] = $temp_array;
+            $wprentals_all_tax_labels[$term->term_id] = $term->name;
+            $wprentals_property_city_values[] = $temp_array;
+        }
     }
 
-
-
-    $terms_city = get_terms( array(
+    // Process property areas
+    $terms_area = get_transient('wpestate_area_terms');
+    if ($terms_area === false) {
+        $terms_area = get_terms(array(
             'taxonomy' => 'property_area',
             'hide_empty' => false,
-    ) );
-
-    foreach($terms_city as $term){
-        $places[$term->name]= $term->term_id;
-        $temp_array=array();
-        $temp_array['label'] = $term->name;
-        $temp_array['value'] = $term->term_id;
-        $all_places[]=$temp_array;
-        $area_array[]=$temp_array;
-
-        $all_tax[]                      =   $temp_array;
-        $wprentals_all_tax_labels[$term->term_id] =   $term->name;
-        $wprentals_property_area_values[]         =   $temp_array;
-
+        ));
+        set_transient('wpestate_area_terms', $terms_area, 12 * HOUR_IN_SECONDS);
+    }
+    
+    if (is_array($terms_area)) {
+        foreach ($terms_area as $term) {
+            $temp_array = array(
+                'label' => $term->name,
+                'value' => $term->term_id
+            );
+            $all_tax[] = $temp_array;
+            $wprentals_all_tax_labels[$term->term_id] = $term->name;
+            $wprentals_property_area_values[] = $temp_array;
+        }
     }
 
-
-    $terms_category = get_terms( array(
+    // Process property categories (using existing transient)
+    $terms_category = get_transient('wpestate_category_terms');
+    if ($terms_category === false) {
+        $terms_category = get_terms(array(
             'taxonomy' => 'property_category',
             'hide_empty' => false,
-    ) );
-
-    foreach($terms_category as $term){
-        $temp_array=array();
-        $temp_array['label'] = $term->name;
-        $temp_array['value'] = $term->term_id;
-        $category_array[]=$temp_array;
-        $global_categories[]=$temp_array;
-
-        $all_tax[]                      =   $temp_array;
-        $wprentals_all_tax_labels[$term->term_id] =   $term->name;
-        $wprentals_property_category_values[]     =   $temp_array;
+        ));
+        set_transient('wpestate_category_terms', $terms_category, 12 * HOUR_IN_SECONDS);
+    }
+    
+    if (is_array($terms_category)) {
+        foreach ($terms_category as $term) {
+            $temp_array = array(
+                'label' => $term->name,
+                'value' => $term->term_id
+            );
+            $all_tax[] = $temp_array;
+            $wprentals_all_tax_labels[$term->term_id] = $term->name;
+            $wprentals_property_category_values[] = $temp_array;
+        }
     }
 
-
-    $terms_category = get_terms(array(
+    // Process property actions (using existing transient)
+    $terms_action = get_transient('wpestate_action_terms');
+    if ($terms_action === false) {
+        $terms_action = get_terms(array(
             'taxonomy' => 'property_action_category',
             'hide_empty' => false,
-                ));
-
-    foreach ($terms_category as $term) {
-
-        $temp_array = array();
-        $temp_array['label'] = $term->name;
-        $temp_array['value'] = $term->term_id;
-
-        $all_tax[]                          =   $temp_array;
-        $action_array[]                     =   $temp_array;
-        $wprentals_all_tax_labels[$term->term_id]     =   $term->name;
-        $wprentals_property_action_category_values[]  =   $temp_array;
+        ));
+        set_transient('wpestate_action_terms', $terms_action, 12 * HOUR_IN_SECONDS);
     }
+    
+    if (is_array($terms_action)) {
+        foreach ($terms_action as $term) {
+            $temp_array = array(
+                'label' => $term->name,
+                'value' => $term->term_id
+            );
+            $all_tax[] = $temp_array;
+            $wprentals_all_tax_labels[$term->term_id] = $term->name;
+            $wprentals_property_action_category_values[] = $temp_array;
+        }
+    }
+
 }
-
-
 
 
 
@@ -233,6 +267,8 @@ if( function_exists('vc_map') ):
         global $wprentals_property_city_values;
         global $wprentals_property_area_values;
 
+    
+
         wp_register_script( 'avalability_control_elementor', trailingslashit( get_template_directory_uri() ).'js/avalability_control_elementor.js', '', '1.0.0', true );
    
 
@@ -246,8 +282,7 @@ if( function_exists('vc_map') ):
                    "base" => "full_map",
                    "class" => "",
                    "category" => esc_html__('Content','wprentals-core'),
-                   'admin_enqueue_js' => array(WPESTATE_PLUGIN_DIR_URL.'/vc_extend/bartag.js'),
-                   'admin_enqueue_css' => array(WPESTATE_PLUGIN_DIR_URL.'/vc_extend/bartag.css'),
+                
                    'weight'=>100,
                    'icon'   =>'wpestate_vc_logo',
                    'description'=>esc_html__('Map with Listings','wprentals-core'),
@@ -387,12 +422,7 @@ if( function_exists('vc_map') ):
             "base" => "availability_calendar",
             "class" => "",
             "category" => esc_html__( 'Content','wprentals-core'),
-            'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-            'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
-         
-            //'front_enqueue_js' => get_theme_file_uri( '/js/avalability_control_elementor.js' ),
           
-                   
             'weight'=>100,
             'icon'   =>'wpestate_vc_logo',
             'description'=>esc_html__( 'Avalability Calendar for a single Property','wprentals-core'),
@@ -401,10 +431,10 @@ if( function_exists('vc_map') ):
                     "type" => "textfield",
                     "holder" => "div",
                     "class" => "",
-                    "heading" => esc_html__( "Id of the property","wprentals"),
+                    "heading" => esc_html__( "Id of the property","wprentals-core"),
                     "param_name" => "id",
                     "value" => "",
-                    "description" => esc_html__( "The id of the property","wprentals")
+                    "description" => esc_html__( "The id of the property","wprentals-core")
                  ),
 
             )
@@ -419,8 +449,6 @@ if( function_exists('vc_map') ):
             "base" => "booking_form",
             "class" => "",
             "category" => esc_html__( 'Content','wprentals-core'),
-            'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-            'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
             'weight'=>100,
             'icon'   =>'wpestate_vc_logo',
             'description'=>esc_html__( 'Booking Form for a single property','wprentals-core'),
@@ -429,10 +457,10 @@ if( function_exists('vc_map') ):
                     "type" => "textfield",
                     "holder" => "div",
                     "class" => "",
-                    "heading" => esc_html__( "Id of the property","wprentals"),
+                    "heading" => esc_html__( "Id of the property","wprentals-core"),
                     "param_name" => "id",
                     "value" => "",
-                    "description" => esc_html__( "The id of the property","wprentals")
+                    "description" => esc_html__( "The id of the property","wprentals-core")
                  ),
 
             )
@@ -455,12 +483,10 @@ if( function_exists('vc_map') ):
 
     vc_map(
     array(
-       "name" => esc_html__( "Featured Category","wprentals"),
+       "name" => esc_html__( "Featured Category","wprentals-core"),
        "base" => "featured_place",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Featured Category Shortcode','wprentals-core'),
@@ -469,10 +495,10 @@ if( function_exists('vc_map') ):
                 "type" => "autocomplete",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Category Name","wprentals"),
+                "heading" => esc_html__( "Category Name","wprentals-core"),
                 "param_name" => "id",
                 "value" => "",
-                "description" => esc_html__( "Type the category name you want to show","wprentals"),
+                "description" => esc_html__( "Type the category name you want to show","wprentals-core"),
                 'settings' => array(
                             'multiple' => true,
                             'sortable' => true,
@@ -489,30 +515,30 @@ if( function_exists('vc_map') ):
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Type","wprentals"),
+                "heading" => esc_html__( "Type","wprentals-core"),
                 "param_name" => "type",
                 "value" => $featured_places_array,
-                "description" => esc_html__( "Select type1,type2 or type3","wprentals")
+                "description" => esc_html__( "Select type1,type2 or type3","wprentals-core")
             ),
 
             array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => __("Featured label", "wprentals"),
+                "heading" => __("Featured label", "wprentals-core"),
                 "param_name" => "places_label",
                 "value" => "",
-                "description" => __("Featured_label text (use only for design type 3)", "wprentals")
+                "description" => __("Featured_label text (use only for design type 3)", "wprentals-core")
             ),
 
             array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => __("Image Height in px", "wprentals"),
+                "heading" => __("Image Height in px", "wprentals-core"),
                 "param_name" => "places_height",
                 "value" => "",
-                "description" => __("Image Height in px", "wprentals")
+                "description" => __("Image Height in px", "wprentals-core")
             )
 
         )
@@ -531,12 +557,10 @@ if( function_exists('vc_map') ):
     $list_type  =   array('horizontal','vertical');
     $term_show_count=array('yes','no');
     vc_map( array(
-        "name" => esc_html__( "Simple Term List","wprentals"),//done
+        "name" => esc_html__( "Simple Term List","wprentals-core"),//done
         "base" => "simple_term_list",
         "class" => "",
         "category" => esc_html__( 'Content','wprentals-core'),
-        'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-        'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
         'weight'=>100,
         'icon'   =>'wpestate_vc_logo',
         'description'=>esc_html__( 'Simple Term List','wprentals-core'),
@@ -546,29 +570,29 @@ if( function_exists('vc_map') ):
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Category","wprentals"),
+                "heading" => esc_html__( "Category","wprentals-core"),
                 "param_name" => "term_list_category",
 
                 "value" => array_flip($categories),
-                "description" => esc_html__( "Terms from what category","wprentals")
+                "description" => esc_html__( "Terms from what category","wprentals-core")
             ),
             array(
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "List style type","wprentals"),
+                "heading" => esc_html__( "List style type","wprentals-core"),
                 "param_name" => "term_list_type",
                 "value" => $list_type,
-                "description" => esc_html__( "List style type","wprentals")
+                "description" => esc_html__( "List style type","wprentals-core")
             ),
             array(
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Show Term Count","wprentals"),
+                "heading" => esc_html__( "Show Term Count","wprentals-core"),
                 "param_name" => "term_show_count",
                 "value" => $term_show_count,
-                "description" => esc_html__( "Show Term Count","wprentals")
+                "description" => esc_html__( "Show Term Count","wprentals-core")
             ),
 
         )
@@ -578,12 +602,10 @@ if( function_exists('vc_map') ):
 
 
     vc_map( array(
-        "name" => esc_html__( "Categories List","wprentals"),//done
+        "name" => esc_html__( "Categories List","wprentals-core"),//done
         "base" => "places_list",
         "class" => "",
         "category" => esc_html__( 'Content','wprentals-core'),
-        'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-        'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
         'weight'=>100,
         'icon'   =>'wpestate_vc_logo',
         'description'=>esc_html__( 'Categories List','wprentals-core'),
@@ -592,10 +614,10 @@ if( function_exists('vc_map') ):
                 "type" => "autocomplete",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Type the category name you want to show","wprentals"),
+                "heading" => esc_html__( "Type the category name you want to show","wprentals-core"),
                 "param_name" => "place_list",
                 "value" => "",
-                "description" => esc_html__( "Type the category name you want to show","wprentals"),
+                "description" => esc_html__( "Type the category name you want to show","wprentals-core"),
                 'settings' => array(
                             'multiple' => true,
                             'sortable' => true,
@@ -611,28 +633,28 @@ if( function_exists('vc_map') ):
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Categories per row","wprentals"),
+                "heading" => esc_html__( "Categories per row","wprentals-core"),
                 "param_name" => "place_per_row",
                 "value" => "4",
-                "description" => esc_html__( "How many items listed per row?","wprentals")
+                "description" => esc_html__( "How many items listed per row?","wprentals-core")
             ),
             array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Space between units","wprentals"),
+                "heading" => esc_html__( "Space between units","wprentals-core"),
                 "param_name" => "spaces_unit",
                 "value" => "8",
-                "description" => esc_html__( "Only numbers,in pixels","wprentals")
+                "description" => esc_html__( "Only numbers,in pixels","wprentals-core")
             ),
             array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Extra Class Name","wprentals"),
+                "heading" => esc_html__( "Extra Class Name","wprentals-core"),
                 "param_name" => "extra_class_name",
                 "value" => "",
-                "description" => esc_html__( "Extra Class Name","wprentals")
+                "description" => esc_html__( "Extra Class Name","wprentals-core")
             )
         )
     )
@@ -643,12 +665,10 @@ if( function_exists('vc_map') ):
     $featured_listings=array('no','yes');
     vc_map(
     array(
-       "name" => esc_html__( "Recent Items Slider","wprentals"),//done
+       "name" => esc_html__( "Recent Items Slider","wprentals-core"),//done
        "base" => "slider_recent_items",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Recent Items Slider Shortcode','wprentals-core'),
@@ -657,20 +677,20 @@ if( function_exists('vc_map') ):
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Title","wprentals"),
+             "heading" => esc_html__( "Title","wprentals-core"),
              "param_name" => "title",
              "value" => "",
-             "description" => esc_html__( "Section Title","wprentals")
+             "description" => esc_html__( "Section Title","wprentals-core")
           ),
 
            array(
              "type" => "autocomplete",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Type Category names","wprentals"),
+             "heading" => esc_html__( "Type Category names","wprentals-core"),
              "param_name" => "category_ids",
              "value" => "",
-             "description" => esc_html__( "list of category names (*only for properties)","wprentals"),
+             "description" => esc_html__( "list of category names (*only for properties)","wprentals-core"),
                             "dependency" => array(
                                 "element" => "type",
                                 "value" => "properties"
@@ -691,10 +711,10 @@ if( function_exists('vc_map') ):
              "type" => "autocomplete",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Type Action names","wprentals"),
+             "heading" => esc_html__( "Type Action names","wprentals-core"),
              "param_name" => "action_ids",
              "value" => "",
-             "description" => esc_html__( "list of action names (*only for properties)","wprentals"),
+             "description" => esc_html__( "list of action names (*only for properties)","wprentals-core"),
                             "dependency" => array(
                                 "element" => "type",
                                 "value" => "properties"
@@ -714,10 +734,10 @@ if( function_exists('vc_map') ):
              "type" => "autocomplete",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Type City names ","wprentals"),
+             "heading" => esc_html__( "Type City names ","wprentals-core"),
              "param_name" => "city_ids",
              "value" => "",
-             "description" => esc_html__( "list of city names (*only for properties)","wprentals"),
+             "description" => esc_html__( "list of city names (*only for properties)","wprentals-core"),
                             "dependency" => array(
                                 "element" => "type",
                                 "value" => "properties"
@@ -737,10 +757,10 @@ if( function_exists('vc_map') ):
              "type" => "autocomplete",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Type Area names","wprentals"),
+             "heading" => esc_html__( "Type Area names","wprentals-core"),
              "param_name" => "area_ids",
              "value" => "",
-             "description" => esc_html__( "list of area names (*only for properties)","wprentals"),
+             "description" => esc_html__( "list of area names (*only for properties)","wprentals-core"),
                             "dependency" => array(
                                 "element" => "type",
                                 "value" => "properties"
@@ -760,34 +780,34 @@ if( function_exists('vc_map') ):
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "No of items","wprentals"),
+             "heading" => esc_html__( "No of items","wprentals-core"),
              "param_name" => "number",
              "value" => 4,
-             "description" => esc_html__( "how many items","wprentals")
+             "description" => esc_html__( "how many items","wprentals-core")
           ),array(
              "type" => "dropdown",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Show featured listings only?","wprentals"),
+             "heading" => esc_html__( "Show featured listings only?","wprentals-core"),
              "param_name" => "show_featured_only",
              "value" => $featured_listings,
-             "description" => esc_html__( "Show featured listings only? (yes/no)","wprentals")
+             "description" => esc_html__( "Show featured listings only? (yes/no)","wprentals-core")
           ), array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Extra Class Name","wprentals"),
+                "heading" => esc_html__( "Extra Class Name","wprentals-core"),
                 "param_name" => "extra_class_name",
                 "value" => "",
-                "description" => esc_html__( "Extra Class Name","wprentals")
+                "description" => esc_html__( "Extra Class Name","wprentals-core")
             ) ,array(
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Auto scroll period","wprentals"),
+             "heading" => esc_html__( "Auto scroll period","wprentals-core"),
              "param_name" => "autoscroll",
              "value" => "0",
-             "description" => esc_html__( "Auto scroll period in seconds - 0 for manual scroll, 1000 for 1 second, 2000 for 2 seconds and so on.","wprentals")
+             "description" => esc_html__( "Auto scroll period in seconds - 0 for manual scroll, 1000 for 1 second, 2000 for 2 seconds and so on.","wprentals-core")
           )
         )
     )
@@ -801,12 +821,10 @@ if( function_exists('vc_map') ):
 
     $icon_position  =array('left','central');
       vc_map( array(
-       "name" => esc_html__( "Icon content box","wprentals"),//done
+       "name" => esc_html__( "Icon content box","wprentals-core"),//done
        "base" => "icon_container",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
         'icon'   =>'wpestate_vc_logo',
         'description'=>esc_html__( 'Icon Content Box Shortcode','wprentals-core'),
@@ -815,28 +833,28 @@ if( function_exists('vc_map') ):
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Box Title","wprentals"),
+             "heading" => esc_html__( "Box Title","wprentals-core"),
              "param_name" => "title",
              "value" => "Title",
-             "description" => esc_html__( "Box Title goes here","wprentals")
+             "description" => esc_html__( "Box Title goes here","wprentals-core")
           ),
            array(
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Image url","wprentals"),
+             "heading" => esc_html__( "Image url","wprentals-core"),
              "param_name" => "image",
              "value" => "",
-             "description" => esc_html__( "Image or Icon url","wprentals")
+             "description" => esc_html__( "Image or Icon url","wprentals-core")
           ),
            array(
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Content of the box","wprentals"),
+             "heading" => esc_html__( "Content of the box","wprentals-core"),
              "param_name" => "content_box",
              "value" => "Content of the box goes here",
-             "description" => esc_html__( "Content of the box goes here","wprentals")
+             "description" => esc_html__( "Content of the box goes here","wprentals-core")
           )
           ,
 
@@ -844,28 +862,28 @@ if( function_exists('vc_map') ):
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Link","wprentals"),
+             "heading" => esc_html__( "Link","wprentals-core"),
              "param_name" => "link",
              "value" => "",
-             "description" => esc_html__( "The link with http:// in front","wprentals")
+             "description" => esc_html__( "The link with http:// in front","wprentals-core")
           ),
             array(
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Icon/Image Postion","wprentals"),
+                "heading" => esc_html__( "Icon/Image Postion","wprentals-core"),
                 "param_name" => "icon_type",
                 "value" => $icon_position,
-                "description" => esc_html__( "left or central","wprentals")
+                "description" => esc_html__( "left or central","wprentals-core")
              ),
             array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Title Font Size","wprentals"),
+                "heading" => esc_html__( "Title Font Size","wprentals-core"),
                 "param_name" => "title_font_size",
                 "value" => "24",
-                "description" => esc_html__( "Title Font Size","wprentals")
+                "description" => esc_html__( "Title Font Size","wprentals-core")
             )
 
        )
@@ -876,12 +894,10 @@ if( function_exists('vc_map') ):
     $spacer_type                    = array(1,2);
       vc_map(
            array(
-           "name" => esc_html__( "Spacer","wprentals"),
+           "name" => esc_html__( "Spacer","wprentals-core"),
            "base" => "spacer",
            "class" => "",
            "category" => esc_html__( 'Content','wprentals-core'),
-           'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-           'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
            'weight'=>102,
             'icon'   =>'wpestate_vc_logo',
             'description'=>esc_html__( 'Spacer Shortcode','wprentals-core'),
@@ -890,19 +906,19 @@ if( function_exists('vc_map') ):
                  "type" => "dropdown",
                  "holder" => "div",
                  "class" => "",
-                 "heading" => esc_html__( "Spacer Type","wprentals"),
+                 "heading" => esc_html__( "Spacer Type","wprentals-core"),
                  "param_name" => "type",
                  "value" => $spacer_type,
-                 "description" => esc_html__( "Space Type : 1 with no middle line, 2 with middle line","wprentals")
+                 "description" => esc_html__( "Space Type : 1 with no middle line, 2 with middle line","wprentals-core")
               )   ,
                array(
                  "type" => "textfield",
                  "holder" => "div",
                  "class" => "",
-                 "heading" => esc_html__( "Space height","wprentals"),
+                 "heading" => esc_html__( "Space height","wprentals-core"),
                  "param_name" => "height",
                  "value" => "40",
-                 "description" => esc_html__( "Space height in px","wprentals")
+                 "description" => esc_html__( "Space height in px","wprentals-core")
               )
            )
         )
@@ -911,12 +927,10 @@ if( function_exists('vc_map') ):
 
     $items_type                    = array('properties','articles');
     vc_map( array(
-       "name" => esc_html__( "List items by ID","wprentals"),//done
+       "name" => esc_html__( "List items by ID","wprentals-core"),//done
        "base" => "list_items_by_id",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
         'icon'   =>'wpestate_vc_logo',
         'description'=>esc_html__( 'List Items by ID Shortcode','wprentals-core'),
@@ -925,65 +939,65 @@ if( function_exists('vc_map') ):
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Title","wprentals"),
+             "heading" => esc_html__( "Title","wprentals-core"),
              "param_name" => "title",
              "value" => "",
-             "description" => esc_html__( "Section Title","wprentals")
+             "description" => esc_html__( "Section Title","wprentals-core")
           ),
           array(
              "type" => "dropdown",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "What type of items","wprentals"),
+             "heading" => esc_html__( "What type of items","wprentals-core"),
              "param_name" => "type",
              "value" => $items_type,
-             "description" => esc_html__( "List properties or articles","wprentals")
+             "description" => esc_html__( "List properties or articles","wprentals-core")
           ),
            array(
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Items IDs","wprentals"),
+             "heading" => esc_html__( "Items IDs","wprentals-core"),
              "param_name" => "ids",
              "value" => "",
-             "description" => esc_html__( "List of IDs separated by comma","wprentals")
+             "description" => esc_html__( "List of IDs separated by comma","wprentals-core")
           ),
            array(
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "No of items","wprentals"),
+             "heading" => esc_html__( "No of items","wprentals-core"),
              "param_name" => "number",
              "value" => "3",
-             "description" => esc_html__( "How many items do you want to show ?","wprentals")
+             "description" => esc_html__( "How many items do you want to show ?","wprentals-core")
           ) ,
 
            array(
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "No of items per row","wprentals"),
+             "heading" => esc_html__( "No of items per row","wprentals-core"),
              "param_name" => "rownumber",
              "value" => 4,
-             "description" => esc_html__( "The number of items per row","wprentals")
+             "description" => esc_html__( "The number of items per row","wprentals-core")
           ) ,
 
            array(
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Link to global listing","wprentals"),
+             "heading" => esc_html__( "Link to global listing","wprentals-core"),
              "param_name" => "link",
              "value" => "#",
-             "description" => esc_html__( "link to global listing with http","wprentals")
+             "description" => esc_html__( "link to global listing with http","wprentals-core")
           ) ,array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Extra Class Name","wprentals"),
+                "heading" => esc_html__( "Extra Class Name","wprentals-core"),
                 "param_name" => "extra_class_name",
                 "value" => "",
-                "description" => esc_html__( "Extra Class Name","wprentals")
+                "description" => esc_html__( "Extra Class Name","wprentals-core")
             )
        )
     ) );
@@ -996,8 +1010,6 @@ if( function_exists('vc_map') ):
            "base" => "testimonial",
            "class" => "",
            "category" => esc_html__( 'Content','wprentals-core'),
-           'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-           'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
            'weight'=>102,
            'icon'   =>'wpestate_vc_logo',
            'description'=>esc_html__( 'Testiomonial Shortcode','wprentals-core'),
@@ -1006,37 +1018,37 @@ if( function_exists('vc_map') ):
                  "type" => "textfield",
                  "holder" => "div",
                  "class" => "",
-                 "heading" => esc_html__( "Client Name","wprentals"),
+                 "heading" => esc_html__( "Client Name","wprentals-core"),
                  "param_name" => "client_name",
                  "value" => "Name Here",
-                 "description" => esc_html__( "Client name here","wprentals")
+                 "description" => esc_html__( "Client name here","wprentals-core")
               ),
                array(
                  "type" => "textfield",
                  "holder" => "div",
                  "class" => "",
-                 "heading" => esc_html__( "Title Client","wprentals"),
+                 "heading" => esc_html__( "Title Client","wprentals-core"),
                  "param_name" => "title_client",
                  "value" => "happy client",
-                 "description" => esc_html__( "title or client postion ","wprentals")
+                 "description" => esc_html__( "title or client postion ","wprentals-core")
               ),
                array(
                  "type" => "textfield",
                  "holder" => "div",
                  "class" => "",
-                 "heading" => esc_html__( "Image","wprentals"),
+                 "heading" => esc_html__( "Image","wprentals-core"),
                  "param_name" => "imagelinks",
                  "value" => "",
-                 "description" => esc_html__( "Path to client picture, (best size 120px  x 120px) ","wprentals")
+                 "description" => esc_html__( "Path to client picture, (best size 120px  x 120px) ","wprentals-core")
               ) ,
                array(
                  "type" => "textarea",
                  "holder" => "div",
                  "class" => "",
-                 "heading" => esc_html__( "Testimonial Text Here.","wprentals"),
+                 "heading" => esc_html__( "Testimonial Text Here.","wprentals-core"),
                  "param_name" => "testimonial_text",
                  "value" => "",
-                 "description" => esc_html__( "Testimonial Text Here. ","wprentals")
+                 "description" => esc_html__( "Testimonial Text Here. ","wprentals-core")
               ),
 
                 array(
@@ -1062,10 +1074,10 @@ if( function_exists('vc_map') ):
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Extra Class Name","wprentals"),
+                "heading" => esc_html__( "Extra Class Name","wprentals-core"),
                 "param_name" => "extra_class_name",
                 "value" => "",
-                "description" => esc_html__( "Extra Class Name","wprentals")
+                "description" => esc_html__( "Extra Class Name","wprentals-core")
                 ),
 
            )
@@ -1078,12 +1090,10 @@ if( function_exists('vc_map') ):
 
     vc_map(
     array(
-       "name" => esc_html__( "Recent Items","wprentals"),//done
+       "name" => esc_html__( "Recent Items","wprentals-core"),//done
        "base" => "recent_items",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Recent Items Shortcode','wprentals-core'),
@@ -1092,37 +1102,37 @@ if( function_exists('vc_map') ):
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Use without spaces between listings? (If yes, title or link to global listing will not show)","wprentals"),
+                "heading" => esc_html__( "Use without spaces between listings? (If yes, title or link to global listing will not show)","wprentals-core"),
                 "param_name" => "full_row",
                 "value" => $recent_items_space,
-                "description" => esc_html__( "Use without spaces between listings? (If yes, title or link to global listing will not show)","wprentals")
+                "description" => esc_html__( "Use without spaces between listings? (If yes, title or link to global listing will not show)","wprentals-core")
             ),
             array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Title","wprentals"),
+                "heading" => esc_html__( "Title","wprentals-core"),
                 "param_name" => "title",
                 "value" => "",
-                "description" => esc_html__( "Section Title","wprentals")
+                "description" => esc_html__( "Section Title","wprentals-core")
             ),
             array(
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "What type of items","wprentals"),
+                "heading" => esc_html__( "What type of items","wprentals-core"),
                 "param_name" => "type",
                 "value" => $items_type,
-                "description" => esc_html__( "List properties or articles","wprentals")
+                "description" => esc_html__( "List properties or articles","wprentals-core")
             ),
             array(
                 "type" => "autocomplete",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Type Category names","wprentals"),
+                "heading" => esc_html__( "Type Category names","wprentals-core"),
                 "param_name" => "category_ids",
                 "value" => "",
-                "description" => esc_html__( "list of category names","wprentals"),
+                "description" => esc_html__( "list of category names","wprentals-core"),
                                 "dependency" => array(
                                     "element" => "type",
                                     "value" => "properties"
@@ -1142,10 +1152,10 @@ if( function_exists('vc_map') ):
                 "type" => "autocomplete",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Type Action names","wprentals"),
+                "heading" => esc_html__( "Type Action names","wprentals-core"),
                 "param_name" => "action_ids",
                 "value" => "",
-                "description" => esc_html__( "list of action names(*only for properties)","wprentals"),
+                "description" => esc_html__( "list of action names(*only for properties)","wprentals-core"),
                                 "dependency" => array(
                                     "element" => "type",
                                     "value" => "properties"
@@ -1165,10 +1175,10 @@ if( function_exists('vc_map') ):
               "type" => "autocomplete",
               "holder" => "div",
               "class" => "",
-              "heading" => esc_html__( "Type City names ","wprentals"),
+              "heading" => esc_html__( "Type City names ","wprentals-core"),
               "param_name" => "city_ids",
               "value" => "",
-              "description" => esc_html__( "list of city names (*only for properties)","wprentals"),
+              "description" => esc_html__( "list of city names (*only for properties)","wprentals-core"),
                                 "dependency" => array(
                                     "element" => "type",
                                     "value" => "properties"
@@ -1188,10 +1198,10 @@ if( function_exists('vc_map') ):
               "type" => "autocomplete",
               "holder" => "div",
               "class" => "",
-              "heading" => esc_html__( "Type Area Names","wprentals"),
+              "heading" => esc_html__( "Type Area Names","wprentals-core"),
               "param_name" => "area_ids",
               "value" => "",
-              "description" => esc_html__( "list of area names (*only for properties)","wprentals"),
+              "description" => esc_html__( "list of area names (*only for properties)","wprentals-core"),
                                 "dependency" => array(
                                     "element" => "type",
                                     "value" => "properties"
@@ -1211,54 +1221,54 @@ if( function_exists('vc_map') ):
               "type" => "textfield",
               "holder" => "div",
               "class" => "",
-              "heading" => esc_html__( "No of items","wprentals"),
+              "heading" => esc_html__( "No of items","wprentals-core"),
               "param_name" => "number",
               "value" => 4,
-              "description" => esc_html__( "how many items","wprentals")
+              "description" => esc_html__( "how many items","wprentals-core")
             ) ,
             array(
               "type" => "textfield",
               "holder" => "div",
               "class" => "",
-              "heading" => esc_html__( "No of items per row","wprentals"),
+              "heading" => esc_html__( "No of items per row","wprentals-core"),
               "param_name" => "rownumber",
               "value" => 4,
-              "description" => esc_html__( "The number of items per row","wprentals")
+              "description" => esc_html__( "The number of items per row","wprentals-core")
             ) ,
 
             array(
               "type" => "textfield",
               "holder" => "div",
               "class" => "",
-              "heading" => esc_html__( "Link to global listing","wprentals"),
+              "heading" => esc_html__( "Link to global listing","wprentals-core"),
               "param_name" => "link",
               "value" => "",
-              "description" => esc_html__( "link to global listing","wprentals")
+              "description" => esc_html__( "link to global listing","wprentals-core")
             ),array(
               "type" => "dropdown",
               "holder" => "div",
               "class" => "",
-              "heading" => esc_html__( "Show featured listings only?","wprentals"),
+              "heading" => esc_html__( "Show featured listings only?","wprentals-core"),
               "param_name" => "show_featured_only",
               "value" => $recent_show_feat_only,
-              "description" => esc_html__( "Show featured listings only?","wprentals")
+              "description" => esc_html__( "Show featured listings only?","wprentals-core")
             ) ,
             array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Extra Class Name","wprentals"),
+                "heading" => esc_html__( "Extra Class Name","wprentals-core"),
                 "param_name" => "extra_class_name",
                 "value" => "",
-                "description" => esc_html__( "Extra Class Name","wprentals")
+                "description" => esc_html__( "Extra Class Name","wprentals-core")
             ),array(
              "type" => "dropdown",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Random Pick","wprentals"),
+             "heading" => esc_html__( "Random Pick","wprentals-core"),
              "param_name" => "random_pick",
              "value" => $random_pick,
-             "description" => esc_html__( "Choose if properties should display randomly on page refresh. (*only for properties). The yes option may cause the site to load slowly so use it cautiously!","wprentals")
+             "description" => esc_html__( "Choose if properties should display randomly on page refresh. (*only for properties). The yes option may cause the site to load slowly so use it cautiously!","wprentals-core")
           )
         )
     )
@@ -1268,12 +1278,10 @@ if( function_exists('vc_map') ):
       $design_types=array(1=>1,2=>2);
     vc_map(
     array(
-       "name" => esc_html__( "Featured Owner","wprentals"),
+       "name" => esc_html__( "Featured Owner","wprentals-core"),
        "base" => "featured_agent",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Featured Owner Shortcode','wprentals-core'),
@@ -1282,46 +1290,44 @@ if( function_exists('vc_map') ):
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Owner Id","wprentals"),
+                "heading" => esc_html__( "Owner Id","wprentals-core"),
                 "param_name" => "id",
                 "value" => "0",
-                "description" => esc_html__( "Owner Id","wprentals")
+                "description" => esc_html__( "Owner Id","wprentals-core")
             ),
             array(
                 "type" => "textarea",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Notes","wprentals"),
+                "heading" => esc_html__( "Notes","wprentals-core"),
                 "param_name" => "notes",
                 "value" => "",
-                "description" => esc_html__( "Notes for featured owner","wprentals")
+                "description" => esc_html__( "Notes for featured owner","wprentals-core")
             ),
             array(
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Type","wprentals"),
+                "heading" => esc_html__( "Type","wprentals-core"),
                 "param_name" => "design_type",
                 "value" => $design_types,
-                "description" => esc_html__( "Design Type 1 or 2","wprentals")
+                "description" => esc_html__( "Design Type 1 or 2","wprentals-core")
             )
        )
     )
     );
 
     $featured_article_type=array(
-            1=>__("type1","wprentals"),
-            2=>__("type2","wprentals"),
-            3=>__("type3","wprentals")
+            1=>__("type1","wprentals-core"),
+            2=>__("type2","wprentals-core"),
+            3=>__("type3","wprentals-core")
         );
     vc_map(
        array(
-       "name" => esc_html__( "Featured Article","wprentals"),
+       "name" => esc_html__( "Featured Article","wprentals-core"),
        "base" => "featured_article",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Featured Article Shortcode','wprentals-core'),
@@ -1330,37 +1336,35 @@ if( function_exists('vc_map') ):
                "type" => "textfield",
                "holder" => "div",
                "class" => "",
-               "heading" => esc_html__( "Id of the article","wprentals"),
+               "heading" => esc_html__( "Id of the article","wprentals-core"),
                "param_name" => "id",
                "value" => "",
-               "description" => esc_html__( "The id of the article","wprentals")
+               "description" => esc_html__( "The id of the article","wprentals-core")
             ),
             array(
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Type","wprentals"),
+                "heading" => esc_html__( "Type","wprentals-core"),
                 "param_name" => "type",
                 "value" => $featured_article_type,
-                "description" => esc_html__( "Design Type 1,2 or 3","wprentals")
+                "description" => esc_html__( "Design Type 1,2 or 3","wprentals-core")
             )
         )
     )
     );
 
     $featured_prop_type=array(
-            1=>__("type1","wprentals"),
-            2=>__("type2","wprentals"),
-            3=>__("type3","wprentals")
+            1=>__("type1","wprentals-core"),
+            2=>__("type2","wprentals-core"),
+            3=>__("type3","wprentals-core")
         );
     vc_map(
     array(
-       "name" => esc_html__( "Featured Listing","wprentals"),
+       "name" => esc_html__( "Featured Listing","wprentals-core"),
        "base" => "featured_property",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Featured Listing Shortcode','wprentals-core'),
@@ -1369,19 +1373,19 @@ if( function_exists('vc_map') ):
                "type" => "textfield",
                "holder" => "div",
                "class" => "",
-               "heading" => esc_html__( "Listing id","wprentals"),
+               "heading" => esc_html__( "Listing id","wprentals-core"),
                "param_name" => "id",
                "value" => "",
-               "description" => esc_html__( "Listing id","wprentals")
+               "description" => esc_html__( "Listing id","wprentals-core")
             ),
             array(
                 "type" => "dropdown",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__( "Type","wprentals"),
+                "heading" => esc_html__( "Type","wprentals-core"),
                 "param_name" => "type",
                 "value" => $featured_prop_type,
-                "description" => esc_html__( "Design Type 1, 2 or 3","wprentals")
+                "description" => esc_html__( "Design Type 1, 2 or 3","wprentals-core")
             )
         )
     )
@@ -1389,12 +1393,10 @@ if( function_exists('vc_map') ):
 
 
     vc_map(array(
-       "name" => esc_html__( "Login Form","wprentals"),
+       "name" => esc_html__( "Login Form","wprentals-core"),
        "base" => "login_form",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Login Form Shortcode','wprentals-core'),
@@ -1402,19 +1404,19 @@ if( function_exists('vc_map') ):
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Register link text","wprentals"),
+             "heading" => esc_html__( "Register link text","wprentals-core"),
              "param_name" => "register_label",
              "value" => "",
-             "description" => esc_html__( "Register link text","wprentals")
+             "description" => esc_html__( "Register link text","wprentals-core")
             )     ,
             array(
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Register page url","wprentals"),
+             "heading" => esc_html__( "Register page url","wprentals-core"),
              "param_name" => "register_url",
              "value" => "",
-             "description" => esc_html__( "Register page url","wprentals")
+             "description" => esc_html__( "Register page url","wprentals-core")
           )      )
     )
     );
@@ -1422,12 +1424,10 @@ if( function_exists('vc_map') ):
 
     vc_map(
      array(
-       "name" => esc_html__( "Register Form","wprentals"),
+       "name" => esc_html__( "Register Form","wprentals-core"),
        "base" => "register_form",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Register Form Shortcode','wprentals-core'),
@@ -1441,12 +1441,10 @@ if( function_exists('vc_map') ):
 
     vc_map(
         array(
-       "name" => esc_html__( "Advanced Search","wprentals"),
+       "name" => esc_html__( "Advanced Search","wprentals-core"),
        "base" => "advanced_search",
        "class" => "",
        "category" => esc_html__( 'Content','wprentals-core'),
-       'admin_enqueue_js' => array(get_template_directory_uri().'/vc_extend/bartag.js'),
-       'admin_enqueue_css' => array(get_template_directory_uri().'/vc_extend/bartag.css'),
        'weight'=>100,
        'icon'   =>'wpestate_vc_logo',
        'description'=>esc_html__( 'Advanced Search Shortcode','wprentals-core'),
@@ -1455,10 +1453,10 @@ if( function_exists('vc_map') ):
              "type" => "textfield",
              "holder" => "div",
              "class" => "",
-             "heading" => esc_html__( "Title","wprentals"),
+             "heading" => esc_html__( "Title","wprentals-core"),
              "param_name" => "title",
              "value" => "",
-             "description" => esc_html__( "Section Title","wprentals")
+             "description" => esc_html__( "Section Title","wprentals-core")
           ))
     )
 
@@ -1468,12 +1466,10 @@ if( function_exists('vc_map') ):
 
 
      vc_map(array(
-        "name" => esc_html__("Categories Slider", "wprentals"), //done
+        "name" => esc_html__("Categories Slider", "wprentals-core"), //done
         "base" => "places_slider",
         "class" => "",
         "category" => esc_html__('Content', 'wprentals-core'),
-        'admin_enqueue_js' => array(get_template_directory_uri() . '/vc_extend/bartag.js'),
-        'admin_enqueue_css' => array(get_template_directory_uri() . '/vc_extend/bartag.css'),
         'weight' => 100,
         'icon' => 'wpestate_vc_logo',
         'description' => esc_html__('Categories Slider Shortcode', 'wprentals-core'),
@@ -1482,10 +1478,10 @@ if( function_exists('vc_map') ):
                 "type" => "autocomplete",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__("Type Categories, Actions, Cities or Areas (Neighborhoods) you want to show", "wprentals"),
+                "heading" => esc_html__("Type Categories, Actions, Cities or Areas (Neighborhoods) you want to show", "wprentals-core"),
                 "param_name" => "place_list",
                 "value" => "",
-                "description" => esc_html__("Type Categories, Actions, Cities or Areas (Neighborhoods) you want to show", "wprentals"),
+                "description" => esc_html__("Type Categories, Actions, Cities or Areas (Neighborhoods) you want to show", "wprentals-core"),
                 'settings' => array(
                     'multiple' => true,
                     'sortable' => true,
@@ -1501,19 +1497,19 @@ if( function_exists('vc_map') ):
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__("Items per row", "wprentals"),
+                "heading" => esc_html__("Items per row", "wprentals-core"),
                 "param_name" => "place_per_row",
                 "value" => "3",
-                "description" => esc_html__("How many items listed per row?", "wprentals")
+                "description" => esc_html__("How many items listed per row?", "wprentals-core")
             ),
             array(
                 "type" => "textfield",
                 "holder" => "div",
                 "class" => "",
-                "heading" => esc_html__("Extra Class Name", "wprentals"),
+                "heading" => esc_html__("Extra Class Name", "wprentals-core"),
                 "param_name" => "extra_class_name",
                 "value" => "",
-                "description" => esc_html__("Extra Class Name", "wprentals")
+                "description" => esc_html__("Extra Class Name", "wprentals-core")
             )
         )
         )

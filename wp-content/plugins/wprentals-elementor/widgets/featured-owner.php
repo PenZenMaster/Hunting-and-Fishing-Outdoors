@@ -95,7 +95,10 @@ class Wprentals_Featured_Owner extends Widget_Base {
 
                 $design_types=array(1=>1,2=>2);
 
-
+            $item_array              =   wprentals_return_owner_arrays();
+            $item_array_elemetor      = $this->elementor_transform( $item_array );
+            
+            
 		$this->start_controls_section(
 			'section_content',
 			[
@@ -106,15 +109,16 @@ class Wprentals_Featured_Owner extends Widget_Base {
 
 
 
-              $this->add_control(
-			'owner_id',
-			[
-                            'label' => __( 'Owner Id', 'rentals-elementor' ),
-                            'label_block'=>true,
-                            'type' => Controls_Manager::TEXT,
-			]
-		);
 
+            $this->add_control(
+                'owner_id',
+                [
+                        'label' => __( 'Select the Owner', 'rentals-elementor' ),
+                        'label_block'=>true,
+                        'type' => \Elementor\Controls_Manager::SELECT2,
+                        'options' => $item_array_elemetor,
+                ]
+             );
 
 
                 $this->add_control(
@@ -130,7 +134,7 @@ class Wprentals_Featured_Owner extends Widget_Base {
 			[
                             'label' => __('Design Type', 'rentals-elementor' ),
                             'type' => \Elementor\Controls_Manager::SELECT,
-
+                            'default'=>1,
                             'options' => $design_types
 			]
 		);
@@ -158,6 +162,12 @@ class Wprentals_Featured_Owner extends Widget_Base {
                 $attributes['notes'] =   $settings['notes'];
                 $attributes['design_type'] =   $settings['design_type'];
 
+             
+                if(!isset($settings['owner_id'])|| empty($settings['owner_id']) ){
+                    esc_html_e('Please select an Owner','wprentals-core');
+                    return;
+                }
+                
                 echo  wpestate_featured_agent($attributes);
 	}
 

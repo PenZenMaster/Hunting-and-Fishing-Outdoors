@@ -37,7 +37,7 @@ class Wprentals_Recent_Items_Slider extends Widget_Base {
 	 * @return string Widget title.
 	 */
 	public function get_title() {
-		return __( 'WpRentals Recent Item Slider', 'rentals-elementor' );
+		return __( 'WpRentals Recent Items Slider', 'rentals-elementor' );
 	}
 
 	/**

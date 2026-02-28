@@ -4,12 +4,9 @@ namespace ElementorWpRentals\Widgets;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
-use Elementor\Repeater;
-use Elementor\Scheme_Color;
-use Elementor\Group_Control_Typography;
-use Elementor\Scheme_Typography;
-use Elementor\Group_Control_Border;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH'))
     exit; // Exit if accessed directly
@@ -273,7 +270,9 @@ class Wprentals_Properties_Slider extends Widget_Base {
                     'name' => 'wprentals_field_typography_title',
                     'label' => esc_html__('Title Typography', 'rentals-elementor'),
                     'selector' => '{{WRAPPER}} .wpestate_properties_slider_v1_title a',
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                    'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
 
@@ -283,7 +282,9 @@ class Wprentals_Properties_Slider extends Widget_Base {
                     'name' => 'wprentals_field_typography_price',
                     'label' => esc_html__('Price Typography', 'rentals-elementor'),
                     'selector' => '{{WRAPPER}} .price_unit,{{WRAPPER}} .pernight ',
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                    'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
          $this->add_group_control(
@@ -291,7 +292,9 @@ class Wprentals_Properties_Slider extends Widget_Base {
                     'name' => 'wprentals_field_typography_location',
                     'label' => esc_html__('Location Typography', 'rentals-elementor'),
                     'selector' => '{{WRAPPER}} .wpestate_properties_slider_v1_location a,{{WRAPPER}} .wpestate_properties_slider_v1_location',
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                    'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
             
@@ -301,7 +304,9 @@ class Wprentals_Properties_Slider extends Widget_Base {
                     'name' => 'wprentals_field_typography_content',
                     'label' => esc_html__('Content Typography', 'rentals-elementor'),
                     'selector' => '{{WRAPPER}} .wpestate_properties_slider_v1_text',
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                    'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
         
@@ -310,7 +315,9 @@ class Wprentals_Properties_Slider extends Widget_Base {
                     'name' => 'wpestate_properties_slider_v1_single_details',
                     'label' => esc_html__('Content Typography', 'rentals-elementor'),
                     'selector' => '{{WRAPPER}} .wpestate_properties_slider_v1_single_details',
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                    'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
             
@@ -320,7 +327,9 @@ class Wprentals_Properties_Slider extends Widget_Base {
                     'name' => 'wprentals_field_typography_agent',
                     'label' => esc_html__('Owner name Font Size', 'rentals-elementor'),
                     'selector' => '{{WRAPPER}} .owner_name',
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                    'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
             

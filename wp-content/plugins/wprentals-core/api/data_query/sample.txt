@@ -1,0 +1,29 @@
+$request_params = [
+    'page' => 1, // Pagination: page number
+    'posts_per_page' => 10, // Number of properties per page
+    'order' => 0, // Sorting order
+    'response_type' => 'full', // 'basic' or 'full'
+    'taxonomies' => [
+        'property_city' => ['New York'], // Filter by city
+        'property_area' => ['Manhattan'], // Filter by area
+        'property_features' => ['Pool', 'Gym'], // Filter by features
+    ],
+    'meta' => [
+        'property_price' => [
+            'value' => 500, // Minimum price
+            'compare' => '>=', // Comparison operator
+            'type' => 'NUMERIC', // Data type
+        ],
+        'property_size' => [
+            'value' => 1000, // Minimum size in square feet
+            'compare' => '>=', // Comparison operator
+            'type' => 'NUMERIC', // Data type
+        ],
+        'property_bedrooms' => [
+            'value' => 2, // Minimum bedrooms
+            'compare' => '>=', // Comparison operator
+            'type' => 'NUMERIC', // Data type
+        ],
+    ],
+    'userID' => 123, // Optional filter by user ID (property owner)
+];

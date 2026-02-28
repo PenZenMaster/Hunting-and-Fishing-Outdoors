@@ -5,10 +5,13 @@ namespace ElementorWpRentals\Widgets;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Repeater;
-use Elementor\Core\Schemes\Color;
-use Elementor\Group_Control_Typography;
-use Elementor\Core\Schemes\Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
+
 use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+
+
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
@@ -72,8 +75,8 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
             'last_name' => esc_html__( 'Last Name', 'rentals-elementor' ),
             'email' => esc_html__( 'Email', 'rentals-elementor' ),
             'mobile' => esc_html__( 'Mobile', 'rentals-elementor' ),
-					  'phone' => esc_html__( 'Phone', 'rentals-elementor' ),
-					  'address' => esc_html__( 'Address', 'rentals-elementor' ),
+            'phone' => esc_html__( 'Phone', 'rentals-elementor' ),
+            'address' => esc_html__( 'Address', 'rentals-elementor' ),
             'message' => esc_html__( 'Message', 'rentals-elementor' ), //textarea
             'booking_from_date'=>esc_html__( 'Booking from date', 'rentals-elementor' ), //datepicker
             'booking_to_date'=>esc_html__( 'Booking to date', 'rentals-elementor' ), //datepicker
@@ -82,7 +85,7 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
             'city' => esc_html__( 'City', 'rentals-elementor' ),
             'state' => esc_html__( 'State', 'rentals-elementor' ),
             'zip' => esc_html__( 'Zip/Postal Code', 'rentals-elementor' ),
-					);
+            );
 
         /**
          * Forms field types.
@@ -478,10 +481,8 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
                     ],
                 ],
                 'selectors' => [
-									  '{{WRAPPER}} .elementor-field-group' => 'padding-right: calc( {{SIZE}}{{UNIT}}/2 ); padding-left: calc( {{SIZE}}{{UNIT}}/2 );',
-									  '{{WRAPPER}} 	.elementor-form-fields-wrapper' => 'margin-left: calc( -{{SIZE}}{{UNIT}}/2 ); margin-right: calc( -{{SIZE}}{{UNIT}}/2 );',
-
-
+                    '{{WRAPPER}} .elementor-field-group' => 'padding-right: calc( {{SIZE}}{{UNIT}}/2 ); padding-left: calc( {{SIZE}}{{UNIT}}/2 );',
+                    '{{WRAPPER}} 	.elementor-form-fields-wrapper' => 'margin-left: calc( -{{SIZE}}{{UNIT}}/2 ); margin-right: calc( -{{SIZE}}{{UNIT}}/2 );',
                 ],
             ]
         );
@@ -533,7 +534,7 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
                 'selectors' => [
                     'body.rtl {{WRAPPER}} .elementor-labels-inline .elementor-field-group > label' => 'padding-left: {{SIZE}}{{UNIT}};',
                     'body {{WRAPPER}} .elementor-labels-above .elementor-field-group > label' => 'padding-bottom: {{SIZE}}{{UNIT}};',
-										'body:not(.rtl) {{WRAPPER}} .elementor-labels-inline .elementor-field-group > label' => 'padding-right: {{SIZE}}{{UNIT}};',
+                    'body:not(.rtl) {{WRAPPER}} .elementor-labels-inline .elementor-field-group > label' => 'padding-right: {{SIZE}}{{UNIT}};',
 
                 ],
             ]
@@ -546,11 +547,10 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .elementor-field-group > label'  => 'color: {{VALUE}};',
-										'{{WRAPPER}} .elementor-field-subgroup label' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementor-field-subgroup label' => 'color: {{VALUE}};',
                 ],
-                'scheme' => [
-                    'type'  => \Elementor\Core\Schemes\Color::get_type(),
-                    'value' => \Elementor\Core\Schemes\Color::COLOR_3,
+                'global' => [
+                    'default' => Global_Colors::COLOR_TEXT,
                 ],
             ]
         );
@@ -562,18 +562,20 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
             [
                 'name' => 'wpresidence_form_label_typography',
                 'selector' => '{{WRAPPER}} .elementor-field-group > label',
-                'scheme'   => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
             ]
         );
 
-				/*-------------------------------------------------------------------------------------------------
-				* End Form  settings
-				*/
+        /*-------------------------------------------------------------------------------------------------
+        * End Form  settings
+        */
 
 
-				/*-------------------------------------------------------------------------------------------------
-				*  Form Fields settings
-				*/
+        /*-------------------------------------------------------------------------------------------------
+        *  Form Fields settings
+        */
 
         $this->end_controls_section();
 
@@ -591,11 +593,14 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
                 'label' => esc_html__( 'Field Text Color', 'rentals-elementor' ),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .elementor-field-group .elementor-field' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementor-field-group .elementor-field' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .elementor-field-group .elementor-field::-webkit-input-placeholder' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .elementor-field-group .elementor-field:-moz-placeholder' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .elementor-field-group .elementor-field::-moz-placeholder' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .elementor-field-group .elementor-field:-ms-input-placeholder' => 'color: {{VALUE}} !important;',
                 ],
-                'scheme' => [
-                    'type' => \Elementor\Core\Schemes\Color::get_type(),
-                    'value' => \Elementor\Core\Schemes\Color::COLOR_3,
+                'global' => [
+                    'default' => Global_Colors::COLOR_TEXT,
                 ],
             ]
         );
@@ -605,7 +610,9 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
             [
                 'name' => 'wpresidence_field_typography',
                 'selector' => '{{WRAPPER}} .elementor-field-group .elementor-field, {{WRAPPER}} .elementor-field-subgroup label',
-                'scheme'   => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
             ]
         );
 
@@ -695,9 +702,8 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
                     '{{WRAPPER}} .gpr_wrapper' => 'color: {{VALUE}};',
                     '{{WRAPPER}} .gpr_wrapper a' => 'color: {{VALUE}};',
                 ],
-                'scheme' => [
-                    'type' => \Elementor\Core\Schemes\Color::get_type(),
-                    'value' => \Elementor\Core\Schemes\Color::COLOR_3,
+                'global' => [
+                    'default' => Global_Colors::COLOR_TEXT,
                 ],
             ]
         );
@@ -707,7 +713,9 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
             [
                 'name' => 'gdpr_typography',
                 'selector' => '{{WRAPPER}} .gpr_wrapper a',
-                'scheme'   => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+                'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] ,
                 'fields_options' => [
                     'font_weight' => [
                         'default' => '300',
@@ -744,9 +752,8 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
             [
                 'label' => esc_html__( 'Submit Button Background Color', 'rentals-elementor' ),
                 'type' => Controls_Manager::COLOR,
-                'scheme' => [
-                    'type' => \Elementor\Core\Schemes\Color::get_type(),
-                    'value' => \Elementor\Core\Schemes\Color::COLOR_4,
+                'global' => [
+                    'default' => Global_Colors::COLOR_ACCENT,
                 ],
                 'default' => '#b881fc',
                 'selectors' => [
@@ -771,7 +778,9 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
             Group_Control_Typography::get_type(),
             [
                 'name' => 'submit_button_typography',
-                'scheme'   => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_4,
+                'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] ,
                 'selector' => '{{WRAPPER}} .elementor-button',
             ]
         );
@@ -990,7 +999,8 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
             <input type="hidden" name="contact_ajax_nonce" id="agent_property_ajax_nonce"  value="<?php echo wp_create_nonce( 'ajax-property-contact' );?>" />
 
             <input type="hidden" id="elementor_email_subject" name="email_suject" value="<?php echo esc_attr($email_subject); ?>" />
-
+            <div class="alert-message" id="booking_form_request_mess_elementor"></div>
+            
 						<div <?php echo $this->get_render_attribute_string( 'wrapper' ); ?>>
 								<?php
 								  foreach ( $settings['form_fields'] as $key => $item ) :
@@ -1049,7 +1059,7 @@ class WpRentals_Contact_Form_Builder extends Widget_Base {
                     var item_parent =   jQuery(this).parent().parent();
                     var in_date     =   item_parent.find('input[name="booking_from_date"]') .attr('id');
                     var out_date    =   item_parent.find('input[name="booking_to_date"]') .attr('id');
-                    console.log('in_date : '+in_date +" out_date "+out_date);
+ 
                     wpestaste_check_in_out_enable_new(in_date, out_date);
                     
                 });

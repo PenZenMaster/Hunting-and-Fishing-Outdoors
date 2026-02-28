@@ -5,11 +5,11 @@ namespace ElementorWpRentals\Widgets;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Repeater;
-use Elementor\Scheme_Color;
-use Elementor\Group_Control_Typography;
-use Elementor\Scheme_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH'))
     exit; // Exit if accessed directly
@@ -400,9 +400,8 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
                 '{{WRAPPER}} .adv_extended_options_text'=> 'color: {{VALUE}}!important;',
                 '{{WRAPPER}} .extended_search_checker label'=> 'color: {{VALUE}}!important;',
             ],
-            'scheme' => [
-                'type' => \Elementor\Core\Schemes\Color::get_type(),
-                'value' => \Elementor\Core\Schemes\Color::COLOR_3
+            'global' => [
+                    'default' => Global_Colors::COLOR_TEXT,
             ],
                 ]
         );
@@ -414,7 +413,9 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
             'name' => 'wprentals_form_label_typography',
             'selector' =>
             '{{WRAPPER}} .elementor-field-group > label,{{WRAPPER}} .adv_search_slider  .wprentals_slider_price,{{WRAPPER}} .adv_search_slider  label,{{WRAPPER}} #amount',
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+            'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
 
@@ -427,9 +428,8 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
             'selectors' => [
                 '{{WRAPPER}} .search_wr_elementor' => 'background-color: {{VALUE}};',
             ],
-            'scheme' => [
-                'type' => \Elementor\Core\Schemes\Color::get_type(),
-                'value' => \Elementor\Core\Schemes\Color::COLOR_3
+           'global' => [
+                    'default' => Global_Colors::COLOR_TEXT,
             ],
                 ]
         );
@@ -455,7 +455,8 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
             'size_units' => ['px', '%'],
             'selectors' => [
                 '{{WRAPPER}} .search_wr_elementor' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-  
+             
+                
             ],
                 ]
         );
@@ -533,13 +534,21 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
                 '{{WRAPPER}} .filter_menu_trigger' => 'color: {{VALUE}};',
                 '{{WRAPPER}} .wpestate_guest_no_control_info'=> 'color: {{VALUE}};',
                 '{{WRAPPER}} .form-control::placeholder ' => 'color: {{VALUE}}!important;',
-                '{{WRAPPER}} .filter_menu' => 'color:{{VALUE}}'
- 
- 
+                '{{WRAPPER}} .filter_menu' => 'color:{{VALUE}};',
+                '{{WRAPPER}} .bootstrap-select>.dropdown-toggle.bs-placeholder' => 'color:{{VALUE}};',
+                '{{WRAPPER}} .wpestate-multiselect-custom-style.dropdown-toggle.bs-placeholder' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .wpestate-multiselect-custom-style.dropdown-toggle.bs-placeholder:hover' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .wpestate-multiselect-custom-style' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .btn.wpestate-multiselect-custom-style' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .caret:after' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .dropdown-menu > li > a' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .wprentals-autocomplete.ui-menu .ui-menu-item' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .dropdown-menu .btn-group-sm > .btn' => 'color: {{VALUE}};',
+                '{{WRAPPER}} .dropdown-menu .btn-sm' => 'color: {{VALUE}};',
             ],
-            'scheme' => [
-                'type' => \Elementor\Core\Schemes\Color::get_type(),
-                'value' => \Elementor\Core\Schemes\Color::COLOR_3
+
+           'global' => [
+                    'default' => Global_Colors::COLOR_TEXT,
             ],
                 ]
         );
@@ -547,8 +556,10 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
         $this->add_group_control(
                 Group_Control_Typography::get_type(), [
             'name' => 'wprentals_field_typography',
-            'selector' => '{{WRAPPER}} .form-control, {{WRAPPER}} input.form-control,{{WRAPPER}} .filter_menu_trigger',
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+            'selector' => '{{WRAPPER}} .form-control, {{WRAPPER}} .dropdown-menu .btn-group-sm > .btn, {{WRAPPER}} .dropdown-menu .btn-sm, {{WRAPPER}} .wprentals-autocomplete.ui-menu .ui-menu-item, {{WRAPPER}} input.form-control,{{WRAPPER}} .filter_menu_trigger,{{WRAPPER}} .bootstrap-select>.dropdown-toggle.bs-placeholder' ,
+            'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
         
@@ -556,8 +567,10 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'wprentals_field_typography_dropdown',
                     'label' => esc_html__('Dropdown Typography', 'rentals-elementor'),
-            'selector' => '{{WRAPPER}} .filter_menu li',
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
+            'selector' => '{{WRAPPER}} .filter_menu li{{WRAPPER}} .bootstrap-select .dropdown-menu>li>a,{{WRAPPER}} .dropdown-menu>li>a,{{WRAPPER}} .dropdown.bootstrap-select.show-tick .dropdown-menu>li>a:focus ',
+            'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] 
                 ]
         );
         
@@ -584,6 +597,15 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
             'selectors' => [
                 '{{WRAPPER}} .form-control' => 'background-color: {{VALUE}};',
                 '{{WRAPPER}} #search_location'=> 'background-color: {{VALUE}};',
+                '{{WRAPPER}} .btn-default'=> 'background-color: {{VALUE}};',
+                '{{WRAPPER}} .bootstrap-select>.dropdown-toggle.bs-placeholder'=> 'background-color: {{VALUE}};',
+                '{{WRAPPER}} .wpestate-multiselect-custom-style' => 'background-color: {{VALUE}};',
+                '{{WRAPPER}} .btn.wpestate-multiselect-custom-style' => 'background-color: {{VALUE}};',
+                '{{WRAPPER}} .dropdown.bootstrap-select.show-tick.form-control.wpestate-.bs3.open' => 'background-color: {{VALUE}};',
+                '{{WRAPPER}} .dropdown.bootstrap-select.show-tick.form-control.wpestate-.bs3.open button.actions-btn.bs-select-all.btn.btn-default:hover' => 'background-color: {{VALUE}};',
+                '{{WRAPPER}} .dropdown.bootstrap-select.show-tick.form-control.wpestate-.bs3.open button.actions-btn.bs-deselect-all.btn.btn-default:hover' => 'background-color: {{VALUE}};',
+                '{{WRAPPER}} .dropdown.bootstrap-select.show-tick.form-control.wpestate-.bs3.open .btn-default' => 'background-color: {{VALUE}};',
+            
             ],
             'separator' => 'before',
                 ]
@@ -600,7 +622,8 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
                // '{{WRAPPER}} .caret::after' => 'right:{{RIGHT}}{{UNIT}};left:auto;',
                 '{{WRAPPER}} #search_location' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 '{{WRAPPER}} .search_wr_elementor .filter_menu_trigger'=> 'padding: 0px;position: relative;',
-                  '{{WRAPPER}} .dropdown>#search_location' =>'padding:0px;'
+                  '{{WRAPPER}} .dropdown>#search_location' =>'padding:0px;',
+                  '{{WRAPPER}} .dropdown.bootstrap-select.show-tick.form-control.wpestate-.bs3' => 'padding:0px;'
             ],
                 ]
         );
@@ -640,6 +663,7 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
             'selectors' => [
                 '{{WRAPPER}} .elementor-field-group .elementor-select-wrapper::before' => 'color: {{VALUE}};',
                 '{{WRAPPER}} .form-control' => 'border-color: {{VALUE}};',
+                '{{WRAPPER}}  .show-tick.form-control .btn-default'  => 'border-color: {{VALUE}};',
             ],
             'separator' => 'before',
                 ]
@@ -654,8 +678,9 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
             'selectors' => [
                 '{{WRAPPER}} .form-control' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 '{{WRAPPER}} .elementor-field-group .elementor-select-wrapper select' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-            ],
-                ]
+
+                ],    
+            ]
         );
 
         $this->add_responsive_control(
@@ -665,7 +690,11 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
             'size_units' => ['px', '%'],
             'selectors' => [
                 '{{WRAPPER}} .elementor-field-group .elementor-select-wrapper select' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                '{{WRAPPER}}  .form-control' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                '{{WRAPPER}} .form-control' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                '{{WRAPPER}} .show-tick.form-control .btn-default' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                '{{WRAPPER}}  .bootstrap-select>.dropdown-toggle.bs-placeholder' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+
+           
             ],
                 ]
         );
@@ -700,10 +729,9 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
             'submit_button_background_color', [
             'label' => esc_html__('Submit Button Background Color', 'rentals-elementor'),
             'type' => Controls_Manager::COLOR,
-            'scheme' => [
-                'type' => \Elementor\Core\Schemes\Color::get_type(),
-                'value' => \Elementor\Core\Schemes\Color::COLOR_4
-            ],
+           'global' => [
+                    'default' => Global_Colors::COLOR_ACCENT,
+                ],
             'selectors' => [
                 '{{WRAPPER}} .advanced_search_submit_button' => 'background-color:  {{VALUE}}!important;background:none;',
             ],
@@ -734,7 +762,9 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
         $this->add_group_control(
                 Group_Control_Typography::get_type(), [
             'name' => 'submit_button_typography',
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_4,
+            'global' => [ 
+                        'default' => Global_Typography::TYPOGRAPHY_ACCENT
+                    ] ,
             'selector' => '{{WRAPPER}} .advanced_search_submit_button',
                 ]
         );
@@ -1031,6 +1061,9 @@ class Wprentals_Search_Form_Builder extends Widget_Base {
         
         $render_output =wprentals_elementor_search_helper($settings, $this,$post->ID);
         echo $render_output;
+            if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) :   
+            echo  "<script>  jQuery('.wpestate-selectpicker').selectpicker('destroy'); console.log('again ----------------');wpestate_advnced_filters_bars();  </script>";
+        endif;
     }
 
     /*

@@ -8,8 +8,10 @@ use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Text_Shadow;
 use Elementor\Core\Files\Assets\Svg\Svg_Handler;
 use Elementor\Repeater;
-use Elementor\Group_Control_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Core\Schemes\Typography;
+use Elementor\Group_Control_Typography;
+
 
 if (!defined('ABSPATH')) {
     exit;
@@ -307,7 +309,9 @@ class Wprentals_Display_Categories_As_Tabs extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'tab_item_typo',
             'label' => esc_html__('Tab Item Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}}  .nav-tabs>li.wpestate_categories_as_tabs_item>a' ,
             'fields_options' => [
                 // Inner control name
@@ -524,7 +528,9 @@ class Wprentals_Display_Categories_As_Tabs extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'tax_title',
             'label' => esc_html__('Term Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}} .wpestate_categories_as_tabs_term',
             'fields_options' => [
                 // Inner control name
@@ -545,7 +551,9 @@ class Wprentals_Display_Categories_As_Tabs extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'tax_title_Sec_row',
             'label' => esc_html__('Second Row Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}} .places_list_tab_term-count',
             'fields_options' => [
                 // Inner control name

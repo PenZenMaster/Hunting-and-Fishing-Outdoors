@@ -3,9 +3,11 @@ namespace ElementorWpRentals\Widgets;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Typography;
-use Elementor\Scheme_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Typography;
+
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 
@@ -126,7 +128,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
               $this->start_controls_section(
                 'section_grid_box_shadow',
                 [
-                    'label' => esc_html__( 'Box Shadow', 'residence-elementor' ),
+                    'label' => esc_html__( 'Box Shadow', 'rentals-elementor' ),
                     'tab'   => Controls_Manager::TAB_STYLE,
                 ]
                 );
@@ -134,7 +136,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
                     Group_Control_Box_Shadow::get_type(),
                     [
                         'name'     => 'box_shadow',
-                        'label'    => esc_html__( 'Box Shadow', 'residence-elementor' ),
+                        'label'    => esc_html__( 'Box Shadow', 'rentals-elementor' ),
                         'selector' => '{{WRAPPER}} .advanced_search_shortcode',
                     ]
                 );
@@ -151,7 +153,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
               $this->start_controls_section(
                   'section_grid_colors',
                   [
-                      'label' => esc_html__( 'Colors', 'residence-elementor' ),
+                      'label' => esc_html__( 'Colors', 'rentals-elementor' ),
                       'tab'   => Controls_Manager::TAB_STYLE,
                   ]
               );
@@ -159,7 +161,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
               $this->add_control(
                   'unit_color',
                   [
-                      'label'     => esc_html__( 'Background Color', 'residence-elementor' ),
+                      'label'     => esc_html__( 'Background Color', 'rentals-elementor' ),
                       'type'      => Controls_Manager::COLOR,
                       'default'   => '',
                       'selectors' => [
@@ -172,7 +174,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
               $this->add_control(
                   'unit_border_color',
                   [
-                      'label'     => esc_html__( 'Border Color', 'residence-elementor' ),
+                      'label'     => esc_html__( 'Border Color', 'rentals-elementor' ),
                       'type'      => Controls_Manager::COLOR,
                       'default'   => '',
                       'selectors' => [
@@ -183,7 +185,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
               
             $this->add_responsive_control(
                 'unit_border_width', [
-                'label' => esc_html__('Border Width', 'residence-elementor'),
+                'label' => esc_html__('Border Width', 'rentals-elementor'),
                 'type' => Controls_Manager::DIMENSIONS,
                 'placeholder' => '1',
                 'size_units' => ['px'],
@@ -195,7 +197,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
 
             $this->add_responsive_control(
                 'field_border_radius', [
-                'label' => esc_html__('Border Radius', 'residence-elementor'),
+                'label' => esc_html__('Border Radius', 'rentals-elementor'),
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%'],
                 'selectors' => [
@@ -208,7 +210,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
             $this->add_control(
                   'buttons_back_color',
                   [
-                      'label'     => esc_html__( 'Button Background Color', 'residence-elementor' ),
+                      'label'     => esc_html__( 'Button Background Color', 'rentals-elementor' ),
                       'type'      => Controls_Manager::COLOR,
                       'default'   => '',
                       'selectors' => [
@@ -221,7 +223,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
              $this->add_control(
                   'buttons_font_color',
                   [
-                      'label'     => esc_html__( 'Button  Color', 'residence-elementor' ),
+                      'label'     => esc_html__( 'Button  Color', 'rentals-elementor' ),
                       'type'      => Controls_Manager::COLOR,
                       'default'   => '',
                       'selectors' => [
@@ -233,7 +235,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
              $this->add_control(
                   'buttons_back_color_hover',
                   [
-                      'label'     => esc_html__( 'Button Background Color Hover', 'residence-elementor' ),
+                      'label'     => esc_html__( 'Button Background Color Hover', 'rentals-elementor' ),
                       'type'      => Controls_Manager::COLOR,
                       'default'   => '',
                       'selectors' => [
@@ -245,7 +247,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
              $this->add_control(
                   'buttons_font_color_hover',
                   [
-                      'label'     => esc_html__( 'Button  Color', 'residence-elementor' ),
+                      'label'     => esc_html__( 'Button  Color', 'rentals-elementor' ),
                       'type'      => Controls_Manager::COLOR,
                       'default'   => '',
                       'selectors' => [
@@ -264,7 +266,7 @@ class Wprentals_Advanced_Search extends Widget_Base {
                 $this->start_controls_section(
                          'typography_section',
                          [
-                             'label'     => esc_html__( 'Typography', 'residence-elementor' ),
+                             'label'     => esc_html__( 'Typography', 'rentals-elementor' ),
                              'tab'       => Controls_Manager::TAB_STYLE,
                          ]
                      );
@@ -273,8 +275,10 @@ class Wprentals_Advanced_Search extends Widget_Base {
                          Group_Control_Typography::get_type(),
                          [
                              'name'     => 'property_title',
-                             'label'    => esc_html__( 'Property Title', 'residence-elementor' ),
-                             'scheme'   => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                             'label'    => esc_html__( 'Property Title', 'rentals-elementor' ),
+                              'global' => [
+                                'default' => Global_Typography::TYPOGRAPHY_TEXT
+                              ],
                              'selector' => '{{WRAPPER}} .advanced_search_shortcode .shortcode_title_adv',
                          ]
                      );

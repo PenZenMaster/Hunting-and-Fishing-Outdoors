@@ -78,11 +78,19 @@ class WpestateEmail {
     */
     
     
-    public function wpestate_send_email_contact($receiver_email,$subject,$message){
-        $answer = $this->wpestate_emails_filter_replace($receiver_email, $message, $subject, array());
+     public function wpestate_send_email_contact($receiver_email,$subject,$message,$reply_to=''){
+        $arguments = array();
+        if($reply_to!=''){
+            $arguments['replyto'] = $reply_to;
+        }
+        $answer = $this->wpestate_emails_filter_replace($receiver_email, $message, $subject, $arguments);
         return $answer;
     }
     
+     
+    
+
+
     /*
     *
     *  
@@ -92,6 +100,7 @@ class WpestateEmail {
     */
     
     private function  wpestate_emails_filter_replace($user_email,$message,$subject,$arguments){
+       
         $arguments ['website_url']  = get_option('siteurl');
         $arguments ['website_name'] = get_option('blogname');
 
@@ -109,6 +118,7 @@ class WpestateEmail {
             $arguments ['username']   =$arguments ['listing_author']  ;
         }
 
+       
 
         foreach($arguments as $key_arg=>$arg_val){
             $subject = str_replace('%'.$key_arg, $arg_val, $subject);
@@ -135,9 +145,14 @@ class WpestateEmail {
 
             $prepared_email_message =   $this->wpestate_prepare_email_message($email_message,$attributes);
         }
-          
-          
-        $answer = $this->actual_wpestate_send_emails($user_email, $subject, $prepared_email_message,'' );
+        
+        $reply_to='';
+        if( isset($arguments['replyto']) ){
+            $reply_to=$arguments['replyto'];
+        }
+        
+        
+        $answer = $this->actual_wpestate_send_emails($user_email, $subject, $prepared_email_message,$reply_to,'' );
         return $answer;
     }
     
@@ -199,6 +214,7 @@ class WpestateEmail {
         if($sent){
             $return = array(
                 'sent'=>true,
+              
             );
         }else{
             $return=array(

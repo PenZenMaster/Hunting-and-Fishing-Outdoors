@@ -276,15 +276,14 @@ class Wpestate_Social_Login {
     
 
         // Logged in
-        // var_dump($accessToken->getValue());
+   
 
         // The OAuth 2.0 client handler helps us manage access tokens
         $oAuth2Client = $fb->getOAuth2Client();
 
         // Get the access token metadata from /debug_token
         $tokenMetadata = $oAuth2Client->debugToken($accessToken);
-        //echo '<h3>Metadata</h3>';
-        //var_dump($tokenMetadata);
+
 
         // Validation (these will throw FacebookSDKException's when they fail)
         $tokenMetadata->validateAppId($this->facebook_api); 
@@ -341,83 +340,106 @@ class Wpestate_Social_Login {
     *
     *  
     */
-    
-    function return_google_url(){
-        set_include_path( get_include_path() . PATH_SEPARATOR . get_template_directory().'/libs/resources');
-       
-        $gClient = new Google_Client();
-        
-        $gClient->setApplicationName('Login to WpRentals');
-        $gClient->setClientId($this->google_client_id);
-        $gClient->setClientSecret($this->google_client_secret);
-        $gClient->setRedirectUri($this->redirect);
-        $gClient->setDeveloperKey($this->google_developer_key);
-        $gClient->setScopes(array('email', 'profile') );
-     
-        
-        $google_oauthV2 = new Google_Oauth2Service($gClient);
-        $authUrl = $gClient->createAuthUrl();
-        $_SESSION['wpestate_is_google']   =   'ison';
-        return $authUrl;
-    } 
+    function return_google_url() {
+        require_once dirname(__FILE__) . '/../vendor/autoload.php';
+
+        try {
+            $client = new \Google\Auth\OAuth2([
+                'clientId' => $this->google_client_id,
+                'clientSecret' => $this->google_client_secret,
+                'redirectUri' => $this->redirect,
+                'authorizationUri' => 'https://accounts.google.com/o/oauth2/v2/auth',
+                'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
+            ]);
+
+            $auth_url = $client->buildFullAuthorizationUri([
+                'scope' => 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+                'response_type' => 'code'
+            ]);
+
+            $_SESSION['wpestate_is_google'] = 'ison';
+         
+            return $auth_url;
+
+        } catch (Exception $e) {
+            error_log('Google Auth Error: ' . $e->getMessage());
+            return false;
+        }
+    }
     
     /*
     *
     *
     *  
     */
+    function google_authentificate_user() {
+        require_once dirname(__FILE__) . '/../vendor/autoload.php';
+        $allowed_html = array();
+     
+        try {
+            $client = new \Google\Auth\OAuth2([
+                'clientId' => $this->google_client_id,
+                'clientSecret' => $this->google_client_secret,
+                'redirectUri' => $this->redirect,
+                'authorizationUri' => 'https://accounts.google.com/o/oauth2/v2/auth',
+                'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
+            ]);
     
-    function google_authentificate_user(){
-        $allowed_html   =   array();
-        
-        $gClient = new Google_Client();
-        $gClient->setApplicationName('Login to WpRentals');
-        $gClient->setClientId($this->google_client_id);
-        $gClient->setClientSecret($this->google_client_secret);
-        $gClient->setRedirectUri($this->redirect);
-        $gClient->setDeveloperKey($this->google_developer_key);
-        $gClient->setScopes(array('email', 'profile') );
-        
-        $google_oauthV2 = new Google_Oauth2Service($gClient);
-        
-        if (isset($_REQUEST['code'])) { 
-            $code= sanitize_text_field ( wp_kses($_REQUEST['code'],$allowed_html) );
-            $gClient->authenticate($code);
-        }
-        
-        
-        if ($gClient->getAccessToken()) {    
-            
-            $allowed_html      =   array();
-        
-            $user              =   $google_oauthV2->userinfo->get();
-            $full_name         =   wp_kses($user['name'], $allowed_html);
-            $email             =   wp_kses($user['email'], $allowed_html);
-        
-            $user_id           =   $user['id'];
-            $full_name         =   wp_kses($user['name'], $allowed_html);
-            $email             =   wp_kses($user['email'], $allowed_html);
-            $full_name         =   str_replace(' ','.',$full_name);  
-            
-            $first_name=$last_name='';
-            if(isset($user['family_name'])){
-                $last_name=$user['family_name'];
-            }  
-            if(isset($user['given_name'])){
-                $first_name=$user['given_name'];
+            // Handle the OAuth callback
+            if (isset($_REQUEST['code'])) {
+                $code = sanitize_text_field(wp_kses($_REQUEST['code'], $allowed_html));
+             
+                // Fetch the token correctly
+                $client->setCode($code);
+                $token = $client->fetchAuthToken();
+              
+                if ($token && isset($token['access_token'])) {
+                    // Use the access token to fetch user info
+                    $userInfoClient = new \GuzzleHttp\Client();
+                    $response = $userInfoClient->get('https://www.googleapis.com/oauth2/v2/userinfo', [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $token['access_token']
+                        ]
+                    ]);
+                    
+                    $user = json_decode($response->getBody(), true);
+                    
+                    if ($user) {
+                        // Sanitize user data
+                        $user_id = intval($user['id']);
+                        $full_name = wp_kses($user['name'], $allowed_html);
+                        $email = wp_kses($user['email'], $allowed_html);
+                        $full_name = str_replace(' ', '.', $full_name);
+                        
+                        $first_name = '';
+                        $last_name = '';
+                        
+                        if (isset($user['family_name'])) {
+                            $last_name = wp_kses($user['family_name'], $allowed_html);
+                        }
+                        
+                        if (isset($user['given_name'])) {
+                            $first_name = wp_kses($user['given_name'], $allowed_html);
+                        }
+                        
+                        // Clean up sessions
+                        if (isset($_SESSION)) {
+                            unset($_SESSION['wpestate_is_twet']); 
+                            unset($_SESSION['wpestate_is_fb']); 
+                            unset($_SESSION['wpestate_is_google']); 
+                        }
+                 
+                        // Create or login user
+                        $this->create_or_login_user($email, $full_name, $user_id, $first_name, $last_name);
+                    }
+                }
             }
             
-            unset($_SESSION['wpestate_is_twet']); 
-            unset($_SESSION['wpestate_is_fb']); 
-            unset($_SESSION['wpestate_is_google']); 
-            
-            $this->create_or_login_user($email,$full_name,$user_id,$first_name,$last_name); 
-   
+        } catch (Exception $e) {
+            error_log('Google Auth Error: ' . $e->getMessage());
+            return false;
         }
-        
-      
     }
-    
     
     /*
      * 
@@ -436,7 +458,16 @@ class Wpestate_Social_Login {
             if(username_exists($username) ){
                 $username=$username.'-'.time();
             }           
-            $user_id  = wp_create_user( $username, $openid_identity_code, $email ); 
+            $user_id  = wp_create_user( $username, $openid_identity_code, $email );
+	  
+           
+
+            $default_role = sanitize_key( wprentals_get_option('wp_estate_social_login_user_role','owner') );
+            if( !in_array( $default_role, array('owner','renter'), true ) ){
+                $default_role = 'owner';
+            }
+            $role_assigned = wprentals_register_user_role( $user_id, $default_role );
+
             $this->wpestate_update_profile($user_id);
             $this->wpestate_register_as_user($username,$user_id,$firsname,$lastname);
         }
@@ -472,30 +503,31 @@ class Wpestate_Social_Login {
     
     
     function  wpestate_register_as_user($user_name,$user_id,$first_name='',$last_name=''){
-        $post = array(
-            'post_title'	=> $user_name,
-            'post_status'	=> 'publish', 
-            'post_type'         => 'estate_agent' ,
-        );
+	    if (user_can($user_id, 'publish_estate_agents')){
+		    $post = array(
+			    'post_title'  => $user_name,
+			    'post_status' => 'publish',
+			    'post_type'   => 'estate_agent',
+			    'post_author' => $user_id
+		    );
 
-        $post_id =  wp_insert_post($post );  
-        update_post_meta($post_id, 'user_meda_id', $user_id);
-        update_post_meta($post_id, 'user_agent_id', $user_id) ;
-        update_user_meta( $user_id, 'user_agent_id' , $post_id) ;
-        
-        
-        
-        if(esc_html ( wprentals_get_option('wp_estate_separate_users',''))=='yes'){
-            $type=get_user_meta($user_id, 'user_type', true);
-            update_post_meta($post_id, 'user_sub_type', $type) ;
-        }
-        
-        if($first_name!=''){
-            update_user_meta( $user_id, 'first_name' , $first_name) ; 
-        }
-        if($last_name!=''){
-            update_user_meta( $user_id, 'last_name' , $last_name) ; 
-        }
+		    $post_id = wp_insert_post($post);
+		    update_post_meta($post_id, 'user_meda_id', $user_id);
+		    update_post_meta($post_id, 'user_agent_id', $user_id);
+		    update_user_meta($user_id, 'user_agent_id', $post_id);
+
+		    if(esc_html(wprentals_get_option('wp_estate_separate_users', '')) == 'yes'){
+			    $type = wprentals_core_user_has_role($user_id, 'owner') ? 0 : 1;
+			    update_post_meta($post_id, 'user_sub_type', $type);
+		    }
+	    }
+
+	    if($first_name != ''){
+		    update_user_meta($user_id, 'first_name', $first_name);
+	    }
+	    if($last_name != ''){
+		    update_user_meta($user_id, 'last_name', $last_name);
+	    }
         
     }
     

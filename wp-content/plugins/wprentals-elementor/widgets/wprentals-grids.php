@@ -4,11 +4,11 @@ namespace ElementorWpRentals\Widgets;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Core\Schemes\Typography;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Text_Shadow;
-
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -156,7 +156,7 @@ class Wprentals_Grids extends Widget_Base {
         if (!empty($all_taxonomies) && !is_wp_error($all_taxonomies)) {
             foreach ($all_taxonomies as $taxonomy_item) {
                 $options_array = array();
-                $terms = get_terms($taxonomy_item->name);
+                $terms = get_terms(array('taxonomy' => $taxonomy_item->name, 'hide_empty' => false));
 
                 if (!empty($terms) && !is_wp_error($terms)) {
                     foreach ($terms as $term) {
@@ -349,7 +349,9 @@ class Wprentals_Grids extends Widget_Base {
                 [
                     'name' => 'tax_title',
                     'label' => esc_html__('Title Typography', 'rentals-elementor'),
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                     'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+                     ],
                     'selector' => '{{WRAPPER}} .featured_listing_title',
                     'fields_options' => [
                         // Inner control name
@@ -459,7 +461,9 @@ class Wprentals_Grids extends Widget_Base {
                 [
                     'name' => 'tax_tagline',
                     'label' => esc_html__('Tagline Typography ', 'rentals-elementor'),
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                     'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+                     ],
                     'selector' => '{{WRAPPER}} .category_tagline',
                     'fields_options' => [
                         // Inner control name
@@ -480,7 +484,9 @@ class Wprentals_Grids extends Widget_Base {
                 [
                     'name' => 'tax_listings',
                     'label' => esc_html__('Listings Text Typography', 'rentals-elementor'),
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                     'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+                     ],
                     'selector' => '{{WRAPPER}} .featured_place_count',
                     'fields_options' => [
                         // Inner control name
@@ -550,7 +556,9 @@ class Wprentals_Grids extends Widget_Base {
                 [
                     'name' => 'discover_listings',
                     'label' => esc_html__('Discover Text Typography', 'rentals-elementor'),
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                     'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+                     ],
                     'selector' => '{{WRAPPER}} .featured_more a',
                     'fields_options' => [
                         // Inner control name

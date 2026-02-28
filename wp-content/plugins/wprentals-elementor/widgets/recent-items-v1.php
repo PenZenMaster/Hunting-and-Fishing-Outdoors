@@ -4,9 +4,10 @@ namespace ElementorWpRentals\Widgets;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Core\Schemes\Typography;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -41,7 +42,7 @@ class Wprentals_Recent_Items_v1 extends Widget_Base {
      * @return string Widget title.
      */
     public function get_title() {
-        return __('WpRentals Recent Items v1', 'rentals-elementor');
+        return __('WpRentals Recent Listings - V1', 'rentals-elementor');
     }
 
     /**
@@ -378,7 +379,9 @@ class Wprentals_Recent_Items_v1 extends Widget_Base {
                 [
                     'name' => 'property_title',
                     'label' => esc_html__('Property Title', 'rentals-elementor'),
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                     'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+                     ],
                     'selector' => '{{WRAPPER}} .category_name .listing_title_unit',
                 ]
         );
@@ -388,7 +391,9 @@ class Wprentals_Recent_Items_v1 extends Widget_Base {
                 [
                     'name' => 'property_category',
                     'label' => esc_html__('Property location & category', 'rentals-elementor'),
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                     'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+                     ],
                     'selector' => '{{WRAPPER}} .category_tagline  ,{{WRAPPER}} .category_tagline a',
                 ]
         );
@@ -398,7 +403,9 @@ class Wprentals_Recent_Items_v1 extends Widget_Base {
                 [
                     'name' => 'property_price',
                     'label' => esc_html__('Property Price', 'rentals-elementor'),
-                    'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+                     'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+                     ],
                     'selector' => '{{WRAPPER}} .price_unit ,{{WRAPPER}} .pernight',
                 ]
         );

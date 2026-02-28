@@ -92,7 +92,11 @@ class Wprentals_List_Items_By_Id extends Widget_Base {
 
         protected function register_controls() {
                 global $all_tax;
-                $all_tax_elemetor=$this->elementor_transform($all_tax);
+                $item_array              =   wprentals_return_item_arrays();
+		$item_array_elemetor      = $this->elementor_transform( $item_array );
+                
+                $blog_array              =   wprentals_return_article_arrays();
+                $blog_array_elemetor      = $this->elementor_transform( $blog_array );
 
                 $items_type         =   array('properties'=>'properties','articles'=>'articles');
                 $blog_items_type= array(
@@ -128,6 +132,37 @@ class Wprentals_List_Items_By_Id extends Widget_Base {
 			]
 		);
 
+                $this->add_control(
+			'ids',
+			[
+				'label' => __( 'Select the properties', 'rentals-elementor' ),
+				'label_block'=>true,
+                                'condition' => [
+                                    'type' => 'properties',
+                                ],
+				'type' => \Elementor\Controls_Manager::SELECT2,
+				'multiple' => true,
+				'options' => $item_array_elemetor,
+			]
+		);
+                      
+                
+                
+                $this->add_control(
+			'ids_post',
+			[
+				'label' => __( 'Select the articles', 'rentals-elementor' ),
+				'label_block'=>true,
+                               'condition' => [
+                                    'type' => 'articles',
+                                ],
+				'type' => \Elementor\Controls_Manager::SELECT2,
+				'multiple' => true,
+				'options' => $blog_array_elemetor,
+			]
+		);
+                
+                      
                  $this->add_control(
                 'blogtype',
                 [
@@ -143,15 +178,8 @@ class Wprentals_List_Items_By_Id extends Widget_Base {
                  
                  
                  
-                $this->add_control(
-			'ids',
-			[
-				'label' => __( 'Items IDs separated by comma', 'rentals-elementor' ),
-                          	'type' => Controls_Manager::TEXT,
-                                'Label Block'
-
-			]
-		);
+            
+          
 
                 $this->add_control(
 			'number',
@@ -227,7 +255,14 @@ class Wprentals_List_Items_By_Id extends Widget_Base {
             $attributes['number']         =   $settings['number'];
             $attributes['rownumber']      =   $settings['rownumber'];
             $attributes['link']           =   $settings['link'];
+            
+            
+            
             $attributes['blogtype']=$settings['blogtype'];
+            if($attributes['type'] == 'articles'){
+                    $attributes['ids']            =   $settings['ids_post'];
+            }
+            
 
             echo  wpestate_list_items_by_id_function($attributes);
 	}

@@ -37,18 +37,23 @@ class Wpestate_Global_Payments {
             add_action('woocommerce_created_customer'   ,array($this,'wpestate_woocommerce_created_customer'), 10 , 1);
         }
 
-
-
         require_once WPESTATE_PLUGIN_PATH.'classes/wpestate_stripe_payments.php';
         $this->stripe_payments=new Wpestate_stripe_payments();
 
     }
 
-    
-    
-    function wpestate_woocommerce_created_customer( $customer_id) {
-        update_user_meta($customer_id, 'user_type', 1);
-    }
+
+	function wpestate_woocommerce_created_customer($customer_id){
+		update_user_meta($customer_id, 'user_type', 1);
+		//wprentals_core_set_role_to_user($customer_id, 'renter');
+        $role_assigned = wprentals_register_user_role($customer_id,'renter');
+
+		$user = get_user_by('id', $customer_id);
+
+		if($user){
+		//	wpestate_register_as_user($user->user_login, $user->ID, $user->first_name, $user->last_name);
+		}
+	}
     
 
     function wpestate_checkout_get_value($input,$key){
@@ -133,8 +138,8 @@ class Wpestate_Global_Payments {
             $receiver_login    =   $receiver->user_login;
             $from              =   $owner_id;
             $to                =   $user_id;
-            $subject           =   esc_html__( 'New Invoice','wprentals');
-            $description       =   esc_html__( 'A new invoice was generated for your booking request','wprentals');
+            $subject           =   esc_html__( 'New Invoice','wprentals-core');
+            $description       =   esc_html__( 'A new invoice was generated for your booking request','wprentals-core');
             wpestate_add_to_inbox($user_id,$user_id,$to,$subject,$description,1);
           //  wpestate_send_booking_email('newinvoice',$receiver_email);
         }
@@ -274,8 +279,15 @@ class Wpestate_Global_Payments {
         if( $this->is_woo=="no"){
             return;
         }
+
+        $cart = $this->get_available_cart();
+
+        if( null === $cart ){
+            return;
+        }
+
         print '<li id="shopping-cart-mobile" class="wpestate_header_shoping_cart_icon_mobile">
-        <a href="'.wc_get_cart_url().'">'.esc_html__('Your Cart','wprentals-core').'<span class="wpestream_cart_counter_header_mobile">'.WC()->cart->get_cart_contents_count().'</span></a>';
+        <a href="'.wc_get_cart_url().'">'.esc_html__('Your Cart','wprentals-core').'<span class="wpestream_cart_counter_header_mobile">'.intval( $cart->get_cart_contents_count() ).'</span></a>';
         print '</li>';
     }
 
@@ -291,6 +303,13 @@ class Wpestate_Global_Payments {
         if( $this->is_woo=="no"){
             return;
         }
+
+        $cart = $this->get_available_cart();
+
+        if( null === $cart ){
+            return;
+        }
+
         print '<div id="shopping-cart" class="wpestate_header_shoping_cart_icon">
         <svg id="shopping-cart_icon" width="23" height="21" viewBox="0 0 23 21" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M18.5444 21H4.56587C4.11918 21.0009 3.68506 20.8508 3.33278 20.5738C2.98049 20.2968 2.73033 19.9087 2.62221 19.4715L0.0518138 9.06855C-0.0161936 8.77314 -0.017268 8.46605 0.0486706 8.17016C0.114609 7.87427 0.245863 7.59719 0.43266 7.35954C0.619457 7.1219 0.856988 6.92982 1.12757 6.79759C1.39815 6.66537 1.69481 6.59641 1.99547 6.59584H21.1148C21.4188 6.59524 21.719 6.66461 21.9925 6.79866C22.266 6.93272 22.5055 7.12793 22.6929 7.36945C22.8804 7.61096 23.0107 7.89242 23.074 8.1924C23.1374 8.49238 23.132 8.80298 23.0584 9.10056L20.488 19.5035C20.3739 19.9348 20.1212 20.3156 19.7694 20.5864C19.4177 20.8572 18.9868 21.0027 18.5444 21V21ZM1.99547 8.1963C1.93208 8.1955 1.86936 8.20945 1.81217 8.23706C1.75499 8.26467 1.70488 8.30521 1.66575 8.35552C1.62661 8.40584 1.5995 8.46457 1.58651 8.52717C1.57353 8.58976 1.57502 8.65453 1.59088 8.71645L4.16127 19.1194C4.18282 19.2111 4.23458 19.2927 4.30808 19.3508C4.38158 19.409 4.47246 19.4403 4.56587 19.4395H18.5444C18.6353 19.4389 18.7236 19.408 18.7953 19.3515C18.8671 19.2951 18.9183 19.2163 18.941 19.1274L21.5114 8.72445C21.5273 8.66254 21.5288 8.59776 21.5158 8.53517C21.5028 8.47257 21.4757 8.41384 21.4365 8.36353C21.3974 8.31321 21.3473 8.27268 21.2901 8.24506C21.2329 8.21745 21.1702 8.2035 21.1068 8.20431L1.99547 8.1963Z" fill="black"/>
@@ -299,7 +318,7 @@ class Wpestate_Global_Payments {
         <path d="M5.29573 7.88422L3.93913 7.08399L7.90579 0.442086C8.00504 0.255689 8.17344 0.116528 8.37415 0.0550426C8.57485 -0.00644271 8.79153 0.0147524 8.97679 0.113992C9.15637 0.22357 9.2856 0.400468 9.33615 0.605949C9.38671 0.81143 9.35448 1.02875 9.24652 1.21031L5.29573 7.88422Z" fill="black"/>
         <path d="M17.8145 7.88421L13.8478 1.2423C13.79 1.15019 13.7514 1.04711 13.7344 0.939408C13.7175 0.831702 13.7225 0.721639 13.7493 0.615975C13.776 0.51031 13.8239 0.411275 13.89 0.32495C13.956 0.238624 14.0389 0.166831 14.1334 0.113976C14.3134 0.00507863 14.5289 -0.0274323 14.7326 0.0235629C14.9363 0.0745582 15.1117 0.204903 15.2203 0.386054L19.187 7.02796L17.8145 7.88421Z" fill="black"/>
         </svg>
-        <span class="wpestream_cart_counter_header">'.WC()->cart->get_cart_contents_count().'</span></div>';
+        <span class="wpestream_cart_counter_header">'.intval( $cart->get_cart_contents_count() ).'</span></div>';
 
     }
 
@@ -313,9 +332,16 @@ class Wpestate_Global_Payments {
 
     function show_cart(){
         $return_string='';
+
+        $cart = $this->get_available_cart();
+
+        if( null === $cart ){
+            return;
+        }
+
         print '<div class="wpestate_header_shoping_cart" id="wpestate_header_shoping_cart">';
         print '<div class="wpestate_header_shoping_cart_container ">';
-            $cart_content =  WC()->cart->get_cart_contents();
+            $cart_content =  $cart->get_cart_contents();
             foreach ($cart_content as $key => $product) {
                 $product_id =   $product['product_id'];
                 $quantity   =   $product['quantity'];
@@ -342,13 +368,39 @@ class Wpestate_Global_Payments {
 
         }
 
-        $return_string .=  '<div class="wpestate_header_shoping_cart_total">'.esc_html__('Total:','wprentals-core').' '. WC()->cart->get_cart_total().'</div>';
+        $return_string .=  '<div class="wpestate_header_shoping_cart_total">'.esc_html__('Total:','wprentals-core').' '. $cart->get_cart_total().'</div>';
 
         $return_string .=   '<a class="wpestate_header_view_cart " href="'.wc_get_cart_url().'">'.esc_html__('View Cart','wprentals-core').'</a>';
         $return_string .=   '<a class="wpestate_header_view_checkout" href="'.wc_get_checkout_url().'">'.esc_html__('Checkout','wprentals-core').'</a>';
         print $return_string;
         print '</div>';
         print'</div>';
+    }
+
+
+    /**
+    * Retrieve WooCommerce cart instance when available.
+    *
+    * @access   private
+    *
+    * @return null|\WC_Cart
+    */
+    private function get_available_cart(){
+        if( ! function_exists( 'WC' ) ){
+            return null;
+        }
+
+        $woocommerce = WC();
+
+        if( ! is_object( $woocommerce ) ){
+            return null;
+        }
+
+        if( ! isset( $woocommerce->cart ) || ! is_object( $woocommerce->cart ) ){
+            return null;
+        }
+
+        return $woocommerce->cart;
     }
 
 
@@ -458,7 +510,7 @@ class Wpestate_Global_Payments {
 
             if($is_upgrade==1){
                 update_post_meta($listing_id, 'prop_featured', 1);
-                $invoice_id = wpestate_insert_invoice('Upgrade to Featured','One Time',$listing_id,$date, $this->userID,0,1,'' );
+                $invoice_id = wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_UPGRADE_TO_FEATURED,'One Time',$listing_id,$date, $this->userID,0,1,'' );
                 update_post_meta($invoice_id, 'invoice_status', 'confirmed');
                 wpestate_email_to_admin(1);
             }else{
@@ -475,7 +527,7 @@ class Wpestate_Global_Payments {
                 }
 
 
-                $invoice_id = wpestate_insert_invoice('Listing','One Time',$listing_id,$date,$this->userID,0,0,'' );
+                $invoice_id = wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_LISTING,'One Time',$listing_id,$date,$this->userID,0,0,'' );
                 update_post_meta($invoice_id, 'invoice_status', 'confirmed');
 
                 wpestate_email_to_admin(0);

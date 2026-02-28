@@ -27,7 +27,7 @@ class Wpestate_footer_latest_widget extends WP_Widget {
                 $actions_select     =   '';
                 $categ_select       =   '';
                 $taxonomy           =   'property_action_category';
-                $tax_terms          =   get_terms($taxonomy,$args);
+                $tax_terms          =   wpestate_get_cached_terms($taxonomy,$args);
 
                 $current_adv_filter_search_action = $instance['adv_filter_search_action'];
                 if($current_adv_filter_search_action==''){
@@ -55,7 +55,7 @@ class Wpestate_footer_latest_widget extends WP_Widget {
 
                 //////////////////////////////////////////////////////////////////////////////////////////
                 $taxonomy           =   'property_category';
-                $tax_terms          =   get_terms($taxonomy,$args);
+                $tax_terms          =   wpestate_get_cached_terms($taxonomy,$args);
 
                 $current_adv_filter_search_category = $instance['adv_filter_search_category'];
                 if($current_adv_filter_search_category==''){
@@ -83,7 +83,7 @@ class Wpestate_footer_latest_widget extends WP_Widget {
 
                 $select_city='';
                 $taxonomy = 'property_city';
-                $tax_terms_city = get_terms($taxonomy,$args);
+                $tax_terms_city = wpestate_get_cached_terms($taxonomy,$args);
                 $current_adv_filter_city =  $instance['current_adv_filter_city'];
 
                 if($current_adv_filter_city==''){
@@ -110,7 +110,7 @@ class Wpestate_footer_latest_widget extends WP_Widget {
 
                 $select_area='';
                 $taxonomy = 'property_area';
-                $tax_terms_area = get_terms($taxonomy,$args);
+                $tax_terms_area = wpestate_get_cached_terms($taxonomy,$args);
                 $current_adv_filter_area =  $instance['current_adv_filter_area']; 
                 if($current_adv_filter_area==''){
                     $current_adv_filter_area=array();
@@ -247,11 +247,10 @@ class Wpestate_footer_latest_widget extends WP_Widget {
                 $user_option                =   'favorites'.$userID;
                 $wpestate_curent_fav                 =   get_option($user_option);
                 $icons                      =   array();
-                $taxonomy                   =   'property_action_category';
-                $tax_terms                  =   get_terms($taxonomy);
-                $taxonomy_cat               =   'property_category';
-                $categories                 =   get_terms($taxonomy_cat);
-                $show_compare=1;
+              
+             
+               
+           
 
 
                 $current_adv_filter_search_action       = $instance['adv_filter_search_action'];

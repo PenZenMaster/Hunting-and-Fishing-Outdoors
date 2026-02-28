@@ -17,7 +17,7 @@ class WpestateFunk {
         // private constructor to prevent direct instantiation
         add_action( 'wp_ajax_wpestate_register_license', [ $this, 'register_license' ] );
         add_action( 'wp_ajax_wpestate_revoke_license', [ $this, 'revoke_license' ] );
-        add_action('admin_menu', [ $this, 'custom_menu_item']) ;
+        // add_action('admin_menu', [ $this, 'custom_menu_item']) ;
     }
 
     
@@ -42,13 +42,15 @@ class WpestateFunk {
     }
         
     public function custom_menu_item(){
-          add_menu_page(
-                'WpRentals License',
-                'WpRentals License',
-                'manage_options', // Capability required to access this menu item
-                'wprentals-license',
-                'wpestate_license_custom_menu_page',
-                 get_template_directory_uri() . '/img/rentals_icon.png', // Icon for the menu item
+        $wprentals_branding = wprentals_theme_branding(); // Uses the filter system
+        $menu_icon = wprentals_get_theme_branding_logo_url(); // Just returns the URL
+        add_menu_page(
+            $wprentals_branding . ' License',
+            $wprentals_branding . ' License',
+            'manage_options', // Capability required to access this menu item
+            'wprentals-license',
+            'wpestate_license_custom_menu_page',
+            $menu_icon,
                 1 // Position before the Dashboard
             );
     }
@@ -92,10 +94,10 @@ class WpestateFunk {
       
             $ajax_nonce = wp_create_nonce("wprentals_activate_license_nonce");
             print '<input type="hidden" id="wprentals_activate_license_nonce" value="'.esc_html($ajax_nonce).'" />';
-            print '<input type="submit" name="submit" id="wpestate_deregister_ajax_license" class="new_admin_submit" value="'.esc_html('Deactivate License','wprentals').'">';
+            print '<input type="submit" name="submit" id="wpestate_deregister_ajax_license" class="button wprentals_button secondary" value="'.esc_html__('Deactivate License','wprentals-core').'">';
 
         }else{
-           print esc_html('You do not have an active license','wprentals-code');
+           print esc_html__('You do not have an active license','wprentals-core');
         }
         
        
@@ -138,7 +140,7 @@ class WpestateFunk {
         print '<label title="" for="terms" class="custom-control-label">'.$translated_text.'</label></div>';
         $ajax_nonce = wp_create_nonce("wprentals_activate_license_nonce");
         print '<input type="hidden" id="wprentals_activate_license_nonce" value="'.esc_html($ajax_nonce).'" />';
-        print '<input type="submit" name="submit" id="wpestate_check_ajax_license" class="new_admin_submit" value="'.esc_html('Register License','wprentals').'">';
+        print '<input type="submit" name="submit" id="wpestate_check_ajax_license" class="button wprentals_button button-primary" value="'.esc_html__('Register License','wprentals-core').'">';
         print '</div>';
     }
     
@@ -341,7 +343,7 @@ class WpestateFunk {
                     'method' => 'POST',
                     'timeout' => 45,
                     'redirection' => 5,
-                    'httpversion' => '1.0',
+                    'httpversion' => '1.1',
                     'sslverify' => false,
                     'blocking' => true,
                     'body' =>  $data,
@@ -350,7 +352,7 @@ class WpestateFunk {
                     ],
             );
 
-        $url="http://support.wpestate.org/theme_license_check_wprentals_cloud.php";
+        $url="https://support.wpestate.org/theme_license_check_wprentals_cloud.php";
         $response = wp_remote_post( $url, $args );
 
         if ( is_wp_error( $response ) ) {
@@ -365,7 +367,7 @@ class WpestateFunk {
             if( isset($output['permited']) && $output['permited']=="yes" ){
                
               
-                set_transient('envato_purchase_code_12921802_demos',$output['demos'],6600);
+                set_transient('envato_purchase_code_12921802_demos',$output['demos'],6*HOUR_IN_SECONDS);
                 return $output;
             }else{
                return false;

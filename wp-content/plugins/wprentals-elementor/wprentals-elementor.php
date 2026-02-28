@@ -1,17 +1,17 @@
 <?php
 /**
- * Plugin Name: WpRentals Elementor Widgets
- * Description: Elementor widgets for WpRentals
+ * Plugin Name: WPRentals Elementor Widgets
+ * Description: Elementor widgets for WPRentals Theme
  * Plugin URI:  https://wpestate.org/
- * Version:     3.11.1
+ * Version:     3.17.0
  * Author:      WpEstate
  * Author URI:  https://wpestate.org/
- * Text Domain: residence-elementor
+ * Text Domain: rentals-elementor
  * Domain Path: /languages
  */
 
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly 1
 register_activation_hook( __FILE__, 'wpestate_rentals_elementor_activate_functionality' );
 
 function wpestate_rentals_elementor_activate_functionality(){

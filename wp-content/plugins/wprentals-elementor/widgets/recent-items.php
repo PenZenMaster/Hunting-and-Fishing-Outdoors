@@ -5,6 +5,9 @@ namespace ElementorWpRentals\Widgets;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
+use Elementor\Core\Schemes\Typography;
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH'))
     exit; // Exit if accessed directly
@@ -108,45 +111,48 @@ class Wprentals_Recent_Items extends Widget_Base {
         $recent_items_space = array('yes' => 'yes', 'no' => 'no');
 
         $this->start_controls_section(
-                'section_content',
-                [
-                    'label' => __('Content', 'rentals-elementor'),
-                ]
+            'section_content',
+            [
+                'label' => __('Content', 'rentals-elementor'),
+            ]
         );
 
         $this->add_control(
-                'full_row',
-                [
-                    'label' => __('Use without spaces between listings? (If yes, title or link to global listing will not show)', 'rentals-elementor'),
-                    'type' => \Elementor\Controls_Manager::SELECT,
-                    'default' => 'no',
-                    'options' => $recent_items_space,
-                    'label_block' => true,
-                ]
+            'title',
+            [
+                'label' => __('Title', 'rentals-elementor'),
+                'type' => Controls_Manager::TEXT,
+            ]
         );
 
         $this->add_control(
-                'title',
-                [
-                    'label' => __('Title', 'rentals-elementor'),
-                    'type' => Controls_Manager::TEXT,
-                ]
+            'type',
+            [
+                'label' => __('What type of items', 'rentals-elementor'),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'properties',
+                'options' => $items_type
+            ]
         );
 
         $this->add_control(
-                'type',
-                [
-                    'label' => __('What type of items', 'rentals-elementor'),
-                    'type' => \Elementor\Controls_Manager::SELECT,
-                    'default' => 'properties',
-                    'options' => $items_type
-                ]
+            'full_row',
+            [
+                'label' => __('Display listings without spaces? (Titles and global listing links will be hidden if enabled))', 'rentals-elementor'),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'no',
+                'options' => $recent_items_space,
+                'label_block' => true,
+                'condition' => [
+                    'type' => 'properties', // Show only when 'type' is 'properties'
+                ],
+            ]
         );
 
         $this->add_control(
                 'blogtype',
                 [
-                    'label' => __('Select blog unit card', 'rentals-elementor'),
+                    'label' => __('Select Blog Unit Card', 'rentals-elementor'),
                     'type' => \Elementor\Controls_Manager::SELECT,
                     'condition' => [
                         'type' => 'articles',
@@ -186,7 +192,7 @@ class Wprentals_Recent_Items extends Widget_Base {
         $this->add_control(
                 'random_pick',
                 [
-                    'label' => __('Random Pick ?', 'rentals-elementor'),
+                    'label' => __('Random Pick?', 'rentals-elementor'),
                     'type' => \Elementor\Controls_Manager::SELECT,
                     'default' => 'no',
                     'options' => $featured_listings
@@ -196,7 +202,7 @@ class Wprentals_Recent_Items extends Widget_Base {
         $this->add_control(
                 'display_grid',
                 [
-                    'label' => esc_html__('Display as grid ?', 'rentals-elementor'),
+                    'label' => esc_html__('Display as grid?', 'rentals-elementor'),
                     'type' => Controls_Manager::SWITCHER,
                     'label_on' => esc_html__('Yes', 'rentals-elementor'),
                     'label_off' => esc_html__('No', 'rentals-elementor'),
@@ -389,7 +395,399 @@ class Wprentals_Recent_Items extends Widget_Base {
         );
 
         $this->end_controls_section();
+
+
+
+    /*
+         * -------------------------------------------------------------------------------------------------
+         * Start typography section
+         */
+        $this->start_controls_section(
+            'typography_section',
+            [
+                'label' => esc_html__('Typography', 'rentals-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+    );
+    $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'property_title',
+                'label' => esc_html__('Property / Blog Title', 'rentals-elementor'),
+                 'global' => [
+                    'default' => Global_Typography::TYPOGRAPHY_TEXT
+                 ],
+                'selector' => '{{WRAPPER}} a.blog-title-link, {{WRAPPER}} .category_name .listing_title_unit, {{WRAPPER}} .property_unit_v4 .listing_title_unit',
+            ]
+    );
+
+    $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'property_category',
+                'label' => esc_html__('Property Location & Category', 'rentals-elementor'),
+                 'global' => [
+                    'default' => Global_Typography::TYPOGRAPHY_TEXT
+                 ],
+                 'condition' => [
+                    'type' => 'properties',
+                ],
+                'selector' => '{{WRAPPER}} .category_tagline  ,{{WRAPPER}} .category_tagline a',
+            ]
+    );
+
+    $this->add_group_control(
+        Group_Control_Typography::get_type(),
+        [
+            'name' => 'blog_description',
+            'label' => esc_html__('Blog Article Description', 'rentals-elementor'),
+             'global' => [
+                'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
+             'condition' => [
+                'type' => 'articles',
+            ],
+            'selector' => '{{WRAPPER}} .blog-unit-content',
+        ]
+    );
+
+    $this->add_group_control(
+        Group_Control_Typography::get_type(),
+        [
+            'name' => 'blog_date',
+            'label' => esc_html__('Blog Article Date', 'rentals-elementor'),
+             'global' => [
+                'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
+             'condition' => [
+                'type' => 'articles',
+            ],
+            'selector' => '{{WRAPPER}} .new_blog .category_tagline, {{WRAPPER}} .new_blog .category_tagline a, {{WRAPPER}}  span.span_widemeta',
+        ]
+    );
+
+    $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'property_price',
+                'label' => esc_html__('Property Price', 'rentals-elementor'),
+                 'global' => [
+                    'default' => Global_Typography::TYPOGRAPHY_TEXT
+                 ],
+                 'condition' => [
+                    'type' => 'properties',
+                ],
+                'selector' => '{{WRAPPER}} .price_unit ,{{WRAPPER}} .pernight',
+            ]
+    );
+
+    $this->end_controls_section();
+
+           /*
+         * -------------------------------------------------------------------------------------------------
+         * Start Spacing section
+         */
+        $this->start_controls_section(
+            'section_spacing_margin_section',
+            [
+                'label' => esc_html__('Spaces & Sizes', 'rentals-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+    );
+    $this->add_responsive_control(
+            'property_title_margin_bottom',
+            [
+                'label' => esc_html__('Title Margin Bottom (px)', 'rentals-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'devices' => ['desktop', 'tablet', 'mobile'],
+                'desktop_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .listing_title_unit' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+    );
+
+    $this->add_responsive_control(
+            'property_location_margin_bottom',
+            [
+                'label' => esc_html__('Property Location Margin Bottom (px)', 'rentals-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'devices' => ['desktop', 'tablet', 'mobile'],
+                'desktop_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .category_tagline.map_icon ' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+    );
+
+    $this->add_responsive_control(
+            'property_category_margin_bottom',
+            [
+                'label' => esc_html__('Property Categories Margin Bottom (px)', 'rentals-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'devices' => ['desktop', 'tablet', 'mobile'],
+                'desktop_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => '',
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .category_tagline.actions_icon ' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+    );
+
+    $this->add_responsive_control(
+            'property_icon_size',
+            [
+                'label' => esc_html__('Icons size', 'rentals-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'devices' => ['desktop', 'tablet', 'mobile'],
+                'desktop_default' => [
+                    'size' => '15',
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => '15',
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => '15',
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .category_tagline.map_icon:after,{{WRAPPER}} .category_tagline.actions_icon:after' => 'font-size: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+    );
+    
+    $this->add_responsive_control(
+            'owner_thumnsize',
+            [
+                'label' => esc_html__('Owner thumb size', 'rentals-elementor'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'devices' => ['desktop', 'tablet', 'mobile'],
+                'desktop_default' => [
+                    'size' => '60',
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => '60',
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => '60',
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .owner_thumb' => 'width:{{SIZE}}{{UNIT}}; height:{{SIZE}}{{UNIT}};',
+                ],
+            ]
+    );
+
+    $this->end_controls_section();
+
+    /*
+     * -------------------------------------------------------------------------------------------------
+     * End Spacing section
+     */
+
+
+    /*
+     * -------------------------------------------------------------------------------------------------
+     * Start shadow section
+     */
+    $this->start_controls_section(
+        'section_grid_box_shadow',
+        [
+            'label' => esc_html__('Box Shadow', 'rentals-elementor'),
+            'tab' => Controls_Manager::TAB_STYLE,
+        ]
+    );
+
+    $this->add_group_control(
+        Group_Control_Box_Shadow::get_type(),
+        [
+            'name' => 'box_shadow',
+            'label' => esc_html__('Box Shadow', 'rentals-elementor'),
+            'selector' => '{{WRAPPER}} .property_listing',
+        ]
+    );
+    $this->end_controls_section();
+
+    /*
+     * -------------------------------------------------------------------------------------------------
+     * End shadow section
+     */
+
+    /*
+     * -------------------------------------------------------------------------------------------------
+     * Start color section
+     */
+    $this->start_controls_section(
+        'section_grid_colors',
+        [
+            'label' => esc_html__('Colors', 'rentals-elementor'),
+            'tab' => Controls_Manager::TAB_STYLE,
+        ]
+    );
+
+    $this->add_control(
+        'unit_color',
+        [
+            'label' => esc_html__('Unit Background', 'rentals-elementor'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}} .property_listing' => 'background-color: {{VALUE}}',
+                '{{WRAPPER}} .blog_unit_back' => 'background-color: {{VALUE}}',      
+            ],
+        ]
+    );
+
+    $this->add_control(
+            'title_color',
+            [
+                'label' => esc_html__('Title', 'rentals-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .listing_title_unit' => 'color: {{VALUE}}',
+                ],
+            ]
+    );
+
+    $this->add_control(
+            'category_color',
+            [
+                'label' => esc_html__('Location & Category Color', 'rentals-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .category_tagline ,
+                                                         {{WRAPPER}} .category_tagline a,
+                                                         {{WRAPPER}} .category_tagline.map_icon:after,
+                                                         {{WRAPPER}} .category_tagline.actions_icon:after' => 'color: {{VALUE}}',
+                ],
+            ]
+    );
+    $this->add_control(
+            'price_color',
+            [
+                'label' => esc_html__('Price', 'rentals-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .price_unit' => 'color: {{VALUE}}',
+                ],
+            ]
+    );
+
+    $this->add_control(
+        'featured_color',
+        [
+            'label' => esc_html__('Featured Label Color', 'rentals-elementor'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}} .featured_div' => 'color: {{VALUE}}',
+                '{{WRAPPER}} .property_status' => 'color: {{VALUE}}',
+            ],
+        ]
+    );
+
+    $this->add_control(
+        'featured_back_color',
+        [
+            'label' => esc_html__('Featured Label Background Color', 'rentals-elementor'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}} .featured_div' => 'background-color: {{VALUE}}!important',
+                '{{WRAPPER}} .property_status ' => 'background: {{VALUE}}',
+            ],
+        ]
+    );
+
+    $this->add_control(
+        'review_color',
+        [
+            'label' => esc_html__('Review Stars Color', 'rentals-elementor'),
+            'type' => Controls_Manager::COLOR,
+            'default' => '',
+            'selectors' => [
+                '{{WRAPPER}} .property-rating i' => 'color: {{VALUE}}',
+                '{{WRAPPER}} .property_unit_v4 .property-rating' => 'color: {{VALUE}}',
+            ],
+        ]
+    );
+
+    $this->end_controls_section();
+    /*
+     * -------------------------------------------------------------------------------------------------
+     * End color section
+     */
     }
+
 
     /**
      * Render the widget output on the frontend.

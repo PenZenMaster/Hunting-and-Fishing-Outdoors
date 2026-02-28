@@ -97,7 +97,10 @@ class Wprentals_Featured_Listing extends Widget_Base {
                 'type3'=>__("type3","rentals-elementor")
             );
 
-
+            $item_array              =   wprentals_return_item_arrays();
+            $item_array_elemetor      = $this->elementor_transform( $item_array );
+           
+            
             $this->start_controls_section(
                     'section_content',
                     [
@@ -108,15 +111,18 @@ class Wprentals_Featured_Listing extends Widget_Base {
 
 
 
-            $this->add_control(
-                    'listing_id',
-                    [
-                        'label' => __( 'Listing Id', 'rentals-elementor' ),
-                        'label_block'=>true,
-                        'type' => Controls_Manager::TEXT,
-                    ]
-            );
+          
 
+
+            $this->add_control(
+                'listing_id',
+                [
+                        'label' => __( 'Select the Listing', 'rentals-elementor' ),
+                        'label_block'=>true,
+                        'type' => \Elementor\Controls_Manager::SELECT2,
+                        'options' => $item_array_elemetor,
+                ]
+             );
 
 
             $this->add_control(

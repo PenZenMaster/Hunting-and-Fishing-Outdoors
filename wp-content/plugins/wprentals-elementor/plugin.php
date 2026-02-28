@@ -47,6 +47,9 @@ class Plugin {
      * @access public
      */
     public function widget_scripts() {
+
+         /* Styles */
+        wp_register_style( 'wprentals-call-to-action-style', plugins_url( 'assets/css/call-to-action.css', __FILE__ ) );
         
     }
 
@@ -101,7 +104,9 @@ class Plugin {
         
         require_once( __DIR__ . '/widgets/display_categories_as_tabs.php' );
         require_once( __DIR__ . '/widgets/properties-slider-v1.php' );
-        
+        require_once( __DIR__ . '/widgets/wprentals-content-grid.php' );
+
+        require_once( __DIR__ . '/widgets/wprentals-call-to-action.php' );
         
         
   
@@ -168,7 +173,10 @@ class Plugin {
         \Elementor\Plugin::instance()->widgets_manager->register(new Widgets\Wprentals_Properties_Slider());
         
         
-        
+        \Elementor\Plugin::instance()->widgets_manager->register(new Widgets\Wprentals_Content_grid());  
+
+        \Elementor\Plugin::instance()->widgets_manager->register(new Widgets\Wprentals_Call_To_Action());
+         
     }
     
     

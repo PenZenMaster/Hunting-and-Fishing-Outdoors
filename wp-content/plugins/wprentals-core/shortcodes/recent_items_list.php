@@ -138,23 +138,26 @@ function wpestate_recent_items_top_bar_1($attributes, $content = null) {
                 $top_bar_items.='<a href="#'.sanitize_title(trim($place_tax['field_type'])).'" role="tab" data-toggle="tab">';
              
                 $temp_term      =   get_term($place_tax['field_type']);
-                $temp_term_tax  =   $temp_term->taxonomy;
-                if($place_tax['field_label']==''){
-                   $place_tax['field_label']=$temp_term->name;
-                }
+                if (!is_wp_error($temp_term) && !is_null($temp_term)) {
+                    $temp_term_tax  =   $temp_term->taxonomy;
+                    if($place_tax['field_label']==''){
+                       $place_tax['field_label']=$temp_term->name;
+                    }
+                  
               
-          
-                if($place_tax['field_type']!=''){                   
-                    if( is_int($found_key)   && $place_tax['include_terms']=='yes' ):                   
-                        if(isset(  $taxonomies[$temp_term_tax] )){
-                            $taxonomies[$temp_term_tax][]=$place_tax['field_type'];
-                        }else{
-                            $taxonomies[$temp_term_tax]=array();
-                            $taxonomies[$temp_term_tax][]=$place_tax['field_type'];
-                        }
-                    endif;
+                    if($place_tax['field_type']!=''){                   
+                        if( is_int($found_key)   && $place_tax['include_terms']=='yes' ):                   
+                            if(isset(  $taxonomies[$temp_term_tax] )){
+                                $taxonomies[$temp_term_tax][]=$place_tax['field_type'];
+                            }else{
+                                $taxonomies[$temp_term_tax]=array();
+                                $taxonomies[$temp_term_tax][]=$place_tax['field_type'];
+                            }
+                        endif;
+                    }
+                    
                 }
-                
+               
                 
                 
             $top_bar_items.=    $item_icon;    
@@ -249,8 +252,11 @@ function wpestate_recent_posts_pictures($attributes, $content = null) {
     $user_option            =   'favorites'.$userID;
     $wpestate_curent_fav             =   get_option($user_option);
 
-
+        $wpestate_options   =array();
+    if(isset($post->ID)){
     $wpestate_options             =   wpestate_page_details($post->ID);
+    }
+
     $return_string      =   '';
     $pictures           =   '';
     $button             =   '';
@@ -268,6 +274,7 @@ function wpestate_recent_posts_pictures($attributes, $content = null) {
     $extra_class_name   =   '';
     $random_pick        =   '';
     $orderby            =   'meta_value';
+    $full_row           =   '';
 
     if ( isset($attributes['title']) ){
         $title=$attributes['title'];
@@ -283,6 +290,8 @@ function wpestate_recent_posts_pictures($attributes, $content = null) {
             'action_ids'            =>  '',
             'city_ids'              =>  '',
             'area_ids'              =>  '',
+            'features_ids'          =>  '',
+            'status_ids'          =>  '',
             'number'                =>  4,
             'rownumber'             =>  4,
             'align'                 =>  'vertical',
@@ -310,6 +319,18 @@ function wpestate_recent_posts_pictures($attributes, $content = null) {
     if ( isset($attributes['area_ids']) ){
         $area=$attributes['area_ids'];
     }
+
+    if ( isset($attributes['features_ids']) ){
+        $features=$attributes['features_ids'];
+    }
+
+
+    if ( isset($attributes['status_ids']) ){
+        $status=$attributes['status_ids'];
+    }
+
+
+    
 
     if ( isset($attributes['show_featured_only']) ){
         $show_featured_only=$attributes['show_featured_only'];
@@ -380,6 +401,8 @@ function wpestate_recent_posts_pictures($attributes, $content = null) {
         $action_array   =   '';
         $city_array     =   '';
         $area_array     =   '';
+        $features_array='';
+        $status_array='';
 
         // build category array
         if($category!=''){
@@ -427,6 +450,32 @@ function wpestate_recent_posts_pictures($attributes, $content = null) {
         }
 
 
+        // build city array
+        if($features!=''){
+            $features_of_tax=array();
+            $features_of_tax=  explode(',', $features);
+            $features_array=array(
+                            'taxonomy'  => 'property_features',
+                            'field'     => 'term_id',
+                            'terms'     => $features_of_tax
+                            );
+        }
+
+
+        // build city array
+        if($status!=''){
+            $status_of_tax=array();
+            $status_of_tax=  explode(',', $status);
+            $status_array=array(
+                            'taxonomy'  => 'property_status',
+                            'field'     => 'term_id',
+                            'terms'     => $status_of_tax
+                            );
+        }
+
+
+        
+
             $meta_query=array();
             if($show_featured_only=='yes'){
                 $compare_array=array();
@@ -451,7 +500,9 @@ function wpestate_recent_posts_pictures($attributes, $content = null) {
                                         $category_array,
                                         $action_array,
                                         $city_array,
-                                        $area_array
+                                        $area_array,
+                                        $features_array,
+                                        $status_array
                                     )
 
             );
@@ -483,6 +534,7 @@ function wpestate_recent_posts_pictures($attributes, $content = null) {
     } else {
         $class = "nobutton";
     }
+
 
 
     $transient_name =   'wpestate_recent_posts_pictures_query_' . $type . '_' . $category . '_' . $action . '_' . $city . '_' . $area.'_'.$post_number_total.'_'.$show_featured_only.'_'.$random_pick;

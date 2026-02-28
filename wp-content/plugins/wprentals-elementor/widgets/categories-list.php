@@ -8,8 +8,9 @@ use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Text_Shadow;
 use Elementor\Core\Files\Assets\Svg\Svg_Handler;
 use Elementor\Repeater;
-use Elementor\Group_Control_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Core\Schemes\Typography;
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH'))
     exit; // Exit if accessed directly
@@ -398,7 +399,9 @@ class Wprentals_Categories_List extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'tax_title',
             'label' => esc_html__('Title Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}} .featured_listing_title',
             'fields_options' => [
                 // Inner control name
@@ -478,7 +481,9 @@ class Wprentals_Categories_List extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'tax_listings',
             'label' => esc_html__('Listings Text Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}} .place_counter,{{WRAPPER}} .category_tagline',
             'fields_options' => [
                 // Inner control name
@@ -623,7 +628,7 @@ class Wprentals_Categories_List extends Widget_Base {
 
         $attributes['place_list'] = $this->wpresidence_send_to_shortcode($settings['place_list']);
         $attributes['place_per_row'] = $settings['place_per_row'];
-        $attributes['spaces_unit'] = $settings['spaces_unit'];
+        $attributes['spaces_unit'] = isset($settings['spaces_unit']) ? $settings['spaces_unit'] : '';
         $attributes['design_type'] = $settings['design_type'];
         $attributes['display_grid']=$settings['display_grid'];
         echo wpestate_places_list_function($attributes);

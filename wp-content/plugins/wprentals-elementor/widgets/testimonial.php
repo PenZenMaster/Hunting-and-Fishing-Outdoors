@@ -3,6 +3,8 @@ namespace ElementorWpRentals\Widgets;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
+use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Typography;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
@@ -84,7 +86,7 @@ class Wprentals_Testimonial extends Widget_Base {
 
         protected function register_controls() {
 
-                 $testimonials_types=array(1=>1,2=>2);
+		$testimonials_types=array(1=>1,2=>2);
 
 		$this->start_controls_section(
 			'section_content',
@@ -95,59 +97,304 @@ class Wprentals_Testimonial extends Widget_Base {
 
 
 
-                $this->add_control(
+		$this->add_control(
 			'client_name',
 			[
-                            'label' => __( 'Client Name', 'rentals-elementor' ),
-                            'type' => Controls_Manager::TEXT,
+				'label' => __( 'Client Name', 'rentals-elementor' ),
+				'type' => Controls_Manager::TEXT,
 			]
 		);
 
-                $this->add_control(
+		$this->add_control(
 			'title_client',
 			[
-                            'label' => __( 'Title Client', 'rentals-elementor' ),
-                            'type' => Controls_Manager::TEXT,
+				'label' => __( 'Title Client', 'rentals-elementor' ),
+				'type' => Controls_Manager::TEXT,
 			]
 		);
 
-                $this->add_control(
+		$this->add_control(
 			'imagelinks',
 			[
-                            'label' => __( 'Image', 'rentals-elementor' ),
-                            'type' => Controls_Manager::MEDIA,
+				'label' => __( 'Image', 'rentals-elementor' ),
+				'type' => Controls_Manager::MEDIA,
+			]
+		);
+
+		// Border radius control
+		$this->add_control(
+			'image_border_radius',
+			[
+				'label' => __( 'Image Border Radius', 'rentals-elementor' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', '%' ],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 100,
+						'step' => 1,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 50,
+					],
+				],
+				'default' => [
+					'unit' => '%',
+					'size' => 50,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .testimonial-image' => 'border-radius: {{SIZE}}{{UNIT}};',
+				],
 			]
 		);
 
 
-                $this->add_control(
+		$this->add_control(
 			'testimonial_text',
 			[
-                            'label' => __( 'Testimonial Text ', 'rentals-elementor' ),
-                            'type' => Controls_Manager::TEXTAREA,
+				'label' => __( 'Testimonial Text ', 'rentals-elementor' ),
+				'type' => Controls_Manager::TEXTAREA,
 			]
 		);
 
-                $this->add_control(
+		$this->add_control(
 			'testimonial_type',
 			[
-                            'label' => __('Testimonial Type', 'rentals-elementor' ),
-                            'type' => \Elementor\Controls_Manager::SELECT,
+				'label' => __('Testimonial Type', 'rentals-elementor' ),
+				'type' => \Elementor\Controls_Manager::SELECT,
 
-                            'options' => $testimonials_types
+				'options' => $testimonials_types
 			]
 		);
 
-                $this->add_control(
+		$this->add_control(
 			'stars_client',
 			[
-                            'label' => __( 'Stars for Type 2', 'rentals-elementor' ),
-                            'type' => Controls_Manager::TEXT,
+				'label' => __( 'Stars for Type 2', 'rentals-elementor' ),
+				'type' => Controls_Manager::TEXT,
 			]
 		);
 
 		$this->end_controls_section();
 
+		 /*
+         * Typography Controls
+         */
+        $this->start_controls_section(
+            'section_typography',
+            [
+                'label' => esc_html__('Typography', 'rentals-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'client_name_typography',
+				'label' => esc_html__('Client Name Typography', 'rentals-elementor'),
+				'selector' => '{{WRAPPER}} .testimonial-author', 
+			]
+		);
+		
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'client_title_typography',
+				'label' => esc_html__('Client Title Typography', 'rentals-elementor'),
+				'selector' => '{{WRAPPER}} .testimonial_type_2 .testimonial-clas-line',
+			]
+		);
+
+		
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'testimonial_text_typography',
+				'label' => esc_html__('Testimonial Text Typography', 'rentals-elementor'),
+				'selector' => '{{WRAPPER}} .testimonial-text',
+			]
+		);
+
+		$this->add_responsive_control(
+			'padding_type_2',
+			[
+				'label' => __( 'Testimonial Padding', 'rentals-elementor' ),
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em', '%' ],
+				'default' => [
+					'top' => 45,
+					'right' => 45,
+					'bottom' => 45,
+					'left' => 45,
+					'unit' => 'px',
+					'isLinked' => true,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .testimonial-container.testimonial_type_2' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Add the text alignment control for all types
+		$this->add_responsive_control(
+			'testimonial_text_alignment',
+			[
+				'label' => __( 'Text Alignment', 'rentals-elementor' ),
+				'type' => Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'rentals-elementor' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'rentals-elementor' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => __( 'Right', 'rentals-elementor' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'left',
+				'selectors' => [
+					'{{WRAPPER}} .testimonial-text' => 'text-align: {{VALUE}};',
+					'{{WRAPPER}} .type_class_4 .testimmonials_starts' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
+		// Border radius control
+		$this->add_control(
+			'testimonial_border_radius',
+			[
+				'label' => __( 'Testimonial Border Radius', 'rentals-elementor' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', '%' ],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 100,
+						'step' => 1,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 50,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .testimonial-container' => 'border-radius: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .testimonial-text' => 'border-radius: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .testimonial-container' => 'border-radius: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+        $this->end_controls_section();
+
+        /*
+         * Color Controls
+         */
+        $this->start_controls_section(
+            'section_color',
+            [
+                'label' => esc_html__('Colors', 'rentals-elementor'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+		$this->add_control(
+			'client_name_color',
+			[
+				'label' => esc_html__('Client Name Color', 'rentals-elementor'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .testimonial-author' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .testimonial-author-line' => 'color: {{VALUE}};', 
+					'{{WRAPPER}} .testimonial-author, .type_class_4 .testimonial-author-line' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .testimonial-container.type_class_3 .testimonial_title' => 'color: {{VALUE}};', 	
+				],
+			]
+		);
+
+		$this->add_control(
+			'client_title_color',
+			[
+				'label' => esc_html__('Client Title Color', 'rentals-elementor'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .testimonial-author' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .type_class_4 .testimonial-location-line' => 'color: {{VALUE}};', 	
+					'{{WRAPPER}} .testimonial-container.type_class_2 .testimonial-author-line' => 'color: {{VALUE}};', 	
+					'{{WRAPPER}} .testimonial-container.type_class_3 .testimonial-author-line' => 'color: {{VALUE}};', 
+					
+				],
+			]
+		);
+
+        $this->add_control(
+            'testimonial_text_color',
+            [
+                'label' => esc_html__('Testimonial Text Color', 'rentals-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .testimonial-text' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'testimonial_bg_color',
+            [
+                'label' => esc_html__('Background Color', 'rentals-elementor'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .testimonial-container' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+		$this->add_control(
+			'testimonial_text_bg_color',
+			[
+				'label' => esc_html__('Testimonial Text Background Color', 'rentals-elementor'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .testimonial-text' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .testimonial-text:after' => 'border-right:10px {{VALUE}};',
+					'{{WRAPPER}} .testimonial-text:before' => 'border-right:10px {{VALUE}};',
+				],
+			]
+		);
+
+
+		$this->end_controls_section();
+        /*
+         * -------------------------------------------------------------------------------------------------
+         * Start shadow section
+         */
+        $this->start_controls_section(
+        	'section_grid_box_shadow', [
+				'label' => esc_html__('Box Shadow', 'rentals-elementor'),
+				'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_group_control(
+			Group_Control_Box_Shadow::get_type(), [
+				'name' => 'box_shadow',
+				'label' => esc_html__('Box Shadow', 'rentals-elementor'),
+				'selector' => '{{WRAPPER}} .testimonial-container.type_class_1 .testimonial-text, {{WRAPPER}} .testimonial-image, {{WRAPPER}} .testimonial-container.type_class_3, {{WRAPPER}} .testimonial-container.type_class_4 ',
+			]
+        );
+		
+		$this->end_controls_section();
 
 	}
 

@@ -4,12 +4,12 @@ namespace ElementorWpRentals\Widgets;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Typography;
+use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Core\Schemes\Typography;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Core\Files\Assets\Svg\Svg_Handler;
 use Elementor\Repeater;
-
+use Elementor\Group_Control_Typography;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -605,7 +605,9 @@ class Wprentals_Recent_Items_Top_Bar_v1 extends Widget_Base {
                 Group_Control_Typography::get_type(), [
             'name' => 'tab_item_typo',
             'label' => esc_html__('Tab Item Typography', 'rentals-elementor'),
-            'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_1,
+             'global' => [
+                        'default' => Global_Typography::TYPOGRAPHY_TEXT
+             ],
             'selector' => '{{WRAPPER}}  .nav-tabs>li.wpestate_categories_as_tabs_item>a' ,
             'fields_options' => [
                 // Inner control name
