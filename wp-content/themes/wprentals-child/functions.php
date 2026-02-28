@@ -36,6 +36,12 @@ require_once get_stylesheet_directory() . '/libs/ajax-half-day-booking.php';
 // This override passes 'number' => 0 (unlimited) so all dashboard pages are found.
 require_once get_stylesheet_directory() . '/libs/dashboard-link-fix.php';
 
+// Places API (New) server-side proxy (GitHub issue #6).
+// WPRentals 3.17.0 calls places.googleapis.com/v1/ directly from the browser,
+// exposing the API key and preventing HTTP referrer restrictions on the GCP key.
+// This proxy intercepts those fetch calls and forwards them server-side.
+require_once get_stylesheet_directory() . '/libs/places-proxy.php';
+
 /**
  * Enqueue the half-day price-save JS patch.
  *
@@ -54,6 +60,37 @@ function hnfo_enqueue_half_day_price_save_js() {
     );
 }
 add_action( 'wp_enqueue_scripts', 'hnfo_enqueue_half_day_price_save_js' );
+
+/**
+ * Enqueue the Places API proxy JS patch.
+ *
+ * Runs at priority 20 (after parent theme's priority 10) so we can check
+ * whether wpestate_ajaxcalls_add is already enqueued before adding our
+ * monkey-patch. Only loads on pages where the listing submission JS is present.
+ */
+function hnfo_enqueue_places_proxy_js() {
+    if ( ! wp_script_is( 'wpestate_ajaxcalls_add', 'enqueued' ) ) {
+        return;
+    }
+
+    wp_enqueue_script(
+        'hnfo-places-proxy',
+        get_stylesheet_directory_uri() . '/js/places-proxy.js',
+        array( 'wpestate_ajaxcalls_add' ),
+        '1.00',
+        true
+    );
+
+    wp_localize_script(
+        'hnfo-places-proxy',
+        'hnfo_places_proxy_vars',
+        array(
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'nonce'    => wp_create_nonce( 'hnfo_places_nonce' ),
+        )
+    );
+}
+add_action( 'wp_enqueue_scripts', 'hnfo_enqueue_places_proxy_js', 20 );
 
 
 // add_action('init','admin_vd_check');
