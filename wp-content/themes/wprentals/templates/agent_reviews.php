@@ -26,9 +26,14 @@ $wpestate_options      =   wpestate_page_details($agent_id);
         }
         print '</div>';
         print '</div>';
-        print '<div class=" '.esc_attr($wpestate_options['sidebar_class']).' widget-area-sidebar" id="primary" >
-        <ul class="xoxo">';
-            dynamic_sidebar('owner-page-widget-area');
-        print'    
-        </ul>
-    </div>';
+
+
+        if(!isset(        $is_elementor )):
+
+            print '<div class=" '.esc_attr($wpestate_options['sidebar_class']).' widget-area-sidebar" id="primary" >
+                <ul class="xoxo">';
+                    dynamic_sidebar('owner-page-widget-area');
+                print'    
+                </ul>
+            </div>';
+        endif;

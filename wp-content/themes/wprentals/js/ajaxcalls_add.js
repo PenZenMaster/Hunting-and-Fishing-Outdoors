@@ -227,7 +227,7 @@ function wpestate_allin_one_owner_insert_book_internal() {
 
     function allinone_mark_as_booked(parent, start_date, end_date,curent_id) {
 
-        var date_format = control_vars.date_format.toUpperCase();      
+      
         var modal_all_inone = jQuery('#allinone_reservation_modal');
         modal_all_inone.appendTo("body");
 
@@ -237,11 +237,6 @@ function wpestate_allin_one_owner_insert_book_internal() {
         jQuery('#start_date_owner_book').val( wpestate_convert_selected_days_reverse( wpestate_timeConverter_noconver(start_date) ) );
         jQuery('#end_date_owner_book').val(wpestate_convert_selected_days_reverse ( wpestate_timeConverter_noconver(end_date) ) );
         
-        start_date = moment.unix(start_date).utc().format(date_format);
-        jQuery('#start_date_owner_book').val(start_date);
-
-        end_date = moment.unix(end_date).utc().format(date_format);
-        jQuery('#end_date_owner_book').val(end_date);
 
 
         jQuery('#property_id').val(curent_id);
@@ -293,7 +288,6 @@ function wpestate_allin_one_owner_insert_book_internal() {
             return;
         }
 
-        jQuery(this).unbind('click');
 
         var children_as_guests,overload_guest,max_extra_guest_no,property_affiliate,security,ajaxurl,title,prop_category,prop_action_category,property_city,property_area_front,property_country,property_description,guest_no,new_estate,instant_booking;
 
@@ -335,14 +329,16 @@ function wpestate_allin_one_owner_insert_book_internal() {
 
 
         if( wpestate_check_for_mandatory() ) {
+          
             $([document.documentElement, document.body]).animate({
                 scrollTop: $("#new_post").offset().top
             }, 500);
 
             return;
+        }else{
+            jQuery(this).unbind('click');
         }
         //dataType:   'json',
-
 
 
 
@@ -612,7 +608,7 @@ function wpestate_allin_one_owner_insert_book_internal() {
     ////////////////////////////////////////////////////////////////////////////
     /// autocomplete for submission step 1
     ////////////////////////////////////////////////////////////////////////////
-
+/*
     if (typeof google === 'object' && typeof google.maps === 'object' && parseInt( mapbase_vars.wprentals_places_type) == 1 ) {
         input = (document.getElementById('property_city_front'));
         defaultBounds = new google.maps.LatLngBounds(
@@ -640,7 +636,9 @@ function wpestate_allin_one_owner_insert_book_internal() {
             postal_code_prefix: 'short_name',
             neighborhood: 'long_name',
             colloquial_area:'long_name',
-            natural_feature:'long_name'
+            natural_feature:'long_name',
+            sublocality_level_1: 'long_name',
+            sublocality: 'long_name',
         };
 
 
@@ -661,74 +659,300 @@ function wpestate_allin_one_owner_insert_book_internal() {
             });
         }
     }
+*/
 
 
 
 
+function wpestateHasPlacesApiAlertedFlag() {
+  if (typeof wpestatePlacesApiAlerted !== "undefined") {
+    return wpestatePlacesApiAlerted;
+  }
+  if (typeof window !== "undefined" && window.wpestatePlacesApiAlerted) {
+    return true;
+  }
+  return false;
+}
+
+function wpestateSetPlacesApiAlertedFlag() {
+  if (typeof wpestatePlacesApiAlerted !== "undefined") {
+    wpestatePlacesApiAlerted = true;
+  } else if (typeof window !== "undefined") {
+    window.wpestatePlacesApiAlerted = true;
+  }
+}
 
 
 
+if (parseInt(mapbase_vars.wprentals_places_type) == 1) {
+  const input = document.getElementById("property_city_front");
+  if (!input || !control_vars.google_api_key){
 
+  }else{
+;
+        const dropdown = document.createElement("ul");
+        dropdown.className = "wpestate-autocomplete-results";
+        input.parentNode.style.position = "relative";
+        input.parentNode.appendChild(dropdown);
 
+        let controller = null;
 
+        input.addEventListener("input", async function () {
+            const query = input.value.trim();
+            if (query.length < 3) {
+            dropdown.style.display = "none";
+            //return;
+            }
 
+            if (controller) controller.abort();
+            controller = new AbortController();
 
+            try {
+            const res = await fetch("https://places.googleapis.com/v1/places:autocomplete", {
+                method: "POST",
+                signal: controller.signal,
+                headers: {
+                "Content-Type": "application/json",
+                "X-Goog-Api-Key": control_vars.google_api_key,
+                "X-Goog-FieldMask":
+                    "suggestions.placePrediction.text,suggestions.placePrediction.placeId"
+                },
+                body: JSON.stringify({
+                input: query,
+                includedRegionCodes:
+                    ajaxcalls_add_vars.limit_country === "yes" &&
+                    ajaxcalls_add_vars.limit_country_select
+                    ? ajaxcalls_add_vars.limit_country_select
+                    : undefined
+                })
+            });
 
+            if (!res.ok) {
+                if (res.status === 403 && !wpestateHasPlacesApiAlertedFlag()) {
+                wpestateSetPlacesApiAlertedFlag();
+                alert(
+                    control_vars.google_places_forbidden_message ||
+                    "Google Places Autocomplete request was rejected (HTTP 403). Please verify the API key, billing status, and Places API configuration."
+                );
+                }
+                console.error(
+                "Autocomplete fetch failed with status",
+                res.status,
+                res.statusText
+                );
+                return;
+            }
 
+            const data = await res.json();
+            const suggestions = data.suggestions || [];
+            dropdown.innerHTML = "";
+            if (!suggestions.length) {
+                dropdown.style.display = "none";
+                return;
+            }
 
-    function wprentals_google_fillInAddress(place) {
-        var i, addressType, temp, val ,have_city,admin_area;
-        have_city=0;
-        admin_area='';
-        var pyrmont = new google.maps.LatLng(-33.8665433,151.1956316);
-        var map_city = new google.maps.Map(document.getElementById('property_country'), {
-            center: pyrmont,
-            zoom: 15
+            suggestions.forEach((item) => {
+                const text = item.placePrediction.text.text;
+                const li = document.createElement("li");
+                li.textContent = text;
+                li.className = "wpestate-autocomplete-item";
+                li.addEventListener("click", () =>
+                handlePlaceSelect(item.placePrediction.placeId, text)
+                );
+                dropdown.appendChild(li);
+            });
+
+            dropdown.style.display = "block";
+            } catch (err) {
+            if (err.name !== "AbortError") console.error(err);
+            }
         });
 
-
-        for (i = 0; i < place.address_components.length; i++) {
-            addressType = place.address_components[i].types[0];
-            temp = '';
-            val = place.address_components[i][componentForm[addressType]];
-
-            if (addressType === 'street_number' || addressType === 'route') {
-              //  document.getElementById('property_address').value =  document.getElementById('property_address').value +', '+ val;
-            } else if (addressType === 'neighborhood') {
-
-            } else if (addressType === 'postal_code_prefix') {
-
-            } else if (addressType === 'postal_code') {
-
-            } else if (addressType === 'administrative_area_level_4') {
-                admin_area = wpestate_build_admin_area(admin_area,val);
-            } else if (addressType === 'administrative_area_level_3') {
-                admin_area = wpestate_build_admin_area(admin_area,val);
-            } else if (addressType === 'administrative_area_level_2') {
-                admin_area = wpestate_build_admin_area(admin_area,val);
-            } else if (addressType === 'administrative_area_level_1') {
-                admin_area = wpestate_build_admin_area(admin_area,val);
-            } else if (addressType === 'locality' ){
-                 $('#property_city').val(val); have_city=1;
-            } else if ( addressType === 'colloquial_area'  ){
-                $('#property_city').val(val); have_city=1;
-            } else if (addressType === 'country' || addressType === 'natural_feature') {
-                $('#property_country').val(val); have_city=1;
-            } else {
-
+        document.addEventListener("click", (e) => {
+            if (!dropdown.contains(e.target) && e.target !== input) {
+            dropdown.style.display = "none";
             }
-            if(have_city===0){
-                wpestate_second_measure_city_submit('property_city',place.adr_address);
+        });
+
+        async function handlePlaceSelect(placeId, text) {
+            input.value = text;
+            dropdown.style.display = "none";
+
+            try {
+            const res = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
+                method: "GET",
+                headers: {
+                "X-Goog-Api-Key": control_vars.google_api_key,
+                "X-Goog-FieldMask":
+                    "id,formattedAddress,displayName,location,viewport,addressComponents,adrFormatAddress"
+                }
+            });
+
+            if (!res.ok) {
+                if (res.status === 403 && !wpestateHasPlacesApiAlertedFlag()) {
+                wpestateSetPlacesApiAlertedFlag();
+                alert(
+                    control_vars.google_places_forbidden_message ||
+                    "Google Places Details request was rejected (HTTP 403). Please verify the API key, billing status, and Places API configuration."
+                );
+                }
+                console.error(
+                "Place details fetch failed with status",
+                res.status,
+                res.statusText
+                );
+                return;
+            }
+
+            const place = await res.json();
+            if (!place || !place.addressComponents) return;
+
+            const legacyPlace = wprentals_buildLegacyPlace_add(place);
+            wprentals_google_fillInAddress(legacyPlace);
+            } catch (err) {
+            console.error("Place details fetch failed:", err);
             }
         }
 
 
-        if( $('#property_city').val()!==''){
-            $('#property_admin_area').val( $('#property_city').val()+", "+admin_area);
-        }
-
-//       / submit_change();
     }
+}
+
+
+
+
+
+
+
+
+
+/**
+ * Converts the new Google Places API (2023+) Place object to the legacy PlaceResult structure
+ * used by older WPRentals scripts.
+ *
+ * @param {object} place - The Place object returned by place.fetchFields().
+ * @returns {object} legacyPlace - A backward-compatible PlaceResult-style object.
+ */
+function wprentals_buildLegacyPlace_add(place) {
+  // Map new API addressComponents to legacy format (long_name, short_name, types)
+  const legacyAddressComponents = (place.addressComponents || []).map(c => {
+    let types = [];
+
+    // Preserve or reconstruct component types
+    if (Array.isArray(c.types) && c.types.length) {
+      types = c.types;
+    } else if (c.type) {
+      types = [c.type];
+    }
+
+    // Convert new "administrative_area" to old-style level notation
+    const t = c.type || (c.types && c.types[0]) || "";
+    if (t === "administrative_area") {
+      if (c.level) {
+        types = [`administrative_area_level_${c.level}`];
+      } else {
+        types = ["administrative_area_level_1"]; // default fallback
+      }
+    }
+
+    // Return component in the same structure the old code expects
+    return {
+      long_name: c.longText || "",
+      short_name: c.shortText || "",
+      types: types
+    };
+  });
+
+  // Build final legacy-compatible place object
+  return {
+    address_components: legacyAddressComponents,
+    formatted_address: place.formattedAddress || "",
+    name: place.displayName || "",
+    geometry: {
+      location: place.location || null,
+      viewport: place.viewport || null
+    },
+    adr_address: place.adrFormatAddress || place.formattedAddress || ""
+  };
+}
+
+
+
+
+
+function wprentals_google_fillInAddress(place) {
+  if (!place || !place.address_components) return;
+
+  let have_city = 0;
+  let admin_area = "";
+
+  // define a safe componentForm inside the function
+  const componentForm = {
+    establishment: "long_name",
+    street_number: "short_name",
+    route: "long_name",
+    locality: "long_name",
+    administrative_area_level_1: "long_name",
+    administrative_area_level_2: "long_name",
+    administrative_area_level_3: "long_name",
+    administrative_area_level_4: "long_name",
+    country: "long_name",
+    postal_code: "short_name",
+    postal_code_prefix: "short_name",
+    neighborhood: "long_name",
+    colloquial_area: "long_name",
+    natural_feature: "long_name",
+    sublocality_level_1: "long_name",
+    sublocality: "long_name",
+  };
+
+  for (let i = 0; i < place.address_components.length; i++) {
+    const component = place.address_components[i];
+    if (!component || !component.types || !component.types.length) continue;
+
+    const addressType = component.types[0];
+    const key = componentForm[addressType];
+    const val = key && component[key] ? component[key] : "";
+
+    if (!val) continue;
+
+    if (
+      addressType === "sublocality_level_1" ||
+      addressType === "sublocality" ||
+      addressType === "neighborhood"
+    ) {
+      $("#property_area_front").val(val);
+    } else if (addressType === "administrative_area_level_4") {
+      admin_area = wpestate_build_admin_area(admin_area, val);
+    } else if (addressType === "administrative_area_level_3") {
+      admin_area = wpestate_build_admin_area(admin_area, val);
+    } else if (addressType === "administrative_area_level_2") {
+      admin_area = wpestate_build_admin_area(admin_area, val);
+    } else if (addressType === "administrative_area_level_1") {
+      admin_area = wpestate_build_admin_area(admin_area, val);
+    } else if (addressType === "locality" || addressType === "colloquial_area") {
+      $("#property_city").val(val);
+      have_city = 1;
+    } else if (addressType === "country" || addressType === "natural_feature") {
+      $("#property_country").val(val);
+      have_city = 1;
+    }
+  }
+
+  // fallback if city not found
+  if (have_city === 0 && place.adr_address) {
+    wpestate_second_measure_city_submit("property_city", place.adr_address);
+  }
+
+  if ($("#property_city").val() !== "") {
+    $("#property_admin_area").val($("#property_city").val() + ", " + admin_area);
+  }
+}
+
+
+
+
+
 
     function  wpestate_second_measure_city_submit(stringplace,adr_address){
         var new_city;
@@ -867,6 +1091,8 @@ function wpestate_allin_one_owner_insert_book_internal() {
     }
 
     calendar_click = 0;
+
+
     $('.booking-calendar-wrapper-in .has_future').on('click',function (event) {
 
         if ($(this).hasClass('calendar-reserved')) { // click on a booked spot
@@ -1107,43 +1333,7 @@ function wpestate_allin_one_owner_insert_book_internal() {
          $('.property_icalendar_import_feed_new').each(function(){
             array_feeds.push( $(this).val() );
         });
-        var booking_repeat_event = jQuery('#booking_repeat_event:checked').val();
-        var booking_repeat_event_type = jQuery('input[name="booking_repeat_event_type"]:checked').val();
-        var booking_repeat_pattern = jQuery('input[name="booking_repeat_pattern"]:checked').val();
-        var booking_repeat_pattern_val = jQuery('#booking_repeat_pattern_val').val();
-        var booking_range_start_date = jQuery('#booking_range_start_date').val();
-        var booking_range_end_date = jQuery('#booking_range_end_date').val();
 
-
-        var startDateObj = new Date(booking_range_start_date);
-        var endDateObj = new Date(booking_range_end_date);
-        var datevalidate = true;
-        if (endDateObj >= startDateObj) {
-            datevalidate = true;
-        } else {
-            datevalidate = false;
-        }
-        if (datevalidate == false) {
-            alert('Date range of recurrence is invalid');
-            setTimeout(() => {
-                $('#profile_message2').html(' ');
-            }, 2000);
-
-            return false;
-        }
-
-
-        var selectedValuesDay = [];
-        $('input[name="repeater_event_day"]:checked').each(function () {
-            selectedValuesDay.push($(this).val());
-        });
-        var repeater_event_day = selectedValuesDay;
-
-        var checkboxValues = [];
-        $('input[name="booking_repeat_week_day"]:checked').each(function () {
-            checkboxValues.push($(this).val());
-        });
-        var booking_repeat_week_day = checkboxValues;
         var nonce = jQuery('#wprentals_edit_calendar_nonce').val();
 
         $.ajax({
@@ -1156,15 +1346,8 @@ function wpestate_allin_one_owner_insert_book_internal() {
                 'listing_edit'              :   listing_edit,
                 'array_feeds'               :   array_feeds,
                 'array_labels'              :   array_labels,
-                'security'                  :   nonce,
+                'security'                  :   nonce
 
-                'booking_repeat_event_type': booking_repeat_event_type,
-                'booking_repeat_pattern': booking_repeat_pattern,
-                'booking_repeat_pattern_val': booking_repeat_pattern_val,
-                'booking_range_start_date': booking_range_start_date,
-                'booking_range_end_date': booking_range_end_date,
-                'booking_repeat_week_day': booking_repeat_week_day,
-                'repeater_event_day': repeater_event_day
             },
             success: function (data) {
 
@@ -1380,12 +1563,9 @@ function wpestate_allin_one_owner_insert_book_internal() {
     //edit property price
     ////////////////////////////////////////////////////////////////////////////
     $('#edit_prop_price').on('click',function () {
-        var property_price_hfday, booking_value, property_price_hr, booking_start_hour_mrng, booking_end_hour_mrng, booking_start_hour_noon, booking_end_hour_noon, booking_start_hour, booking_end_hour, book_type, temp_opt, extra_pay_options, early_bird_days, early_bird_percent, property_price_before_label, property_price_after_label, security_deposit, city_fee_percent, property_taxes, overload_guest, ajaxurl, checkin_checkout_change_over, checkin_change_over, price_per_weekeend, extra_price_per_guest, price_per_guest_from_one, price, price_label, price_week, price_month, listing_edit, city_fee, cleaning_fee, cleaning_fee_per_day, city_fee_per_day, min_days_booking, morning_price, afternoon_price, booking_cd_start_date, booking_cd_end_date, booking_cd_day;
+        var booking_start_hour,booking_end_hour,book_type,temp_opt,extra_pay_options,early_bird_days,early_bird_percent,property_price_before_label,property_price_after_label,security_deposit,city_fee_percent,property_taxes,overload_guest,ajaxurl,checkin_checkout_change_over, checkin_change_over, price_per_weekeend,extra_price_per_guest,price_per_guest_from_one, price, price_label, price_week, price_month, listing_edit, city_fee, cleaning_fee,cleaning_fee_per_day,city_fee_per_day,min_days_booking;
         book_type       =  jQuery('#local_booking_type').val();
         price           =  jQuery('#property_price').val();
-        //booking_value   =  jQuery('#local_booking_type option:selected').text(); 
-        booking_value = jQuery('#local_booking_type option:selected').attr('data-opt');
-        //booking_value   =  jQuery('#local_booking_type').find(':selected').text(); 
         city_fee        =  jQuery('#city_fee').val();
         cleaning_fee    =  jQuery('#cleaning_fee').val();
         price_label     =  jQuery('#property_label').val();
@@ -1393,9 +1573,6 @@ function wpestate_allin_one_owner_insert_book_internal() {
         price_month     =  jQuery('#property_price_per_month').val();
         listing_edit    =  jQuery('#listing_edit').val();
 
-
-        morning_price = jQuery('#morning_price').val();
-        afternoon_price = jQuery('#afternoon_price').val();
 
         property_taxes                 =    jQuery('#property_taxes').val();
         cleaning_fee_per_day           =    jQuery('#cleaning_fee_per_day').val();
@@ -1408,24 +1585,6 @@ function wpestate_allin_one_owner_insert_book_internal() {
         extra_pay_options              =    [];
         booking_start_hour             =    jQuery('#booking_start_hour').val();
         booking_end_hour               =    jQuery('#booking_end_hour').val();
-        booking_start_hour_noon = jQuery('#booking_start_hour_noon').val();
-        booking_end_hour_noon = jQuery('#booking_end_hour_noon').val();
-        booking_start_hour_mrng = jQuery('#booking_start_hour_mrng').val();
-        booking_end_hour_mrng = jQuery('#booking_end_hour_mrng').val();
-        property_price_hfday = jQuery('#property_price_hfday').val();
-        property_price_hr = jQuery('#property_price_hr').val();
-
-        booking_cd_start_date = jQuery('#booking_cd_start_date').val();
-        booking_cd_end_date = jQuery('#booking_cd_end_date').val();
-        var checkboxValues = [];
-        $('input[name="booking_cd_day"]:checked').each(function () {
-            checkboxValues.push($(this).val());
-        });
-        booking_cd_day = checkboxValues;
-
-
-        //console.log(jQuery("form").serializeArray());
-        console.log(checkboxValues);
        
         $('.extra_pay_option').each(function(){
             temp_opt    =   '';
@@ -1472,14 +1631,7 @@ function wpestate_allin_one_owner_insert_book_internal() {
             dataType:   'json',
             data: {
                 'action'                        :   'wpestate_ajax_update_listing_price',
-                'booking_start_hour_noon': booking_start_hour_noon,
-                'booking_end_hour_noon': booking_end_hour_noon,
-                'booking_start_hour_mrng': booking_start_hour_mrng,
-                'booking_end_hour_mrng': booking_end_hour_mrng,
-                'booking_value': booking_value,
                 'price'                         :   price,
-                'morning_price': morning_price,
-                'afternoon_price': afternoon_price,
                 'price_week'                    :   price_week,
                 'price_month'                   :   price_month,
                 'listing_edit'                  :   listing_edit,
@@ -1504,12 +1656,7 @@ function wpestate_allin_one_owner_insert_book_internal() {
                 'book_type'                     :   book_type,
                 'booking_start_hour'            :   booking_start_hour,
                 'booking_end_hour'              :   booking_end_hour,
-                'property_price_hfday': property_price_hfday,
-                'property_price_hr': property_price_hr,
-                'booking_cd_start_date': booking_cd_start_date,
-                'booking_cd_end_date': booking_cd_end_date,
-                'booking_cd_day': JSON.stringify(booking_cd_day),
-                'security': nonce,
+                'security'                      :   nonce
             },
             success: function (data) {
 
@@ -1547,6 +1694,11 @@ function wpestate_allin_one_owner_insert_book_internal() {
         if (jQuery('#instant_booking').is(':checked')  ){
             instant_booking        =  1;
         }
+        var wp_estate_replace_booking_form_local=0
+        if (jQuery('#wp_estate_replace_booking_form_local').is(':checked')  ){
+            wp_estate_replace_booking_form_local        =  1;
+        }
+       
         
         children_as_guests=0;
          if (jQuery('#children_as_guests').is(':checked')  ){
@@ -1596,6 +1748,7 @@ function wpestate_allin_one_owner_insert_book_internal() {
                 'prop_desc'         :   prop_desc,
                 'property_admin_area':  property_admin_area,
                 'instant_booking'   :   instant_booking,
+                'wp_estate_replace_booking_form_local':wp_estate_replace_booking_form_local ,              
                 'children_as_guests':children_as_guests,
                 'aff_link'          :   aff_link,
                 'private_notes'     :   private_notes,
@@ -1610,7 +1763,7 @@ function wpestate_allin_one_owner_insert_book_internal() {
                     $('#profile_message').empty().append('<div class="login-alert">' + data.response + '<div>');
                     var redirect = jQuery('.next_submit_page').attr('href');
 
-                    window.location = redirect;
+                  window.location = redirect;
                 } else {
                     $('#profile_message').empty().append('<div class="login-alert">' + data.response + '<div>');
                 }
@@ -1642,7 +1795,13 @@ function wpestate_check_for_mandatory(is_check=0){
                     reply=wpestate_build_warning(reply,field_orignal);
                 }
 
-                if( jQuery("#"+field).val()==='' ) { // check value
+                var field_value = jQuery("#"+field).val();
+
+                if( field_value==='' ) { // check value
+                    reply=wpestate_build_warning(reply,field_orignal);
+                }
+
+                else if( typeof field_value==='string' && field_value.trim()==='' ) { // check empty spaces only
                     reply=wpestate_build_warning(reply,field_orignal);
                 }
 

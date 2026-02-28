@@ -122,12 +122,10 @@ $guest_list= wpestate_get_guest_dropdown('noany');
     </div><!-- end 8col container-->
 
     <div class="clearfix visible-xs"></div>
+ 
     <div class=" 
         <?php
 
-        if( is_singular('estate_property') &&    "yes" ==  wprentals_get_option('wp_estate_property_sidebar_sitcky' ) ){
-            $wpestate_options['sidebar_class'] = $wpestate_options['sidebar_class'].' wpestate_sidebar_sticky '; 
-        }
 
 
         if($wpestate_options['sidebar_class']=='' || $wpestate_options['sidebar_class']=='none' ){
@@ -135,6 +133,13 @@ $guest_list= wpestate_get_guest_dropdown('noany');
         }else{
             print esc_attr($wpestate_options['sidebar_class']);
         }
+
+        
+        if( is_singular('estate_property') &&    "yes" ==  wprentals_get_option('wp_estate_property_sidebar_sitcky' ) ){
+          print ' wpestate_sidebar_sticky '; 
+        }
+
+
         ?> 
         widget-area-sidebar listingsidebar2 listing_type_1" id="primary" >
 

@@ -116,12 +116,18 @@ if(isset($user_small_picture[0])){
     $user_small_picture_img =   $user_small_picture[0];
 }
 if($user_small_picture_img==''){
-    $user_small_picture_img=get_stylesheet_directory_uri().'/img/default_user.png';
+    $user_small_picture_img = wprentals_get_option('wp_estate_default_user_image', 'url');
+    if ( empty($user_small_picture_img) ) {
+        $user_small_picture_img = get_stylesheet_directory_uri().'/img/default_user.png';
+    }
 }
 
 $about_me               =   get_the_author_meta( 'description' , $userID );
 if($user_custom_picture==''){
-    $user_custom_picture=get_stylesheet_directory_uri().'/img/default_user.png';
+    $user_custom_picture = wprentals_get_option('wp_estate_default_user_image', 'url');
+    if ( empty($user_custom_picture) ) {
+        $user_custom_picture = get_stylesheet_directory_uri().'/img/default_user.png';
+    }
 }
 ?>
 

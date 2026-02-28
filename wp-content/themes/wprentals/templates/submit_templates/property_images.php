@@ -19,20 +19,14 @@ $iframe = array( 'iframe' => array(
                  'allowFullScreen' => array() // add any other attributes you wish to allow
                   ) );
 
-    $arguments = array(
-          'numberposts'     => -1,
-          'post_type'       => 'attachment',
-          'post_parent'     => $edit_id,
-          'post_status'     => 'any',
-          'exclude'         => get_post_thumbnail_id($edit_id),
-          'orderby'         => 'menu_order',
-          'order'           => 'ASC'
-    );
-
-    $post_attachments = get_posts($arguments);
+    $post_attachments=wpestate_generate_property_slider_image_ids($edit_id,false);
 
 
-     $post_thumbnail_id = $thumbid = intval( get_post_thumbnail_id( $edit_id ) );
+    $post_thumbnail_id = $thumbid = intval( get_post_thumbnail_id( $edit_id ) );
+
+
+
+
     if($post_thumbnail_id!=0){
       $attachid.= $post_thumbnail_id;
       $preview =  wp_get_attachment_image_src($post_thumbnail_id, 'wpestate_property_listings');
@@ -42,23 +36,26 @@ $iframe = array( 'iframe' => array(
     }
 
 
-    foreach ($post_attachments as $attachment) {
-        if($attachment->ID!=$post_thumbnail_id){
-          $preview =  wp_get_attachment_image_src($attachment->ID, 'wpestate_property_listings');
+    foreach ($post_attachments as $attachment_id) {
+        if (!wp_attachment_is_image($attachment_id)) {
+            continue; // Skip this attachment if it's not an image
+        }
+        if($attachment_id!=$post_thumbnail_id){
+          $preview =  wp_get_attachment_image_src($attachment_id, 'wpestate_property_listings');
 
           if($preview[0]!=''){
-              $images .=  '<div class="uploaded_images" data-imageid="'.esc_attr($attachment->ID).'"><img src="'.esc_url($preview[0]).'" alt="'.esc_html__('thumb','wprentals').'" /><i class="far fa-trash-alt"></i>';
-              if($post_thumbnail_id == $attachment->ID){
+              $images .=  '<div class="uploaded_images" data-imageid="'.esc_attr($attachment_id).'"><img src="'.esc_url($preview[0]).'" alt="'.esc_html__('thumb','wprentals').'" /><i class="far fa-trash-alt"></i>';
+              if($post_thumbnail_id == $attachment_id){
                   $images .='<i class="fa thumber fa-star"></i>';
               }
           }else{
-              $images .=  '<div class="uploaded_images" data-imageid="'.esc_attr($attachment->ID).'"><img src="'.get_template_directory_uri().'/img/pdf.png" alt="'.esc_html__('thumb','wprentals').'" /><i class="far fa-trash-alt"></i>';
-              if($post_thumbnail_id == $attachment->ID){
+              $images .=  '<div class="uploaded_images" data-imageid="'.esc_attr($attachment_id).'"><img src="'.get_template_directory_uri().'/img/pdf.png" alt="'.esc_html__('thumb','wprentals').'" /><i class="far fa-trash-alt"></i>';
+              if($post_thumbnail_id == $attachment_id){
                   $images .='<i class="fa thumber fa-star"></i>';
               }
           }
           $images .='</div>';
-          $attachid.= ','.intval($attachment->ID);
+          $attachid.= ','.intval($attachment_id);
         }
 
     }
@@ -105,6 +102,7 @@ $iframe = array( 'iframe' => array(
 
                     <input type="hidden" name="attachid" id="attachid" value="<?php print esc_html($attachid);?>">
                     <input type="hidden" name="attachthumb" id="attachthumb" value="<?php print esc_html($thumbid);?>">
+                    <input type="hidden" name="propertyID" id="propertyID" value="<?php print intval($edit_id);?>">
                     <p class="full_form full_form_image">
                         <?php esc_html_e('*Double Click on the image to select featured. ','wprentals');?></br>
                          <?php esc_html_e('**Change images order with Drag & Drop. ','wprentals');?>

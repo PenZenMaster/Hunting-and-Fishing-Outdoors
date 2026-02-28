@@ -11,15 +11,13 @@ if ( $booking_status=='confirmed'){
 }
 
 
- 
-
 ?>
 
 <div class="prop-info">
     <h4 class="listing_title_book book_listing_user_title">
         <?php
         echo esc_html__('Booking request','wprentals').' '.$post->ID;
-        print ' <strong>'. esc_html__( 'for','wprentals').'</strong> <a href="'.esc_url (get_permalink($booking_id) ).'">'.get_the_title($booking_id).'</a>';
+        print ' <strong>'. esc_html__( 'for','wprentals').'</strong> <a href="'.esc_url (get_permalink($booking_id) ).'">'. get_sanitized_truncated_title($booking_id, 0) .'</a>';
         ?>
     </h4>
 
@@ -43,8 +41,18 @@ if ( $booking_status=='confirmed'){
     include(locate_template('dashboard/templates/unit-templates/balance_display.php') );
 
     if($event_description!=''){
-        print ' <div class="user_dashboard_listed event_desc"> <span class="booking_details_title">'.esc_html__( 'Reservation made by owner','wprentals').'</span></div>';
+        $property_author_id = get_post_field('post_author', $booking_id);
+        $booking_author_id= get_post_field('post_author', $post->ID);
+        if ($booking_author_id===$property_author_id){
+            print ' <div class="user_dashboard_listed event_desc"> <span class="booking_details_title">'.esc_html__( 'Reservation made by owner','wprentals').'</span></div>';
+        }else{
+            $post_author = get_post_field('post_author', $booking_id);
+            print ' <div class="user_dashboard_listed event_desc"> <span class="booking_details_title">'.esc_html__( 'Reservation made by guest','wprentals').': '. get_the_author_meta('display_name', $booking_author_id).'</span></div>';
+        }
+      
         print ' <div class="user_dashboard_listed event_desc"> <span class="booking_details_title">'.esc_html__( 'Comments: ','wprentals').'</span>'.esc_html($event_description).'</div>';
     }
+
+
     ?>
 </div>

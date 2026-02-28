@@ -34,6 +34,9 @@
     #google_map_prop_list_sidebar {
         width: 55%;
     }
+     #advanced_search_map_list_hidden{
+        display: none!important;
+     }
 
     .social_share_wrapper{
         top:110px;
@@ -54,9 +57,13 @@
 
 @media only screen and (max-width:1366px){
 
-    .listing_type_3    .booking_form_request {
-        width:100%;
-        max-width: 100%;
+    .elementor-widget-container .content-fixed-listing.listing_type_5{
+        padding: 0px;
+    }
+
+    .content-fixed-listing.listing_type_5{
+        padding-left: 15px;
+        padding-right: 15px;
     }
     
     .header_masonry {
@@ -66,7 +73,6 @@
     .listing_type_3 .listingsidebar {
         margin-top: 0px!important;
     }
-
 
 }
 
@@ -149,10 +155,15 @@
 
     .content_wrapper{
         width:100%;
-        padding: 0px 15px;
+        padding: 0px 10px;
         display: inline-block;
     }
+
+    .wide .content_wrapper{
+        padding: 0 15px;
+    }
     
+    .elementor-template-full-width .wide .content_wrapper,
     .elementor-template-full-width .content_wrapper{
         padding: 0px;
     }
@@ -164,10 +175,7 @@
     }
 
     .sub_footer_content {
-        padding: 0px 15px;
-        max-width: 100%;
-        display: inline-block;
-        overflow: hidden;
+        justify-content: center;
     }
 
 }
@@ -179,6 +187,7 @@
 }
 
 @media only screen and (max-width: 1330px) and (min-width: 1178px){
+    
     .property_tab_list_header,
     .property_tab_header{
         width:130px;
@@ -190,6 +199,15 @@
 }
 
 @media only screen and (max-width: 1178px){
+
+    .elementor-widget-container .content-fixed-listing.listing_type_5{
+        padding-top: 0px;
+    }
+    
+    .content-fixed-listing.listing_type_5{
+        padding-top: 70px;
+    }
+    
     .calendar_pad_title, .calendar_pad {
         width: 17px;
     }
@@ -272,34 +290,13 @@
         max-width: 100%;
     }
     
-    /*latest listings widget mobile*/
-    #primary .listing-unit-img-wrapper,
-    #primary .listing-unit-img-wrapper .carousel-inner, 
-    #primary .listing-unit-img-wrapper img{
-        height: 100%;
-        width: 100%;
-        margin-bottom: 0px;
-        max-width: 400px;
-        max-height: 314px;
-    }
-    
-    #primary .category_tagline {
-        margin-left: 0px;
-    }
-    
     #colophon .price_unit_wrapper {
         float: left;
     }
-    
-    #primary .latest_listings .price_unit {
-        left: 0px;
-        margin-top: 0px; 
-    }
-    
+
     #primary .title-container,
     #colophon .title-container,
     #primary .category_name{
-        padding: 0px;
         width: 100%;
     }
 
@@ -396,10 +393,6 @@
         padding: 0px 7px 0px 7px;
     }
     
-    .sub_footer_content.wide_footer{
-        padding: 0px 20px;
-    }
-   
     .entry-prop,
     .listing_main_image_location,
     .listing_main_image_price{
@@ -480,6 +473,23 @@
 
 /*top menu break and transform*/
 @media only screen and (max-width:1180px){
+
+    .slider_radius_wrap {
+        min-height: 0px;
+        margin: 0px;
+        padding-left: 0px;
+        width: 100%;
+        float:left;
+    }
+
+    #wpestate_slider_radius {
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .label_radius {
+        margin-top: 5px;
+    }
 
     .admin-bar.top_bar_on #google_map_prop_list_sidebar.half_header_type2,
     .admin-bar.top_bar_on #google_map_prop_list_wrapper.half_header_type2,
@@ -583,8 +593,14 @@
     .admin-bar  #google_map_prop_list_wrapper {
         top: 102px!important;
     }
+    .wpresidence_half_map_body_class_with_footer #google_map_prop_list_sidebar,
+    .admin-bar.wpresidence_half_map_body_class_with_footer #google_map_prop_list_sidebar{
+        top:unset!important;
+    }
 
-    #advanced_submit_2_mobile, #advanced_submit_2 {
+    .wpresidence_half_map_body_class_with_footer #google_map_prop_list_wrapper,
+    .admin-bar.wpresidence_half_map_body_class_with_footer #google_map_prop_list_wrapper{
+        max-height: 400px;
     }
 
     #google_map_prop_list_wrapper.halfmapfull.halfmapfullx{
@@ -704,8 +720,6 @@
 }
 
 @media only screen and (min-width: 1024px){
-
-   
     
     .custom_day_wrapper_mobile{
         display: none;
@@ -723,6 +737,7 @@
 }
 
 @media only screen and (max-width: 1024px){
+
     .slideout-open, .slideout-open body, .slideout-open .slideout-panel {
         overflow: hidden;
     }
@@ -772,36 +787,25 @@
         max-width: 100%;
     }
    
-    .wpestate_sliding_box.slider_box_size_3.active-element,
-    .wpestate_sliding_box.slider_box_size_3{
-        width:49%;
-        margin-right: 2%;
+    .wpestate_sliding_box {
+        flex-direction: column;
     }
-    
-    .slider_box_size_4.active-element,
-    .slider_box_size_4{
-        width:32%;
-        margin-right: 2%;
-    }
-    
-    .wpestate_sliding_box.slider_box_size_5.active-element,
-    .wpestate_sliding_box.slider_box_size_5{
-        width:24%;
-        margin-right: 1.3%;
-    }
-    
-    .wpestate_sliding_box.slider_box_size_5 .sliding-image,
-    .wpestate_sliding_box.slider_box_size_3 .sliding-image,
     .wpestate_sliding_box .sliding-image {
         width: 100%;
     }
-    
+    .wpestate_sliding_box.active-element,
+    .wpestate_sliding_box {
+        width: 49%;
+        margin-right: 2%;
+    }
     .wpestate_sliding_box.slider_box_size_3 .sliding-content-wrapper,
     .wpestate_sliding_box.slider_box_size_5 .sliding-content-wrapper,
-    .wpestate_sliding_box .sliding-content-wrapper{
-        position:relative;   
-        left:auto;
+    .wpestate_sliding_box .sliding-content-wrapper {
+        position: relative;
+        left: auto;
         width: 100%;
+        padding: 25px;
+        justify-content: flex-start;
     }
 
     h4.modal-title {
@@ -1074,6 +1078,8 @@
 
 @media only screen and (min-width: 992px){
     
+
+
     .user_tab_menu{
         display:block;
     }
@@ -1088,6 +1094,28 @@
 }
 
 @media only screen and (max-width: 991px){
+
+    .property_unit_content_grid_small_details{
+        padding-left: 0px;
+        padding-top: 15px;
+    }
+
+    .wpestate_content_grid_wrapper_second_col,
+    .wpestate_content_grid_wrapper_first_col{
+        width: 100%;
+    }
+      .wpestate_content_grid_wrapper_first_col{
+          height: 400px;
+    }
+
+    .wpestate_content_grid_wrapper_second_col_item_wrapper .property_listing{
+       margin-left: 0px; 
+       margin-right: 10px;
+    }
+
+    .wpestate_content_grid_wrapper {
+        flex-direction: column;
+    }
     
     .listing_type_5 .col-md-8{
         padding-left: 0px;
@@ -1185,11 +1213,6 @@
         height: 400px;
     }
 
-    .slider_radius_wrap {
-        width: 100%;
-       float: left;
-   }
-
     .owner-page-wrapper .verified_userid {
         margin: 10px 0px 0px 0px;
         float:left;
@@ -1255,17 +1278,7 @@
         width: 100%;
         padding-bottom: 0px;
     }
-    
-    .widget li a, .widget-area-sidebar li a,
-    #colophon .category_tagline, 
-    #colophon .category_tagline a,
-    #colophon li a, 
-    #colophon ul,
-    .subfooter_menu li,
-    #colophon .subfooter_menu a,
-    .sub_footer{
-        font-size: 13px;
-    }
+
 
     #footer-widget-area {
         padding: 30px 0px 25px 0px;
@@ -1450,7 +1463,7 @@
 
     #gmap-control-list {
         padding: 10px 10px 0px 25px;
-        z-index: 3;
+        z-index: 998;
     }
 
     .admin-bar .master_header.google_map_list_header {
@@ -1501,12 +1514,50 @@
         width: 100%;
         overflow: hidden;
     }
+    .wpresidence_half_map_body_class_with_footer .full_map_container .row{
+        display: block;
+    }
+
+
+    .wpresidence_half_map_body_class_with_footer .full_map_container .row{
+        display: block;
+      
+    }
+
+    .wpresidence_half_map_body_class_with_footer .full_map_container {
+          margin-top:0px;
+      /*  overflow-y: auto;
+          overflow-x: hidden;
+          */
+    }
+    .admin-bar.wpresidence_half_map_body_class_with_footer .full_map_container{
+        margin-top:32px;
+    }
 
     .full_map_container .row{
         margin-left: 0px;
         margin-right: 0px;
     }
+/*
+    .wpresidence_half_map_body_class_with_footer .full_map_container .row{
+        display:flex;
+    }
 
+    .wpresidence_half_map_body_class_with_footer #google_map_prop_list_wrapper,
+    .wpresidence_half_map_body_class_with_footer #google_map_prop_list_sidebar{
+        position:relative;
+        top:auto;
+        bottom:auto;
+        left:auto;
+        right:auto;
+        height:100vh;
+    }
+
+    .wpresidence_half_map_body_class_with_footer #google_map_prop_list_sidebar{
+        overflow-y:auto;
+        overflow-x:hidden;
+    }
+        */
 
     .property_menu_wrapper_hidden{
         display:none!important;
@@ -1575,6 +1626,15 @@
         top: 70px;
     }
 
+    .sub_footer_content{
+        flex-direction: column;
+    }
+
+    .subfooter_menu li{
+        margin-right: 25px;
+        margin-left: 0px;
+    }
+
     .page-template-splash_page #adv-search-mobile{
         z-index: 999999;
         float: left;
@@ -1622,6 +1682,7 @@
 
     .content_wrapper {
         width: 100%;
+        padding: 0 10px;
     }
 
     #primary {
@@ -1729,7 +1790,8 @@
 
     .listing_main_image .property_ratings{
         position: absolute;
-        left: 0px;
+        left: 5px;
+        margin-top: 0px;
     }
 
     .listing_slider.property_ratings{
@@ -1787,18 +1849,7 @@
         right: 0px;
         left: 0px;
     }
-    
-    .subfooter_menu{
-        text-align: left;
-        float: left;
-    }
-    
-    .wpestate_support_link,
-    .copyright,
-    .subfooter_menu li{
-        margin-left: 0px;
-        margin-right:20px;  
-    }
+
 
     #loginmodal .modal-dialog {
         width: 100%;
@@ -1893,12 +1944,7 @@
     
 /*center mobile owner view*/
 
-    .wpestate_sliding_box.slider_box_size_5.active-element,
-    .wpestate_sliding_box.slider_box_size_5{
-        width:49%;
-        margin-right: 1%;
-        margin-bottom: 15px;
-    }
+    
     
 
     .owner-page-wrapper-inside .contact_title{
@@ -1918,7 +1964,7 @@
         margin: 0px auto;
     }
 
-    .owner-page-wrapper-inside .widget-area-sidebar{
+    .widget-area-sidebar{
         min-height: 0px;
     }
 
@@ -2077,7 +2123,7 @@
     }
 
     .theme_slider_type2 .slider-title h2 a {
-        font-size: 30px;
+        font-size: xx-large;
     }
 
     .theme_slider_type2 .price-slider{
@@ -2115,7 +2161,7 @@
 
     #google_map_prop_list_sidebar,
     #google_map_prop_list_wrapper {
-        top: 0px!important;
+        top: 0px;
     }
 
     .booking-calendar-set table.booking-calendar {
@@ -2297,6 +2343,10 @@
 
 @media only screen and (max-width: 667px){
 
+    .blog_list_wrapper{
+        gap: 15px;
+    }
+
     .search_wr_elementor .advanced_search_submit_button{
         width:100%;
     }
@@ -2364,13 +2414,19 @@
 
     .heading_over_image,
     .heading_over_video {
-        font-size: 35px;
-        padding: 0px 25px;
+        font-size: xx-large;
     }
 
     .subheading_over_image,
     .subheading_over_video {
-        font-size: 20px;
+        font-size: medium;
+    }
+
+    .heading_over_image,
+    .heading_over_video,
+    .subheading_over_image,
+    .subheading_over_video{
+        padding: 0px 20px;
     }
 
     .wpestate_header_image,
@@ -2476,11 +2532,11 @@
 
     .slider-title h2 a,
     .theme_slider_type2 .slider-title h2 a {
-        font-size:24px;
         text-align: center;
         margin: auto;
         display: block;
         line-height: 1.2em;
+        font-size: xx-large;
     }
 
     .invoice_table,
@@ -2542,9 +2598,11 @@
     .theme_slider_type2 .carousel-control-theme-prev {
         margin-top: -70px;
     }
+
     .theme_slider_type2 .slider-content,
     .theme_slider_type2 .listing-desc-slider{
         display: block;
+        text-align: center;
     }
 
     .wide .theme_slider_type2 .slider-content-wrapper {
@@ -2605,9 +2663,6 @@
         padding: 0px!important;
     }
 
-    .theme_slider_type2 .slider-title h2 a{
-        font-size: 25px;
-    }
 
     .col-md-6.property_flex, .col-md-3.property_flex, .col-md-4.property_flex {
         width: 100%!important;
@@ -2686,6 +2741,14 @@
         float: none;
     }
 
+.wprentals_classic_search_title_wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
 
     .message_header .col-md-4{
         float:left;
@@ -2699,7 +2762,6 @@
     .col-md-8 .listing_filter_select,
     .listing_filter_select {
         width: 100%;
-        margin: 8px 15px 15px 0px;
     }
 
     .col-md-8 .listing_filters_head .listing_filter_select {
@@ -2769,15 +2831,24 @@
         font-size: 35px;
     }
     
-     .wpestate_sliding_box.slider_box_size_5.active-element, 
+     /* .wpestate_sliding_box.slider_box_size_5.active-element, 
     .wpestate_sliding_box.slider_box_size_5,
     .wpestate_sliding_box.slider_box_size_3.active-element, 
-    .wpestate_sliding_box.slider_box_size_3,
+    .wpestate_sliding_box.slider_box_size_3, */
     .slider_box_size_3.active-element, .slider_box_size_3,
     .slider_box_size_4.active-element, .slider_box_size_4,
     .slider_box_size_5.active-element, .slider_box_size_5{
         width:100%;
         margin-bottom: 15px;
+    }
+
+    .sliding-image,
+    .wpestate_sliding_box {
+        width: 100% !important;
+    }
+    .wpestate_sliding_box_wrapper {
+        flex-direction: column;
+        gap: 10px;
     }
     
     
@@ -3090,16 +3161,10 @@
 
     .entry-prop {
         bottom: 75px;
-        font-size: 25px;
     }
-
-    .listing_main_image_price {
-        font-size: 20px;
-    }
-
 
     .contact_info_details {
-         width: 250px;
+        width: 250px;
         margin-left: -29px;
     }
 
@@ -3214,6 +3279,13 @@
 }
 
 @media only screen and (max-width:430px){
+    
+    .wpestate_content_grid_wrapper_second_col_item_wrapper{
+        display: flex;
+        flex-direction: row;
+        align-content: flex-start;
+        flex-wrap: wrap;
+    }
     
     .places_wrapper1,
     .places_wrapper2,

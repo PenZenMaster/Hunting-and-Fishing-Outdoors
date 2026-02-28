@@ -54,7 +54,7 @@ function wpestate_my_lisitings(){
     
         $temp_array['id']   =   get_the_ID();
         $temp_array['url']  =   esc_url ( get_permalink());
-        $temp_array['title']=   get_the_title();
+        $temp_array['title']=   get_sanitized_truncated_title(0, 0);
         $my_posts[]=$temp_array;
     endwhile;
     
@@ -79,7 +79,7 @@ function wpestate_my_pages(){
     
         $temp_array['id']   =   get_the_ID();
         $temp_array['url']  =   esc_url ( get_permalink());
-        $temp_array['title']=   get_the_title();
+        $temp_array['title']=   et_sanitized_truncated_title(0, 0);
         $my_posts[]=$temp_array;
     endwhile;
     

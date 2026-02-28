@@ -114,12 +114,13 @@ class ICal
         if (stristr($lines[0], 'BEGIN:VCALENDAR') === false) {
             return false;
         } else { */
+            $component = 'VCALENDAR';
             foreach ($lines as $line) {
                 $line = rtrim($line); // Trim trailing whitespace
                 $add  = $this->keyValueFromString($line);
 
                 if ($add === false) {
-                    $component='';
+
                     $this->addCalendarComponentWithKeyAndValue($component, false, $line);
                     continue;
                 }
@@ -346,9 +347,10 @@ class ICal
     public function process_recurrences()
     {
         $array = $this->cal;
-        $events = $array['VEVENT'];
-        if (empty($events))
+        if (!isset($array['VEVENT']) || empty($array['VEVENT'])) {
             return false;
+        }
+        $events = $array['VEVENT'];
         foreach ($array['VEVENT'] as $anEvent) {
             if (isset($anEvent['RRULE']) && $anEvent['RRULE'] != '') {
                 // Recurring event, parse RRULE and add appropriate duplicate events
@@ -619,12 +621,17 @@ class ICal
     public function events()
     {
         $array = $this->cal;
-        return $array['VEVENT'];
+        return isset($array['VEVENT']) ? $array['VEVENT'] : array();
     }
     public function timezone()
     {
         $array = $this->cal;
-        return $array['VCALENDAR']['X-WR-TIMEZONE'];
+        if(isset($array['VCALENDAR']['X-WR-TIMEZONE'])){
+            return $array['VCALENDAR']['X-WR-TIMEZONE'];
+        }else{
+              return '';
+        }
+      
     }
     
 

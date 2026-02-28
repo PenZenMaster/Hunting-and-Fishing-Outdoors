@@ -333,17 +333,13 @@ function    wpestate_draw_month_allinone($prop_selection,$month_no, $unixmonth, 
 
 
         if( !$prop_selection->have_posts() ){
-            $calendar_output.= ' '.esc_html__( 'You don\'t have any properties yet!','wprentals').' ';
+            $calendar_output.= ' <div class="wprentals_all_in_one_dashboard_notice">'.esc_html__( 'You don\'t have any properties yet!','wprentals').'</div> ';
         }else{
             while ($prop_selection->have_posts()): $prop_selection->the_post();
                 $post_id                    =   get_the_ID();
                 $link= esc_url ( get_permalink() );
                 $calendar_output.=  '<div class="property_tab_list_header"><a href="'.esc_url($link).'">';
-                $title=get_the_title();
-                $calendar_output .= mb_substr( html_entity_decode( $title ), 0, 20);
-                if(strlen($title)>20){
-                    $calendar_output.= '...';
-                }
+                $calendar_output .= get_sanitized_truncated_title(0, 20);
                 $calendar_output.='</a></div>';
                 $calendar_output .= wpestate_draw_month_for_listing($post_id, $daysinmonth, $thismonth, $thisyear);
             endwhile;

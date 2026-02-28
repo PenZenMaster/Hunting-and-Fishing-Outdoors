@@ -30,6 +30,13 @@ function delete_binder() {
             curent = curent + ',' + jQuery(this).attr('data-imageid');
         });
         jQuery('#attachid').val(curent);
+        var propertyID = jQuery('#propertyID').val();
+
+        // Check if the removed image is the featured one
+        if (jQuery('#attachthumb').val() === img_remove) {
+            jQuery('#attachthumb').val('');
+        }
+
         var ajaxurl     =   ajaxcalls_vars.admin_url + 'admin-ajax.php';
         jQuery.ajax({
             type: 'POST',
@@ -37,6 +44,7 @@ function delete_binder() {
             data: {
                 'action'            :   'wpestate_delete_file',
                 'attach_id'         :   img_remove,
+                'propertyID'        :   propertyID,
                 'security'          :   nonce
                 
             },

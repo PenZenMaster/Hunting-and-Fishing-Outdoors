@@ -16,7 +16,7 @@ if ($price != 0) {
     $price='';
     $price_title='';
 }
- 
+
 
 if($price_title!=''){
     print  '<span class="price_label"> '. esc_html($price_title).' '.esc_html($price_label).'</span>' ;

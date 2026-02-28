@@ -1,8 +1,9 @@
 <?php
 
 global $search_defaults;
-
-$search_defaults = array(
+add_action('init', function()   {
+    global $search_defaults;
+    $search_defaults = array(
                     'newtype'   => array(
                                         'adv_search_what'       => array(
                                                                         'Location',
@@ -148,7 +149,7 @@ $search_defaults2 =array(
 
 );
 
-
+});
 
 
 function wpestate_convert_regular_to_half(){
@@ -181,9 +182,9 @@ function wpestate_convert_regular_to_half(){
 
     if( $adv_search_type=='newtype' || $adv_search_type=='oldtype'){
 
-        Redux::setOption('wprentals_admin','wp_estate_adv_search_what_half_map',  $defaults_old_half['oldtype']['what'] );
-        Redux::setOption('wprentals_admin','wp_estate_adv_search_how_half_map',   $defaults_old_half['oldtype']['how'] );
-        Redux::setOption('wprentals_admin','wp_estate_adv_search_label_half_map', $defaults_old_half['oldtype']['label'] );
+        Redux::set_option('wprentals_admin','wp_estate_adv_search_what_half_map',  $defaults_old_half['oldtype']['what'] );
+        Redux::set_option('wprentals_admin','wp_estate_adv_search_how_half_map',   $defaults_old_half['oldtype']['how'] );
+        Redux::set_option('wprentals_admin','wp_estate_adv_search_label_half_map', $defaults_old_half['oldtype']['label'] );
 
         $wpestate_set_search_half_map=array(
             'adv_search_what'       =>      $defaults_old_half['oldtype']['what'],
@@ -193,15 +194,15 @@ function wpestate_convert_regular_to_half(){
         );
 
 
-        Redux::setOption('wprentals_admin','wpestate_set_search_half_map',  $wpestate_set_search_half_map);
-        Redux::setOption('wprentals_admin','wp_estate_search_fields_no_per_row_half_map',  3);
-        Redux::setOption('wprentals_admin','wp_estate_adv_search_fields_no_half_map',  count( $defaults_old_half['oldtype']['what'] ) );
+        Redux::set_option('wprentals_admin','wpestate_set_search_half_map',  $wpestate_set_search_half_map);
+        Redux::set_option('wprentals_admin','wp_estate_search_fields_no_per_row_half_map',  3);
+        Redux::set_option('wprentals_admin','wp_estate_adv_search_fields_no_half_map',  count( $defaults_old_half['oldtype']['what'] ) );
 
     }else{
 
-        Redux::setOption('wprentals_admin','wp_estate_adv_search_what_half_map',   $wprentals_admin['wpestate_set_search']['adv_search_what'] );
-        Redux::setOption('wprentals_admin','wp_estate_adv_search_how_half_map',    $wprentals_admin['wpestate_set_search']['adv_search_how'] );
-        Redux::setOption('wprentals_admin','wp_estate_adv_search_label_half_map',  $wprentals_admin['wpestate_set_search']['adv_search_label'] );
+        Redux::set_option('wprentals_admin','wp_estate_adv_search_what_half_map',   $wprentals_admin['wpestate_set_search']['adv_search_what'] );
+        Redux::set_option('wprentals_admin','wp_estate_adv_search_how_half_map',    $wprentals_admin['wpestate_set_search']['adv_search_how'] );
+        Redux::set_option('wprentals_admin','wp_estate_adv_search_label_half_map',  $wprentals_admin['wpestate_set_search']['adv_search_label'] );
 
 
 
@@ -214,14 +215,14 @@ function wpestate_convert_regular_to_half(){
             'search_field_label'    =>  array(),
         );
 
-        Redux::setOption('wprentals_admin','wpestate_set_search_half_map',  $wpestate_set_search_half_map);
-        Redux::setOption('wprentals_admin','wp_estate_search_fields_no_per_row_half_map',  3);
+        Redux::set_option('wprentals_admin','wpestate_set_search_half_map',  $wpestate_set_search_half_map);
+        Redux::set_option('wprentals_admin','wp_estate_search_fields_no_per_row_half_map',  3);
         
         $count_elements = 0 ;
         if( is_array( $wprentals_admin['wpestate_set_search']['adv_search_what'] ) ){
             $count_elements = count( $wprentals_admin['wpestate_set_search']['adv_search_what']);
         }
-        Redux::setOption('wprentals_admin','wp_estate_adv_search_fields_no_half_map',  $count_elements );
+        Redux::set_option('wprentals_admin','wp_estate_adv_search_fields_no_half_map',  $count_elements );
 
     }
 

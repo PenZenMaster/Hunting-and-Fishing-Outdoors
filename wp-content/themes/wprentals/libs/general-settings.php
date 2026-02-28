@@ -33,10 +33,9 @@ function wpestate_global_check_mandatory($post_id){
         }
     }
     
-    $terms = get_terms( array(
-        'taxonomy' => 'property_features',
-        'hide_empty' => false,
-    ) );
+
+
+    $terms = wpestate_get_cached_terms('property_features');
     foreach($terms as $key => $term){
         $feature_list_array_1[]=$term->slug ;     
     }
@@ -186,11 +185,100 @@ function wpestate_show_price_label_slider($min_price_slider,$max_price_slider,$w
 endif;
 
 
+if( !function_exists('wpestate_show_price_label_slider_v2') ):
+    function wpestate_show_price_label_slider_v2($min_price_slider,$max_price_slider,$wpestate_currency,$wpestate_where_currency){
+        $th_separator       =   wprentals_get_option('wp_estate_prices_th_separator','');
+        $custom_fields = wprentals_get_option('wpestate_currency',''); 
+      
+        if( !empty($custom_fields) && isset($_COOKIE['my_custom_curr']) &&  isset($_COOKIE['my_custom_curr_pos']) &&  isset($_COOKIE['my_custom_curr_symbol']) && $_COOKIE['my_custom_curr_pos']!=-1){
+            $i=intval($_COOKIE['my_custom_curr_pos']);
+            $wpestate_currency  =   $custom_fields[$i][1];
+            $min_price_slider   =   number_format($min_price_slider,0,'.',$th_separator);
+            $max_price_slider   =   number_format($max_price_slider,0,'.',$th_separator);
+            
+            if ($custom_fields[$i][3] == 'before') {  
+                $price_slider_label = $wpestate_currency .' '. $min_price_slider.' '.esc_html__( 'to','wprentals').' '.$wpestate_currency .' '. $max_price_slider;      
+                $price_slider_label_min = $wpestate_currency .' '. $min_price_slider;
+                $price_slider_label_max = $wpestate_currency .' '. $max_price_slider;
+            } else {
+                $price_slider_label =  $min_price_slider.' '.$wpestate_currency.' '.esc_html__( 'to','wprentals').' '.$max_price_slider.' '.$wpestate_currency;      
+                $price_slider_label_min =  $min_price_slider.' '.$wpestate_currency;
+                $price_slider_label_max =  $max_price_slider.' '.$wpestate_currency;
+            }
+            
+        }else{
+            $min_price_slider   =   number_format($min_price_slider,0,'.',$th_separator);
+            $max_price_slider   =   number_format($max_price_slider,0,'.',$th_separator);
+            
+            if ($wpestate_where_currency == 'before') {
+                $price_slider_label = $wpestate_currency .' '. ($min_price_slider).' '.esc_html__( 'to','wprentals').' '.$wpestate_currency .' '. $max_price_slider;
+                $price_slider_label_min = $wpestate_currency .' '. $min_price_slider;
+                $price_slider_label_max = $wpestate_currency .' '. $max_price_slider;
+            } else {
+                $price_slider_label =  $min_price_slider.' '.$wpestate_currency.' '.esc_html__( 'to','wprentals').' '.$max_price_slider.' '.$wpestate_currency;
+                $price_slider_label_min =  $min_price_slider.' '.$wpestate_currency;
+                $price_slider_label_max =  $max_price_slider.' '.$wpestate_currency;
+            }  
+        }
+        
+        
+        $return_array=array(
+            'label'     =>  $price_slider_label,
+            'label_min' =>  $price_slider_label_min,
+            'label_max' =>  $price_slider_label_max
+        );
+    
+        return $return_array;
+                                
+        
+    }
+    endif;
+    
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 /////// Define thumb sizes
 ///////////////////////////////////////////////////////////////////////////////////////////
 if( !function_exists('wpestate_image_size') ):
-    function wpestate_image_size(){
+
+       function wpestate_image_size(){
+        $default_image_size = wpestate_return_default_image_size_theme();
+
+        foreach($default_image_size as $key=>$value ){
+            $option_name = 'wp_estate_'.$key;
+            $wpresidence_admin =  get_option('wprentals_admin','') ;
+    
+           
+            if(isset($wpresidence_admin[$option_name])){
+                $saved_option =$wpresidence_admin[$option_name];
+                $crop=true;
+                if( isset($saved_option['add_field_width']) && intval($saved_option['add_field_width'])> 0 &&
+                    isset($saved_option['add_field_height']) && intval($saved_option['add_field_height'])> 0 ){  
+                        $width = intval($saved_option['add_field_width']);
+                        $height = intval($saved_option['add_field_height']);
+                }else{
+                    $width  =   $value['width'];
+                    $height =   $value['height'];
+                }
+
+                if( isset($saved_option['add_field_width']) && $saved_option['add_field_crop']=='no' ){
+                    $crop=false;
+                }
+            }else{
+                $width  =   $value['width'];
+                $height =   $value['height'];
+                $crop   =   true;
+            }
+          //  print '</br> fac'.$key.' '.$width.' '.$height.' '.$crop;
+
+            add_image_size($key, $width, $height , $crop);
+        }
+
+
+       set_post_thumbnail_size(  250, 220, true);
+    }
+
+
+    function wpestate_image_size_old(){
         add_image_size('wpestate_blog_unit'           , 400 , 242, true); // 1.45 387 234 1.65
         add_image_size('wpestate_blog_unit2'           , 805 , 453, true); // 1.45 387 234 1.65       
         add_image_size('wpestate_slider_thumb'        , 143,  83, true); //
@@ -203,6 +291,71 @@ if( !function_exists('wpestate_image_size') ):
         set_post_thumbnail_size(  250, 220, true);
     }
 endif;
+
+
+function wpestate_return_default_image_size_theme(){
+   $default_image_size = array(
+    'wpestate_blog_unit' => array(
+        'name' => esc_html__('Blog Unit', 'wprentals-core'),
+        'width' => 400,
+        'height' => 242,
+        'crop' => true,
+    ),
+    'wpestate_blog_unit2' => array(
+        'name' => esc_html__('Blog Unit type 2', 'wprentals-core'),
+        'width' => 805,
+        'height' => 453,
+        'crop' => true,
+    ),
+    'wpestate_slider_thumb' => array(
+        'name' => esc_html__('Slider thumb', 'wprentals-core'),
+        'width' => 143,
+        'height' => 83,
+        'crop' => true,
+    ),
+    'wpestate_property_listings' => array(
+        'name' => esc_html__('Property Card Image', 'wprentals-core'),
+        'width' => 400,
+        'height' => 314,
+        'crop' => true,
+    ),
+    'wpestate_property_featured' => array(
+        'name' => esc_html__('Property Featured', 'wprentals-core'),
+        'width' => 1170,
+        'height' => 921,
+        'crop' => true,
+    ),
+    'wpestate_property_listings_page' => array(
+        'name' => esc_html__('Property Page Thumb', 'wprentals-core'),
+        'width' => 240,
+        'height' => 160,
+        'crop' => true,
+    ),
+    'wpestate_property_places' => array(
+        'name' => esc_html__('Category Image', 'wprentals-core'),
+        'width' => 600,
+        'height' => 456,
+        'crop' => true,
+    ),
+    'wpestate_property_full_map' => array(
+        'name' => esc_html__('Property full', 'wprentals-core'),
+        'width' => 1920,
+        'height' => 790,
+        'crop' => true,
+    ),
+    'wpestate_user_thumb' => array(
+        'name' => esc_html__('User Thumb', 'wprentals-core'),
+        'width' => 60,
+        'height' => 60,
+        'crop' => true,
+    )
+);
+
+   return $default_image_size;
+   
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 /////// register sidebars
 ///////////////////////////////////////////////////////////////////////////////////////////

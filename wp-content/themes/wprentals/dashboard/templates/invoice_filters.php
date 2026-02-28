@@ -10,11 +10,11 @@
 
     <div class="col-md-3">
         <select id="invoice_type" name="invoice_type" class="form-control">
-            <option value="Upgrade to Featured"><?php esc_html_e( 'Upgrade to Featured','wprentals');?></option>
-            <option value="Publish Listing with Featured"><?php esc_html_e( 'Publish Listing with Featured','wprentals');?></option>
-            <option value="Package"><?php esc_html_e( 'Package','wprentals');?></option>
-            <option value="Listing"><?php esc_html_e( 'Listing','wprentals');?></option>
-            <option value="Reservation fee" selected="selected"><?php esc_html_e( 'Reservation fee','wprentals');?></option>
+            <option value="<?php echo esc_attr(WP_ESTATE_INVOICE_TYPE_UPGRADE_TO_FEATURED); ?>"><?php esc_html_e( 'Upgrade to Featured','wprentals');?></option>
+
+            <option value="<?php echo esc_attr(WP_ESTATE_INVOICE_TYPE_PACKAGE); ?>"><?php esc_html_e( 'Package','wprentals');?></option>
+            <option value="<?php echo esc_attr(WP_ESTATE_INVOICE_TYPE_LISTING); ?>"><?php esc_html_e( 'Listing','wprentals');?></option>
+            <option value="<?php echo esc_attr(WP_ESTATE_INVOICE_TYPE_RESERVATION_FEE); ?>" selected="selected"><?php esc_html_e( 'Reservation fee','wprentals');?></option>
         </select>
     </div>
 

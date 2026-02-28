@@ -113,7 +113,7 @@ if( isset($_POST['wpestate_prop_title']) ){
                 'author'           =>  $current_user->ID,
                 'paged'             => $paged,
                 'posts_per_page'    => $prop_no,
-                'post_status'      =>  array( 'any' )
+                'post_status'      => array_merge(array_keys(get_post_stati()), array('disabled'))
             );
 
 

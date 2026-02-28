@@ -50,12 +50,9 @@ $preview[0]     =   '';
             $featured           =   intval  ( get_post_meta($post->ID, 'prop_featured', true) );
             $property_city      =   get_the_term_list($post->ID, 'property_city', '', ', ', '') ;
             $property_area      =   get_the_term_list($post->ID, 'property_area', '', ', ', '');
-
-            $title=get_the_title();
-            $title = mb_substr( html_entity_decode($title), 0, 40);
-            if(strlen($title)>40){
-                $title.= '...';
-              }
+            $currency_code      =   wprentals_get_option('wp_estate_currency_symbol', '');
+            $title              =   get_sanitized_truncated_title(0,  40);
+           
             ?>
 
 
@@ -83,16 +80,32 @@ $preview[0]     =   '';
             }
             ?>
             <div class="category_name">
-                <div class="price_unit">
-                  <?php
-                  wpestate_show_price($post->ID,$wpestate_currency,$wpestate_where_currency,0);
-                  if($price!=0){
-                    print '<span class="pernight"> '.wpestate_show_labels('per_night2',$rental_type,$booking_type).'</span>';
-                  }
-                  ?>
-                </div>
+                <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">  
+                  <link itemprop="url" href="<?php echo esc_url($link);?>"/>   
+                  <meta itemprop="priceCurrency" content="<?php echo esc_html($currency_code);?>" />
 
+                  <div class="price_unit">
+                    <span itemprop="price" content="<?php echo floatval($price);?>">
+                    <?php
+                    wpestate_show_price($post->ID,$wpestate_currency,$wpestate_where_currency,0);
+                    if($price!=0){
+                      print '<span class="pernight"> '.wpestate_show_labels('per_night2',$rental_type,$booking_type).'</span>';
+                    }
+                    ?>
+                  </div>
+                </div>
                 <?php
+                  $total_stars = get_post_meta($post->ID , 'property_stars', TRUE);
+                if (!$total_stars) {
+                    $total_stars = wpestate_calculate_property_rating($post->ID );
+                }
+
+
+                $tmp_rating = json_decode($total_stars, TRUE);
+                $review_number = number_format( ($tmp_rating['rating']),2,'.');
+
+                print   '<meta itemprop="ratingValue" content="'.floatval($review_number).'"/>';
+
                 if(wpestate_has_some_review($post->ID)!==0){
                     print wpestate_display_property_rating( $post->ID );
                 }

@@ -412,7 +412,7 @@ if( !function_exists('wpestate_ajax_front_end_submit') ):
             update_post_meta($post_id, 'guest_no', $wpestate_guest_no);
             update_post_meta($post_id, 'overload_guest', $overload_guest);
             update_post_meta($post_id, 'max_extra_guest_no', $max_extra_guest_no);
-            update_post_meta($post_id, 'property_country', $property_country);
+            update_post_meta($post_id, 'property_country', strtolower($property_country));
             update_post_meta($post_id, 'pay_status', 'not paid');
             update_post_meta($post_id, 'page_custom_zoom', 16);
             $sidebar =  wprentals_get_option( 'wp_estate_blog_sidebar');
@@ -657,6 +657,7 @@ if( !function_exists('wpestate_ajax_add_booking') ):
 
         $property_id        =   intval( $_POST['listing_edit'] );
         $instant_booking    =   floatval   ( get_post_meta($property_id, 'instant_booking', true) );
+        
         $owner_id           =   wpsestate_get_author($property_id);
         $fromdate           =   wp_kses ( $_POST['fromdate'], $allowded_html );
         $to_date            =   wp_kses ( $_POST['todate'], $allowded_html );
@@ -783,36 +784,8 @@ if( !function_exists('wpestate_ajax_add_booking') ):
         update_post_meta($booking_id, 'custom_price_array',$booking_array['custom_price_array']);
 
 
-        $property_author = wpsestate_get_author($property_id);
-
-        if( $userID != $property_author){
-
-            $add_booking_details =array(
-
-                "booking_status"            =>  $status,
-                "original_property_id"      =>  $property_id,
-
-                "book_author"               =>  $userID,
-                "owner_id"                  =>  $owner_id,
-                "booking_from_date"         =>  $fromdate,
-                "booking_to_date"           =>  $to_date,
-                "booking_invoice_no"        =>  0,
-                "booking_pay_ammount"       =>  $booking_array['deposit'],
-                "booking_guests"            =>  $booking_guest_no,
-                "extra_options"             =>  $extra_options,
-                "security_deposit"          =>  $booking_array['security_deposit'],
-                "full_pay_invoice_id"       =>  0,
-                "to_be_paid"                =>  $booking_array['deposit'],
-                "youearned"                 =>  $booking_array['youearned'],
-                "service_fee"               =>  $booking_array['service_fee'],
-                "booking_taxes"             =>  $booking_array['taxes'],
-                "total_price"               =>  $booking_array['total_price'],
-                "custom_price_array"        =>  $booking_array['custom_price_array'],
-                "submission_curency_status" =>  esc_html( wprentals_get_option('wp_estate_submission_curency','') ),
-
-            );
-
-        }
+     
+     
 
         die();
   }
@@ -1071,7 +1044,7 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
         }
 
 
-        $billing_for    =   esc_html__( 'Reservation fee','wprentals');
+        $billing_for    =   WP_ESTATE_INVOICE_TYPE_RESERVATION_FEE;
         $type           =   esc_html__( 'One Time','wprentals');
         $pack_id        =   $booking_id; // booking id
 
@@ -1182,7 +1155,7 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
         $depozit = wpestate_calculate_deposit($wp_estate_book_down,$wp_estate_book_down_fixed_fee,$total_price_comp);
 
        // $depozit            =   round($wp_estate_book_down*$total_price_comp/100,2);
-        $balance            =   $invoice_price-$depozit;
+       $balance            =   floatval($invoice_price)-floatval($depozit);
 
 
 
@@ -1215,39 +1188,15 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
 
         // strip details generation
         $is_stripe_live= esc_html ( wprentals_get_option('wp_estate_enable_stripe','') );
-        $booking_type_name_invoice = get_post_meta($property_id, 'is_half_day_name', true);
-
-        $booking_type = wprentals_return_booking_type($property_id);
-
-        //$listing_booking_type = $booking_type;
-        // echo $edit_id.'edit';
-        // echo $invoice_id.'invc';
-        // echo $property_id.'prp';
-        $period_count = '';
-        if ($booking_type_name_invoice == 'Per day/night') {
-            $period_count = 'No of days';
-            $vdf_hours_count = $booking_array['count_days'];
-        } elseif ($booking_type_name_invoice == 'Per hour') {
-            $period_count = 'No of hours';
-            $vdf_hours_count = $booking_array['count_days'];
-        } elseif ($booking_type_name_invoice == 'Half day') {
-            $period_count = 'Type of day selected';
-            //$vdf_hours_count = 'Half Day ('.$booking_array['count_days'].' hours)';
-            $vdf_hours_count = 'Half Day';
-        } else {
-            $period_count = 'Hlf day';
-        }
-
-        //print_r($booking_array);
 
         print '
-            <div class="create_invoice_form" data-bk-id="' . $listing_booking_type . '">
+            <div class="create_invoice_form">
                    <h3>'.esc_html__( 'Invoice INV','wprentals').$invoice_id.'</h3>
 
                    <div class="invoice_table">
                         <div class="invoice_data">
-                                <span class="date_interval invoice_date_period_wrapper"><span class="invoice_data_legend">' . esc_html__('Period ', 'wprentals') . ' : </span>' . wpestate_convert_dateformat_reverse($booking_from_date, $vdf_hours_count) . ' ' . esc_html__('to', 'wprentals') . ' ' . wpestate_convert_dateformat_reverse($booking_to_date, $vdf_hours_count) . '</span>
-                                <span class="date_duration invoice_date_nights_wrapper"><span class="invoice_data_legend">' . $period_count . ': </span>' . $vdf_hours_count . '</span>
+                                <span class="date_interval invoice_date_period_wrapper"><span class="invoice_data_legend">'.esc_html__( 'Period ','wprentals').' : </span>'.wpestate_convert_dateformat_reverse($booking_from_date).' '.esc_html__( 'to','wprentals').' '.wpestate_convert_dateformat_reverse($booking_to_date).'</span>
+                                <span class="date_duration invoice_date_nights_wrapper"><span class="invoice_data_legend">'.wpestate_show_labels('no_of_nights',$rental_type,$booking_type) .': </span>'.$booking_array['count_days'].'</span>
                                 <span class="date_duration invoice_date_guests_wrapper"><span class="invoice_data_legend">'.esc_html__( 'No of guests','wprentals').': </span>'.$booking_guests.wpestate_booking_guest_explanations($booking_id).'</span>';
                                 if($booking_array['price_per_guest_from_one']==1){
                                     print'
@@ -1274,7 +1223,7 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
                                     }
                                 }
 
-                                print'<span class="date_duration invoice_date_property_name_wrapper"><span class="invoice_data_legend">'.esc_html__('Property','wprentals').': </span><a href="'.esc_url(get_permalink($property_id)).'" target="_blank">'.esc_html(get_the_title($property_id)).'</a></span>';
+                                print'<span class="date_duration invoice_date_property_name_wrapper"><span class="invoice_data_legend">'.esc_html__('Property','wprentals').': </span><a href="'.esc_url(get_permalink($property_id)).'" target="_blank">'. get_sanitized_truncated_title($property_id, 0) .'</a></span>';
 
                         print '</div>
 
@@ -1291,12 +1240,7 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
                             <span class="inv_data">   '.$inter_price_show.'</span>';
 
                             if($booking_array['price_per_guest_from_one']==1){
-
-            if ($booking_type == 2) {
-                print esc_html($extra_price_per_guest) . ' x ' . $booking_array['curent_guest_no'] . ' ' . esc_html__('guests', 'wprentals');
-            } else {
                                 print  esc_html($extra_price_per_guest).' x '.$booking_array['count_days'].' '.wpestate_show_labels('nights',$rental_type,$booking_type).' x '.$booking_array['curent_guest_no'].' '.esc_html__( 'guests','wprentals');
-            }
                             } else{
                                 if($booking_array['cover_weekend']){
                                     $new_price_to_show= esc_html__('has weekend price of','wprentals').' '.$price_per_weekeend_show;
@@ -1307,8 +1251,9 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
                                         $new_price_to_show=$price_show.' '.wpestate_show_labels('per_night',$rental_type,$booking_type);
                                     }
                                 }
-            if ($booking_type == 2) {
-            } else {
+
+
+
 
                                 if($booking_array['numberDays']==1){
                                     print ' <span class="inv_exp">   ('.$booking_array['numberDays'].' '.wpestate_show_labels('night',$rental_type,$booking_type).' | '.$new_price_to_show.') </span>';
@@ -1316,7 +1261,6 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
                                     print ' <span class="inv_exp">   ('.$booking_array['numberDays'].' '.wpestate_show_labels('nights',$rental_type,$booking_type).' | '.$new_price_to_show.') </span>';
                                 }
                             }
-        }
 
                             if($booking_array['custom_period_quest']==1){
                                esc_html_e(" period with custom price per guest","wprentals");
@@ -1327,14 +1271,6 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
 
 
                             if($booking_array['has_guest_overload']!=0 && $booking_array['total_extra_price_per_guest']!=0){
-            if ($booking_type == 2) {
-
-                print '
-        <div class="invoice_row invoice_content">
-            <span class="inv_legend">   ' . esc_html__('Extra Guests', 'wprentals') . '</span>
-            <span class="inv_data" id="extra-guests" data-extra-guests="' . esc_attr($booking_array['total_extra_price_per_guest']) . '">  ' . $total_guest . '</span>                                    
-        </div>';
-            } else {
                                 print'
                                 <div class="invoice_row invoice_content">
                                     <span class="inv_legend">   '.esc_html__( 'Extra Guests','wprentals').'</span>
@@ -1343,7 +1279,7 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
                                 </div>';
                               
                             }
-        }
+
 
 
                             if($booking_array['cleaning_fee']!=0 && $booking_array['cleaning_fee']!=''){
@@ -1458,8 +1394,6 @@ if( !function_exists('wpestate_ajax_add_booking_instant') ):
                                         'user_id'   =>  $userID,
                                         'pay_type'  =>  1,
                                         'message'   =>  esc_html__( 'Pay & Confirm Reservation','wprentals'),
-                        'total_price_comp' => $total_price_comp,
-                        'property_author_id' => $property_author,
 
                                 );
 
@@ -1692,24 +1626,6 @@ if( !function_exists('wpestate_ajax_update_ical_feed') ):
                 $edit_id    =   intval($_POST['listing_edit'] );
                 $the_post   =   get_post( $edit_id);
 
-                $booking_repeat_event = !empty($_POST['booking_repeat_event']) ? esc_html($_POST['booking_repeat_event']) : '';
-                $booking_repeat_pattern_val = esc_html($_POST['booking_repeat_pattern_val']);
-                $booking_repeat_pattern = esc_html($_POST['booking_repeat_pattern']);
-                $booking_range_start_date = esc_html($_POST['booking_range_start_date']);
-                $booking_range_end_date = esc_html($_POST['booking_range_end_date']);
-                $booking_repeat_event_type = esc_html($_POST['booking_repeat_event_type']);
-                $booking_repeat_week_day =  !empty($_POST['booking_repeat_week_day']) ? json_encode($_POST['booking_repeat_week_day']) : '';
-                $repeater_event_day =  !empty($_POST['repeater_event_day']) ? json_encode($_POST['repeater_event_day']) : '';
-
-                update_post_meta($edit_id, 'booking_repeat_event', $booking_repeat_event);
-                update_post_meta($edit_id, 'booking_repeat_pattern', $booking_repeat_pattern);
-                update_post_meta($edit_id, 'booking_repeat_pattern_val', $booking_repeat_pattern_val);
-                update_post_meta($edit_id, 'booking_range_start_date', $booking_range_start_date);
-                update_post_meta($edit_id, 'booking_range_end_date', $booking_range_end_date);
-                update_post_meta($edit_id, 'booking_repeat_event_type', $booking_repeat_event_type);
-                update_post_meta($edit_id, 'booking_repeat_week_day', $booking_repeat_week_day);
-                update_post_meta($edit_id, 'repeater_event_day', $repeater_event_day);
-                update_post_meta($edit_id, 'booking_repeat_event_notification', '');
                 if( $current_user->ID != $the_post->post_author ) {
                     esc_html_e("you don't have the right to edit this","wprentals");
                     die();
@@ -1790,15 +1706,14 @@ if( !function_exists('wpestate_ajax_delete_imported_dates') ):
                     unset($reservation_array[$key]);
                 }
             }
-
+            
             if($wprentals_is_per_hour==2){
                 foreach($hour_to_delete as $key=>$event){
-                    if( isset( $reservation_array[$event[unix_time_start]] ) && $reservation_array[$event[unix_time_start]]==$event[unix_time_end] ){
-                          unset($reservation_array[$event[unix_time_start]]);
+                    if( isset( $reservation_array[$event['unix_time_start']] ) && $reservation_array[$event['unix_time_start']]==$event['unix_time_end'] ){
+                          unset($reservation_array[$event['unix_time_start']]);
                     }
                 }
             }
-
 
 
 
@@ -1852,6 +1767,22 @@ if( !function_exists('wpestate_ajax_update_listing_details') ):
                     $property_bedrooms      =   floatval($_POST['property_bedrooms']);
                     $property_bathrooms     =   floatval($_POST['property_bathrooms']);
 
+                    $max_bedrooms  = apply_filters('wpestate_max_bedrooms', 9999);
+                    if ( $property_bedrooms > $max_bedrooms ) {
+                        $property_bedrooms = $max_bedrooms;
+                    }
+                    if ( $property_bedrooms < 0 ) {
+                        $property_bedrooms = 0;
+                    }
+
+                    $max_bathrooms = apply_filters('wpestate_max_bathrooms', 9999);
+                    if ( $property_bathrooms > $max_bathrooms ) {
+                        $property_bathrooms = $max_bathrooms;
+                    }
+                    if ( $property_bathrooms < 0 ) {
+                        $property_bathrooms = 0;
+                    }
+
                     $beds_options   =   array_map('intval', (array)$_POST['beds_options']);
                     $bed_types      =   esc_html( wprentals_get_option('wp_estate_bed_list', '') );
                     $bed_types_array= explode(',', $bed_types);
@@ -1902,13 +1833,13 @@ if( !function_exists('wpestate_ajax_update_listing_details') ):
                     if( !empty($custom_fields)){
                         while($i< count($custom_fields) ){
                             $name =   $custom_fields[$i][0];
-                            $type =   $custom_fields[$i][1];
+                            $type =   $custom_fields[$i][2];
                             $slug =   str_replace(' ','_',$name);
                             $slug =   wpestate_limit45(sanitize_title( $name ));
                             $slug =   sanitize_key($slug);
 
                             if($type=='numeric' && $custom_values[$i+1]!=''){
-                                $value_custom    =   intval(wp_kses( $custom_values[$i+1],$allowed_html ) );
+                                $value_custom    =   floatval( $custom_values[$i+1] );
                                 update_post_meta($edit_id, $slug, $value_custom);
                             }else{
                                 $value_custom    =   sanitize_text_field( $custom_values[$i+1]  );
@@ -1939,7 +1870,10 @@ if( !function_exists('wpestate_ajax_update_listing_details') ):
                     if($status=='pending'){
                         $message_status=esc_html__( 'Your listing is pending. Please complete all the mandatory fields for it to be published!','wprentals');
                     }
-                    echo json_encode(array('edited'=>true,'beds_options'=>count($beds_options),'response'=>esc_html__( 'Changes are saved!','wprentals').' '.$message_status));
+                    echo json_encode(array(
+                        'edited'=>true,
+                        'beds_options'=>count($beds_options),
+                        'response'=>esc_html__( 'Changes are saved!','wprentals').' '.$message_status));
 
 
                     die();
@@ -1989,89 +1923,28 @@ if( !function_exists('wpestate_ajax_update_listing_images') ):
                            'style' => array(),
                         'allowFullScreen' => array() // add any other attributes you wish to allow
                          ) );
-                    $video_type     =   wp_kses($_POST['video_type'],$allowed_html);
-                    $video_id       =   wp_kses($_POST['video_id'],$allowed_html);
+                    $video_type     =   sanitize_text_field($_POST['video_type']);
+                    $video_id       =   sanitize_text_field($_POST['video_id']);
                     $attachthumb    =   intval($_POST['attachthumb']);
-                    $attachid       =   wp_kses($_POST['attachid'],$allowed_html);
+                    $attachid       =   sanitize_text_field(  $_POST['attachid']);
+                    $attachid       =    trim($attachid,',');
 
                     $virtual_tour   =   wp_kses (trim($_POST['virtual_tour']),$iframe);
 
                     $attach_array   =   explode(',',$attachid);
-                    $last_id        =   '';
 
-                    // check for deleted images
-                    $arguments = array(
-                                'numberposts'   => -1,
-                                'post_type'     => 'attachment',
-                                'post_parent'   => $edit_id,
-                                'post_status'   => null,
-                                'orderby'       => 'menu_order',
-                                'order'         => 'ASC'
-                    );
-                    $post_attachments = get_posts($arguments);
-
-                    $new_thumb=0;
-                    $curent_thumb=get_post_thumbnail_id($edit_id);
-
-
-
-                    if (function_exists('icl_translate') ){
-                        // code from wpml team
-
-                        foreach ($post_attachments as $attachment){
-                            if ( !in_array ($attachment->ID,$attach_array) ){
-                                $active_languages = apply_filters( 'wpml_active_languages');
-                                foreach( $active_languages as $language){
-                                    $current_language = apply_filters( 'wpml_current_language');
-                                    if($language['code'] != $current_language){
-                                        $attach_id = apply_filters( 'wpml_object_id', $attachment->ID, 'attachment', FALSE, $language['code'] );
-                                        if($attach_id){
-                                            wp_delete_post($attach_id);
-                                        }
-                                    }
-                                }
-                                wp_delete_post($attachment->ID);
-                            }
-                        }
-
-                    }else{
-                        foreach ($post_attachments as $attachment){
-                            if ( !in_array ($attachment->ID,$attach_array) ){
-                                wp_delete_post($attachment->ID);
-                                if( $curent_thumb == $attachment->ID ){
-                                    $new_thumb=1;
-                                }
-                            }
-                        }
-                    }
-                    // check for deleted images
-
-                    $order=0;
-                    foreach($attach_array as $att_id){
-                        if( !is_numeric($att_id) ){
-
-                        }else{
-                            if($last_id==''){
-                                $last_id=  $att_id;
-                            }
-                            $order++;
-                            wp_update_post( array(
-                                        'ID' => $att_id,
-                                        'post_parent' => $edit_id,
-                                        'menu_order'=>$order
-                                    ));
-
-
-                        }
+                    update_post_meta($edit_id, 'wpestate_property_gallery',  $attachid   );
+                    if($attachid==''){
+                        update_post_meta($edit_id, 'wpestate_property_gallery',  ''   );
+                        detach_image_attachments_from_post($edit_id);
                     }
 
-                    if( $attachthumb !=''  ){
+                    if( $attachthumb !==0  ){
                         set_post_thumbnail( $edit_id, $attachthumb );
+                    }else{
+                        set_post_thumbnail( $edit_id,$attach_array[0]);
                     }
 
-                    if($new_thumb==1 || !has_post_thumbnail($edit_id) || $attachthumb==''){
-                        set_post_thumbnail( $edit_id, $last_id );
-                    }
 
                     update_post_meta($edit_id, 'embed_video_type', $video_type);
                     update_post_meta($edit_id, 'embed_video_id', $video_id);
@@ -2082,7 +1955,11 @@ if( !function_exists('wpestate_ajax_update_listing_images') ):
                     if($status=='pending'){
                         $message_status=esc_html__( 'Your listing is pending. Please complete all the mandatory fields for it to be published!','wprentals');
                     }
-                    echo json_encode(array('edited'=>true, 'response'=>esc_html__( 'Changes are saved!','wprentals').' '.$message_status));
+                    echo json_encode(
+                        array(
+                
+                            'edited'=>true, 
+                            'response'=>esc_html__( 'Changes are saved!','wprentals').' '.$message_status));
 
 
 
@@ -2096,7 +1973,41 @@ endif;
 
 
 
+/**
+ * Detaches all image attachments from a specific post.
+ *
+ * This function finds all image attachments associated with the given post ID
+ * and sets their post_parent to 0, effectively detaching them from the post.
+ *
+ * @param int $post_id The ID of the post from which to detach attachments.
+ */
+function detach_image_attachments_from_post($post_id) {
+    if (!is_numeric($post_id) || $post_id <= 0) {
+        return;
+    }
 
+    $args = array(
+        'numberposts'     => -1,
+        'post_type'       => 'attachment',
+        'post_mime_type'  => 'image',
+        'post_parent'     => $post_id,
+        'post_status'     => null,
+        'orderby'         => 'menu_order',
+        'order'           => 'ASC',
+        'fields'          => 'ids'
+    );
+
+    $attachments = get_posts($args);
+
+    if (!empty($attachments)) {
+        foreach ($attachments as $attachment_id) {
+            wp_update_post(array(
+                'ID' => $attachment_id,
+                'post_parent' => 0
+            ));
+        }
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -2136,10 +2047,7 @@ if( !function_exists('wpestate_ajax_update_listing_price') ):
                     $cleaning_fee                   =   floatval( $_POST['cleaning_fee']);
                     $city_fee                       =   floatval( $_POST['city_fee']);
                     $price                          =   floatval( $_POST['price']);
-                    $morning_price = floatval($_POST['morning_price']);
-                    $afternoon_price = floatval($_POST['afternoon_price']);
                     $book_type                      =   floatval( $_POST['book_type']);
-                    $booking_value = esc_html($_POST['booking_value']);
                     $price_week                     =   floatval( $_POST['price_week']);
                     $price_month                    =   floatval( $_POST['price_month']);
                     $cleaning_fee_per_day           =   floatval( $_POST['cleaning_fee_per_day']);
@@ -2164,19 +2072,7 @@ if( !function_exists('wpestate_ajax_update_listing_price') ):
 
                     $booking_start_hour             =   esc_html( $_POST['booking_start_hour']);
                     $booking_end_hour               =   esc_html( $_POST['booking_end_hour']);
-                    $booking_start_hour_noon = esc_html($_POST['booking_start_hour_noon']);
-                    $booking_end_hour_noon = esc_html($_POST['booking_end_hour_noon']);
-                    $booking_start_hour_mrng = esc_html($_POST['booking_start_hour_mrng']);
-                    $booking_end_hour_mrng = esc_html($_POST['booking_end_hour_mrng']);
-                    $property_price_hfday = floatval($_POST['property_price_hfday']);
-                    $property_price_hr = floatval($_POST['property_price_hr']);
                    
-                    $booking_cd_end_date = esc_html($_POST['booking_cd_end_date']);
-                    $booking_cd_start_date = esc_html($_POST['booking_cd_start_date']);
-
-                    $booking_cd_start_date = esc_html($_POST['booking_cd_start_date']);
-
-                    $booking_cd_day = $_POST['booking_cd_day'];
 
                     $extra_pay_values=array();
                     if(is_array($extra_pay_options)){
@@ -2190,16 +2086,7 @@ if( !function_exists('wpestate_ajax_update_listing_price') ):
 
 
                     update_post_meta($edit_id, 'property_price', $price);
-                    update_post_meta($edit_id, 'morning_price', $morning_price);
-                    update_post_meta($edit_id, 'afternoon_price', $afternoon_price);
-
-                    update_post_meta($edit_id, 'property_price_hfday', $property_price_hfday);
-                    update_post_meta($edit_id, 'property_price_hr', $property_price_hr);
                     update_post_meta($edit_id, 'local_booking_type',$book_type);
-                    if ($booking_value == 'Half day') {
-                        update_post_meta($edit_id, 'is_half_day', 'yes');
-                    }
-                    update_post_meta($edit_id, 'is_half_day_name', $booking_value);
                     update_post_meta($edit_id, 'cleaning_fee', $cleaning_fee);
                     update_post_meta($edit_id, 'city_fee', $city_fee);
                     update_post_meta($edit_id, 'property_price_per_week', $price_week);
@@ -2226,14 +2113,6 @@ if( !function_exists('wpestate_ajax_update_listing_price') ):
 
                     update_post_meta($edit_id, 'booking_start_hour', $booking_start_hour);
                     update_post_meta($edit_id, 'booking_end_hour',$booking_end_hour);
-                    update_post_meta($edit_id, 'booking_start_hour_noon', $booking_start_hour_noon);
-                    update_post_meta($edit_id, 'booking_end_hour_noon', $booking_end_hour_noon);
-                    update_post_meta($edit_id, 'booking_start_hour_mrng', $booking_start_hour_mrng);
-                    update_post_meta($edit_id, 'booking_end_hour_mrng', $booking_end_hour_mrng);
-
-                    update_post_meta($edit_id, 'booking_cd_end_date', $booking_cd_end_date);
-                    update_post_meta($edit_id, 'booking_cd_start_date', $booking_cd_start_date);
-                    update_post_meta($edit_id, 'booking_cd_day', $booking_cd_day);
    
                     if (function_exists('icl_translate') ){
                         do_action( 'wpml_sync_all_custom_fields', $edit_id );
@@ -2360,33 +2239,33 @@ function wpestate_ajax_update_listing_description(){
                 $prop_action_category           =   get_term( $prop_action_category, 'property_action_category');
                 if(isset($prop_action_category->term_id)){
                     $prop_action_category_selected  =   $prop_action_category->term_id;
-                        update_post_meta($edit_id, 'prop_action_category_selected', $prop_action_category_selected);
                 }
 
                 // city
                 if( !isset($_POST['city']) ) {
                     $property_city=0;
                 }else{
-                    $property_city  =   wp_kses($_POST['city'],$allowed_html);
+                     $property_city = sanitize_text_field($_POST['city']);
                 }
 
                 if( !isset($_POST['country']) ) {
                     $property_country='';
                 }else{
-                    $property_country  =   wp_kses($_POST['country'],$allowed_html);
+                       $property_country = sanitize_text_field($_POST['country']);
                 }
 
                  if( !isset($_POST['area']) ) {
                     $property_area=0;
                 }else{
-                    $property_area  =   wp_kses($_POST['area'],$allowed_html);
+                    $property_area = sanitize_text_field($_POST['area']);
                 }
 
                 if( !isset($_POST['property_admin_area']) ) {
                     $property_admin_area='';
-                }else{
-                    $property_admin_area  =   wp_kses($_POST['property_admin_area'],$allowed_html);
+                }else{                      
+                    $property_admin_area = sanitize_text_field($_POST['property_admin_area']);
                 }
+
                 if( !isset($_POST['aff_link']) ) {
                     $property_affiliate='';
                 }else{
@@ -2514,6 +2393,8 @@ function wpestate_ajax_update_listing_description(){
                     update_post_meta($post_id, 'max_extra_guest_no',$max_extra_guest_no);
 
                     update_post_meta($post_id, 'instant_booking',intval($_POST['instant_booking']));
+                    update_post_meta($post_id, 'wp_estate_replace_booking_form_local',intval($_POST['wp_estate_replace_booking_form_local']));
+                    
                     update_post_meta($post_id, 'children_as_guests',intval($_POST['children_as_guests']));
                     update_post_meta($post_id, 'property_affiliate', $property_affiliate);
                     update_post_meta($post_id, 'private_notes', $private_notes);

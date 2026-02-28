@@ -280,9 +280,12 @@ if( isset($_POST) && !empty($_POST) ) {
 
             update_post_meta($post_id, 'guest_no', $wpestate_guest_no);
             update_post_meta($post_id, 'property_affiliate',$property_affiliate);
-            update_post_meta($post_id, 'property_country', $property_country);
+            update_post_meta($post_id, 'property_country', strtolower($property_country));
             if(isset($_POST['instant_booking'])){
                 update_post_meta($post_id,'instant_booking',intval($_POST['instant_booking']));
+            }
+            if(isset($_POST['wp_estate_replace_booking_form_local'])){
+                update_post_meta($post_id,'wp_estate_replace_booking_form_local',intval($_POST['wp_estate_replace_booking_form_local']));
             }
              if(isset($_POST['children_as_guests'])){
                 update_post_meta($post_id,'children_as_guests',intval($_POST['children_as_guests']));
@@ -371,6 +374,10 @@ function sh_verify_onetime_nonce( $_nonce, $action = -1) {
 
 
     //Add nonce to used nonces and sort
+    if (!is_array($used_nonces)) {
+        $used_nonces = [];
+    }
+    
     $used_nonces[$nonce] = $expires;
     asort( $used_nonces );
     update_option( '_sh_used_nonces',$used_nonces );

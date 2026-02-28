@@ -10,7 +10,7 @@ $link       =   esc_url(get_permalink());
 <div class="places_wrapper   places_wrapper<?php print esc_attr($row_number);?>" data-link="<?php print esc_url($link);?>">
     <div class="places<?php print esc_attr($row_number);?>">
         <?php 
-        $title      =   get_the_title();
+    
         $preview    =   wp_get_attachment_image_src(get_post_thumbnail_id(), 'wpestate_property_featured');
         $preview_img = get_stylesheet_directory_uri().'/img/defaultimage.jpg';
         if( isset($preview[0]) ){
@@ -23,5 +23,5 @@ $link       =   esc_url(get_permalink());
         ?>
     </div>
     
-    <a href="<?php echo esc_url(get_permalink()); ?>" class="blog-title-link"><?php print get_the_title(); ?></a> 
+    <a href="<?php echo esc_url(get_permalink()); ?>" class="blog-title-link"><?php print  get_sanitized_truncated_title(0, 0); ?></a> 
 </div>

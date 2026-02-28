@@ -3,6 +3,7 @@
 // Wp Estate Pack
 
 get_header();
+
 $current_user           =   wp_get_current_user();
 $wpestate_options       =   wpestate_page_details($post->ID);
 $show_compare           =   1;
@@ -45,7 +46,7 @@ $compute        =   wpestate_argumets_builder($_REQUEST,$is_half);
 $prop_selection =   $compute[0];
 $args           =   $compute[1];
 
-
+//print_r($args);
 
 
 

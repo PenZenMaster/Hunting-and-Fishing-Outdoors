@@ -33,9 +33,9 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 
 .user_dashboard_panel .form-control{
   margin-bottom: 30px;
-  background-color: #FAFAFC;
-  border: 1px solid #f6f4ff;
-  color: #8A8F9A;
+  background-color: #F6F6F6;
+  border: 1px solid #ECEEF3;
+  color: #5D6475A6;
   border-radius: 5px;
   transition: all 0.1s linear;
 }
@@ -65,7 +65,7 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   border: 1px solid #f6f4ff;
   border-radius: 5px;
   transition: all 0.1s linear;
-  color: #8A8F9A;
+  color: #5D6475A6;
 }
 
 .user_dashboard_panel_title{
@@ -99,9 +99,20 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 }
 
 .wprentals_dashboard_page label{
-    color: #878F9D;
+    font-weight: 500;
 }
 
+.wprentals_dashboard_page label,
+.dashboard_chapter_label label,
+.dashboard_chapter_label {
+  color: #5D6475A6;
+  font-size: 14px;
+}
+
+.dashboard_chapter_label label,
+.dashboard_chapter_label {
+  height: 100%;
+}
 
 .page-template-user_dashboard_allinone .row.admin-list-wrapper.inbox-wrapper {
     margin-left: 0px;
@@ -236,6 +247,9 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   padding-top: 45px;
 }
 
+.dashboard_amenities .feature_chapter_name{
+    padding: 0 15px;
+}
 
 .page-template-user_dashboard_edit_listing .dashboard_amenities label {
   width: calc(100% - 22px);
@@ -254,6 +268,10 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   border-radius: 3px;
 }
 
+.col-md-12 #wp_estate_replace_booking_form_local,
+.col-md-12 #instant_booking {
+  margin-left: 15px;
+}
 
 
 /*= buttons*/
@@ -668,16 +686,13 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 }
 
 .pack-name span{
-    color: #8A8795;
+    color: #5D6475A6;
     font-size: 12px;
     width: 100%;
     text-align: center;
     display: inline-block;
     font-weight: 500;
 }
-
-
-
 
 .pack_unit_list .user_dashboard_panel_title{
     margin-top:0px;
@@ -702,11 +717,10 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 
 .user_tab_menu a,
 .user_dashboard_links a {
-    color: #8A8795;
+    color: #5D6475A6;
     width: calc(100% - 20px);
     padding: 12px 0px 12px 20px;
     margin: 0 10px;
-    font-size: 13px;
     font-weight: normal;
     position: relative;
     display: inline-block;
@@ -738,15 +752,14 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   .normal_list_no{
       width: 50%;
       height:25px;
-      color: #8A8795;
+      color: #5D6475A6;
       float: left;
       text-align: left;
       padding: 2px 0px;
       font-size: 22px;
-      font-weight: 700;
+      font-weight: 500;
       position:relative;
       margin-bottom: 15px;
-      color: #383f5b;
   }
 
   .normal_list_no span{
@@ -757,18 +770,16 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         display: inline-block;
         position: absolute;
         word-break: break-word;
-        color: #8A8795;
+        color: #5D6475A6;
   }
 
-
   .pack-date-wrapper{
-    color: #8A8795;
+    color: #5D6475A6;
     font-size: 11px;
     text-align: center;
     width: 100%;
     margin-left: -10px;
   }
-
 
 
   /*= user profile*/
@@ -820,7 +831,7 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     line-height: 1.3em;
     font-size: 13px;
     display: block;
-    color: #8A8F9A;
+    color: #5D6475A6;
     font-size: 14px;
     font-weight: 500;
 }
@@ -907,7 +918,6 @@ h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   margin: 0px 0px;
   border-radius: 3px;
   color: #c3b4b4;
-  color: #8A8F9A;
   padding: 0px;
   display: inline-block;
   font-size: 13px;
@@ -1280,15 +1290,13 @@ color:#806AE6;
 
 /*= all in one*/
 
-@media only screen and (min-width: 1537px){
-.booking-calendar-wrapper-allinone .calendar_pad_title, 
-.calendar_pad, .booking-calendar-wrapper-allinone .dayname {
-    width: 38px;
-}
-}
-
 .wprentals_allinone_wrapper{
   padding: 15px;
+}
+
+.wprentals_all_in_one_dashboard_notice{
+    display: inline-block;
+    padding: 11px;
 }
 
 .booking-calendar-wrapper-allinone{
@@ -1456,11 +1464,9 @@ color:#806AE6;
     padding-top: 4px;
 }
 
-
-
 .booking-calendar-wrapper-allinone  .calendar_pad_title, .calendar_pad,
 .booking-calendar-wrapper-allinone .dayname {
-    width: 35px;
+    width: 32px;
 }
 
 .page-template-user_dashboard_edit_listing label{

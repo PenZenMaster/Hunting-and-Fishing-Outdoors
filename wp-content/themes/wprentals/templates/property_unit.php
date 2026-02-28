@@ -23,8 +23,7 @@ global $post;
 $booking_type       =   wprentals_return_booking_type($post->ID);
 $rental_type        =   wprentals_get_option('wp_estate_item_rental_type');
 
-
-
+ 
 
 if($wpestate_listing_type==3){
     include(locate_template('templates/property_unit_3.php') );
@@ -45,7 +44,7 @@ $measure_sys        =   '';
 
 $col_class  =   'col-md-6';
 $col_org    =   4;
-$title      =   get_the_title($post->ID);
+$title      =   get_sanitized_truncated_title($post->ID, 0);
 
 
 
@@ -111,6 +110,7 @@ if( $schema_flag==1) {
             $property_area      =   get_the_term_list($post->ID, 'property_area', '', ', ', '');
             $property_action    =   get_the_term_list($post->ID, 'property_action_category', '', ', ', '');
             $property_categ     =   get_the_term_list($post->ID, 'property_category', '', ', ', '');
+            $currency_code      =   wprentals_get_option('wp_estate_currency_symbol', '');
             ?>
 
 
@@ -137,29 +137,31 @@ if( $schema_flag==1) {
                     }else{
                         $price          =   floatval( get_post_meta($post->ID, 'property_price', true) );
                     }
-                    ?>
-
-                    <div class="price_unit">
-                        <?php
-                            wpestate_show_price($post->ID,$wpestate_currency,$wpestate_where_currency,0);
-                            if($price!=0){
-                              echo '<span class="pernight"> '.wpestate_show_labels('per_night2',$rental_type,$booking_type).'</span>';
-                            }
-                        ?>
-                    </div>
-
-                    <?php
+                   print wprentals_card_property_price($post->ID);
                 }
                 ?>
 
                 <?php
-                    if(wpestate_has_some_review($post->ID)!==0){
-                        print wpestate_display_property_rating( $post->ID );
-                    }else{
-                        print '<div class=rating_placeholder></div>';
-                    }
+                $total_stars = get_post_meta($post->ID , 'property_stars', TRUE);
+                if (!$total_stars) {
+                    $total_stars = wpestate_calculate_property_rating($post->ID );
+                }
+
+
+                $tmp_rating = json_decode($total_stars, TRUE);
+                //$review_number = number_format( ($tmp_rating['rating']),2,'.');
+
+                $review_number = number_format((float)$tmp_rating['rating'], 2, '.', '');
+
+                print   '<meta itemprop="ratingValue" content="'.floatval($review_number).'"/>';
+                if(wpestate_has_some_review($post->ID)!==0){
+                    print wpestate_display_property_rating( $post->ID );
+                }else{
+                    print '<div class=rating_placeholder></div>';
+                }
                 ?>
 
+                
 
 
                 <?php echo wprentals_card_owner_image($post->ID); ?>

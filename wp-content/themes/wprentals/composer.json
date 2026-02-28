@@ -1,0 +1,11 @@
+{
+    "name": "wprentals/theme",
+    "type": "project",
+    "require": {},
+    "require-dev": {},
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}

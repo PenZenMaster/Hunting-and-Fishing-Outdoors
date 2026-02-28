@@ -5,6 +5,7 @@ jQuery(document).ready(function ($) {
     wpestate_create_generate_invoice_action();
     wprentals_show_static_calendar_backend();
     wpestate_show_bedrooms_input_trigger();
+    wpestate_limit_bathrooms_input();
     wpestate_reply_to_review();
 
 
@@ -421,11 +422,13 @@ function wpestate_enable_star_action() {
                     'content'           :   content,
                     'security'          :   nonce
                 },
-                success: function (data) {
+                success: function (response) {
                     jQuery('.create_invoice_form').remove();
                     jQuery('.post_review').remove();
+                    parent.after( '<div class="row dashboard_property_list user_dashboard_panel"><p class="post-review-message success">' + response.data.message + '</p></div>' );
                 },
-                error: function (errorThrown) {
+                error: function (response) {
+                    parent.after( '<div class="row dashboard_property_list user_dashboard_panel"><p class="post-review-message error">' + response.data.message + '</p></div>' );
                 }
             });
         });
@@ -1759,10 +1762,38 @@ function wprentals_show_static_calendar_backend(){
 function wpestate_show_bedrooms_input_trigger(){
         var    array_feeds=[];
         jQuery('#property_bedrooms').on('change',function(event){
-            var bedrooms_no = parseInt( jQuery(this).val() );
+            var bedrooms_no = parseInt( jQuery(this).val(),10 );
+            if ( isNaN(bedrooms_no) || bedrooms_no < 0 ){
+                bedrooms_no = 0;
+            }
+            var max_bedrooms = parseInt( dashboard_vars.max_bedrooms,10 );
+            if( bedrooms_no > max_bedrooms ){
+                bedrooms_no = max_bedrooms;
+                jQuery(this).val( max_bedrooms );
+                if ( typeof(dashboard_vars.max_bedrooms_message) !== 'undefined' ){
+                    alert( dashboard_vars.max_bedrooms_message );
+                }
+            }
             var beds_options_string=jQuery('#beds_options_string').val();
 
             wpestate_show_bedrooms_input(bedrooms_no, (beds_options_string));
+        });
+}
+
+function wpestate_limit_bathrooms_input(){
+        jQuery('#property_bathrooms').on('change', function(){
+            var bathrooms_no = parseFloat( jQuery(this).val(),10 );
+            if( isNaN(bathrooms_no) || bathrooms_no < 0 ){
+                bathrooms_no = 0;
+            }
+            var max_bathrooms = parseFloat( dashboard_vars.max_bathrooms,10 );
+            if( bathrooms_no > max_bathrooms ){
+                bathrooms_no = max_bathrooms;
+                jQuery(this).val( max_bathrooms );
+                if ( typeof(dashboard_vars.max_bathrooms_message) !== 'undefined' ){
+                    alert( dashboard_vars.max_bathrooms_message );
+                }
+            }
         });
 }
 

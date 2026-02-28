@@ -24,20 +24,25 @@ if( $repeat_footer_back_status=='repeat' ){
     $footer_back_class = ' footer_back_repeat_no ';
 }
 
+/* 
+ *
+ * All these conditions are doubled in footer.php  
+ * 
+ */
 
-if( !is_search() && !is_category() && !is_tax() &&  !is_tag() &&  !is_archive() && wpestate_check_if_admin_page($post->ID) ){
+// if( !is_search() && !is_category() && !is_tax() &&  !is_tag() &&  !is_archive() && wpestate_check_if_admin_page($post->ID) ){
     // do nothing for now
 
-} else if(!is_search() && !is_category() && !is_tax() &&  !is_tag() &&  !is_archive() && $page_template == 'property_list_half.php'){
+// } else if(!is_search() && !is_category() && !is_tax() &&  !is_tag() &&  !is_archive() && $page_template == 'property_list_half.php'){
     // do nothing for now
 
-} else if( ( is_category() || is_tax() ) &&  wprentals_get_option('wp_estate_property_list_type')==2){
+// } else if( ( is_category() || is_tax() )  &&  get_post_type() !== 'post' && wprentals_get_option('wp_estate_property_list_type')==2){
     // do nothing for now
 
-} else if(  $page_template=='advanced_search_results.php' &&  wprentals_get_option('wp_estate_property_list_type_adv')==2){
+// } else if(  $page_template=='advanced_search_results.php' &&  wprentals_get_option('wp_estate_property_list_type_adv')==2){
     // do nothing for now
 
-}else{
+// }else{
 
 
 ?>
@@ -93,4 +98,4 @@ if( !is_search() && !is_category() && !is_tax() &&  !is_tag() &&  !is_archive() 
 
 </footer><!-- #colophon -->
 
-<?php } // end property_list_half ?>
+<?php // } // end property_list_half ?>

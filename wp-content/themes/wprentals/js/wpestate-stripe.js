@@ -44,7 +44,6 @@ function wpestate_start_stripe(recurring,modalid) {
   
 
   if(jQuery('#'+modalid+' .wpestate_form1-card').length > 0 ){
-     console.log('fac mount'); 
       card.mount('#'+modalid+' .wpestate_form1-card'); 
   }else{
       return;

@@ -44,6 +44,12 @@ if ($wpestate_where_currency == 'before') {
 
         $radius_measure = wprentals_get_option('wp_estate_geo_radius_measure','');
         $radius_value   = wprentals_get_option('wp_estate_initial_radius','');
+        $geo_radius_measure_translatable=array(
+            'miles'=>esc_html__('miles','wprentals'),
+            'km'=>esc_html__('km','wprentals'),
+        );
+        $radius_measure_string=  $geo_radius_measure_translatable[$radius_measure];
+
 
         ?>
             <div class="col-md-12 radius_wrap">
@@ -53,7 +59,7 @@ if ($wpestate_where_currency == 'before') {
             </div>
 
             <div class="col-md-3 slider_radius_wrap">
-                <div class="label_radius"><?php esc_html_e('Radius:','wprentals');?> <span class="radius_value"><?php print esc_html($radius_value.' '.$radius_measure);?></span></div>
+                <div class="label_radius"><?php esc_html_e('Radius:','wprentals');?> <span class="radius_value"><?php print esc_html($radius_value.' '.$radius_measure_string);?></span></div>
             </div>
 
             <div class="col-md-9 slider_radius_wrap">

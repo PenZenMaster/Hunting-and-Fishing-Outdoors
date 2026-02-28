@@ -477,6 +477,21 @@ small, .small {
     width:100%;
 }
 
+.wpresidence_half_map_body_class_with_footer .full_map_container{
+    height:100vh;
+    position:relative;
+    overflow-y:auto;
+    overflow-x:hidden;
+    margin-top:0;
+}
+.admin-bar.wpresidence_half_map_body_class_with_footer .full_map_container{
+    margin-top:32px;
+}
+.wpresidence_half_map_body_class_with_footer #colophon{
+    position:relative;
+    z-index:10;
+}
+
 #google_map_prop_list_wrapper{
     position: fixed;
     right: 0;
@@ -549,6 +564,25 @@ small, .small {
 .admin-bar  #google_map_prop_list_sidebar,
 .admin-bar  #google_map_prop_list_wrapper{
     top:102px;
+}
+
+.wpresidence_half_map_body_class_with_footer .full_map_container .row{
+    display:flex;
+}
+
+.wpresidence_half_map_body_class_with_footer #google_map_prop_list_wrapper,
+.wpresidence_half_map_body_class_with_footer #google_map_prop_list_sidebar{
+    position:relative;
+    top:auto;
+    bottom:auto;
+    left:auto;
+    right:auto;
+    height:100vh;
+}
+
+.wpresidence_half_map_body_class_with_footer #google_map_prop_list_sidebar{
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 
 .slider_radius_wrap{
@@ -767,85 +801,8 @@ input[type="checkbox"]:checked:before {
 }
 
 
-::-webkit-input-placeholder {
-    color:    #8A8F9A!important;
-}
-:-moz-placeholder {
-   color:    #8A8F9A!important;
-   opacity:  1;
-}
-::-moz-placeholder {
-   color:    #8A8F9A!important;
-   opacity:  1;
-}
-:-ms-input-placeholder {
-    color:#8A8F9A!important;
-}
-
-.shortcode-login ::-webkit-input-placeholder,
-#forgot-pass-div ::-webkit-input-placeholder,
-#forgot-pass-div_mod  ::-webkit-input-placeholder,
-#ajax_register_div ::-webkit-input-placeholder,
-#ajax_login_div  ::-webkit-input-placeholder,
-#forgot-pass-div_shortcode  ::-webkit-input-placeholder,
-#register-div  ::-webkit-input-placeholder,
-#login-div  ::-webkit-input-placeholder{
-   color:#8A8F9A!important;
-}
-
-
-.shortcode-login  :-moz-placeholder,
-#forgot-pass-div  :-moz-placeholder,
-#forgot-pass-div_mod  :-moz-placeholder,
-#ajax_register_div :-moz-placeholder,
-#ajax_login_div  :-moz-placeholder,
-#forgot-pass-div_shortcode  :-moz-placeholder,
-#register-div  :-moz-placeholder,
-#login-div  :-moz-placeholder{
-   color:#8A8F9A!important;
-}
-
-
-.shortcode-login  ::-moz-placeholder,
-#forgot-pass-div  ::-moz-placeholder,
-#forgot-pass-div_mod  ::-moz-placeholder,
-#ajax_register_div ::-moz-placeholder,
-#ajax_login_div  ::-moz-placeholder,
-#forgot-pass-div_shortcode  ::-moz-placeholder,
-#register-div  ::-moz-placeholder,
-#login-div  ::-moz-placeholder{
-   color:#8A8F9A!important;
-}
-
-
-
-.shortcode-login :-ms-input-placeholder,
-#forgot-pass-div :-ms-input-placeholder,
-#forgot-pass-div_mod :-ms-input-placeholder,
-#ajax_register_div :-ms-input-placeholder,
-#ajax_login_div :-ms-input-placeholder,
-#forgot-pass-div_shortcode :-ms-input-placeholder,
-#register-div :-ms-input-placeholder,
-#login-div :-ms-input-placeholder {
-   color:#8A8F9A!important;
-}
-
-
-.widget-area-sidebar input[type=text],
-.widget-area-sidebar input[type=password],
-.widget-area-sidebar input[type=email],
-.widget-area-sidebar input[type=url],
-.widget-area-sidebar input[type=number],
-.widget-area-sidebar textarea{
-    font-size: 14px;
-}
-
 /*auto-complete*/
 
-
-.search_wrapper .ui-widget-content{
-    border: 0px solid #f0f0f0!important;
-}
 
 .ui-widget-content{
     border: none!important;
@@ -906,19 +863,11 @@ input[type="checkbox"]:checked:before {
 }
 
 
-.is_half_map.header_wrapper.header_type1.header_align_left #access {
-    margin: 0px 220px 0px 0px;
-}
-
 .header_wrapper.header_type1.header_align_left #access {
     margin: 0px 230px 0px 0px;
     text-align: right;
     padding-top: 0px;
     height:100%;
-}
-
-.is_half_map.header_wrapper.header_type1.header_align_right #access {
-    margin: 0px 0px 0px 235px;
 }
 
 .is_half_map #google_map_prop_list {
@@ -1872,6 +1821,37 @@ input[type="checkbox"]:checked:before {
     top: 0px;
 }
 
+/* WooCommerce cart icon in mobile header */
+.mobile_header #shopping-cart-mobile {
+    position: absolute;
+    left: 70px;
+    top: 0;
+    width: 70px;
+    height: 70px;
+    display: block;
+    margin: 0;
+    float: none;
+}
+
+/* Color for cart icon paths in mobile header */
+.mobile_header #shopping-cart_icon path {
+    fill: #fff;
+}
+
+.mobile_header .wpestream_cart_counter_header {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    font-size: 12px;
+    position: absolute;
+    top: 12px;
+    left: 15px;
+    color: #fff;
+    right: auto;
+}
+
 .mobilewrapper{
     min-height: 100%;
 
@@ -2494,8 +2474,7 @@ button.close:hover{
 
 .is_half_map .master_header_wide_no .top_bar{
     width: 100%;
-    padding-right: 40px;
-    padding-left: 40px;
+    padding: 0 35px;
 }
 
 .left-top-widet{
@@ -2565,53 +2544,6 @@ button.close:hover{
     transition: all 0.45s ease;
     }
 
-.is_half_map.header_wrapper.header_type1.header_align_right .user_menu{
-    margin-right: 0px;
-}
-
-.is_half_map.header_wrapper.header_type1.header_align_right .logo {
-    padding-left: 35px;
-}
-
-.is_half_map.header_wrapper.header_type1.header_align_left .user_menu,
-.is_half_map.header_wrapper.header_type1.header_align_center .user_menu{
-    margin-left: 40px;
-}
-
-.is_half_map.header_wrapper.header_type1.header_align_left .logo,
-.is_half_map.header_wrapper.header_type1.header_align_center .logo {
-    padding-right: 40px;
-}
-
-.is_half_map.header_wrapper.header_type2.header_align_right .user_menu{
-    margin-right: 0px;
-}
-
-.is_half_map.header_wrapper.header_type2.header_align_right .logo {
-    padding-left: 35px;
-    margin-left: 25px;
-}
-
-.is_half_map.header_wrapper.header_type2.header_align_right #access {
-    margin-left: 20px;
-}
-
-.is_half_map.header_wrapper.header_type2.header_align_left .user_menu,
-.is_half_map.header_wrapper.header_type2.header_align_center .user_menu{
-    margin-left: 40px;
-}
-
-.is_half_map.header_wrapper.header_type2.header_align_left .logo {
-    padding-right: 0px;
-    margin-right: 10px;
-}
-
-.is_half_map.header_wrapper.header_type2.header_align_left #access,
-.is_half_map.header_wrapper.header_type2.header_align_center #access {
-    margin-right: 10px;
-}
-
-
 .is_half_map.header_wrapper{
     border-bottom: 1px solid #f1f3f7;
 }
@@ -2654,10 +2586,6 @@ button.close:hover{
     height: 70px;
 }
 
-
-.is_half_map .header_wrapper_inside{
-    width:100%;
-}
 
 .is_dashboard_page .header_wrapper_inside{
     width:100%;
@@ -2914,14 +2842,6 @@ button.close:hover{
     left: 0px;
     right: auto;
     margin-left: 0px;
-}
-
-.is_half_map.header_type2 .logo{
-    padding-right: 0px;
-}
-
-.is_half_map .logo{
-    padding-right: 10px;
 }
 
 .boxed .logo{
@@ -4043,7 +3963,7 @@ textarea.form-control {
 }
 
 .is_half_map .user_menu{
-    margin-left: 40px;
+    margin-left: 35px;
 }
 
 .boxed .user_menu,
@@ -7092,11 +7012,6 @@ listing_actions a{
     transition: all 0.3s ease;
 }
 
-.img_listings_overlay:hover{
-    opacity: 0.3;
-    background-color: #b881fc;
-}
-
 .places_wrapper .listing_main_image_text_wrapper{
     -webkit-box-shadow: 0 0px 100px 100px rgba(0, 0, 0, 0.6);
     -moz-box-shadow: 0 0px 100px 100px rgba(0, 0, 0, 0.6);
@@ -7546,7 +7461,7 @@ iframe .player .video-wrapper{
 .listing_main_image_photo_slider_item.slick-slide {
     position: relative;
     display: inline-block;
-    max-width: 33.33%;
+
     background-size: cover;
     background-position: center;
     background-position: 50% 50%;
@@ -12063,7 +11978,8 @@ margin-bottom: 0px;
     color: #8A8F9A;
     position: absolute;
     bottom: 0px;
-    right: 15px;left:auto
+    right: 15px;
+    left:auto;
     text-align: center;
     padding: 3px 11px 4px 11px;
     font-size: 13px;
@@ -12962,12 +12878,10 @@ margin-bottom: 0px;
 }
 
 .half_map_results{
-    float: right;
-    width: 100%;
-    text-align: right;
-    display: inline;
-    padding: 15px 0px 15px 30px;
     font-weight: bold;
+    margin-left: auto;
+    padding: 0 15px;
+    text-align: right;
 }
 
 #extended_search_check_filter{
@@ -18992,7 +18906,6 @@ table.booking-calendar th{
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b881fc', endColorstr='#ffffff',GradientType=1 );
     color: #000!important;
 }
-}
 
 .booking_form_request.is_shortcode1 .wpestate_calendar.end_reservation,
 .booking_form_request.is_shortcode1 .wpestate_booking_class.end_reservation{
@@ -19054,7 +18967,6 @@ table.booking-calendar th{
     display: inline-flex;
     align-items: center;
     flex-direction: column;
-}
 }
 
 .daterangepicker .calendar-table th, 

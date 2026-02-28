@@ -33,7 +33,7 @@ $measure_sys        =   '';
 
 $col_class  =   'col-md-6';
 $col_org    =   4;
-$title=get_the_title($post->ID);
+$title      =   get_sanitized_truncated_title($post->ID, 0);
 
 if(isset($is_shortcode) && $is_shortcode==1 ){
     $col_class='col-md-'.esc_attr($wpestate_row_number_col).' shortcode-col';

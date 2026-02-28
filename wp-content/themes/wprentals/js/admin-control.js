@@ -19,6 +19,7 @@ jQuery(document).ready(function ($) {
         event.preventDefault();
         var value = $(this).find('i').attr('class');
         icon_field.val(value);
+        icon_field.parent().find('i').attr('class',value);
         $('.iconpicker-items_wrapper').hide();
     });
 
@@ -163,6 +164,7 @@ jQuery(document).ready(function ($) {
 
 
 
+    // Handle admin user verification checkbox updates via AJAX.
     if (jQuery('.user-verifications').length === 1) {
         var verifications = jQuery('.user-verifications');
 
@@ -180,9 +182,10 @@ jQuery(document).ready(function ($) {
 
            var nonce = jQuery('#wprentals_user_verfication').val();
 
-            jQuery.ajax({
+           jQuery.ajax({
                 type: 'POST',
                 url: ajaxurl,
+                dataType: 'json',
                 data: {
                     'action': 'wpestate_update_verification',
                     'userid': userID,
@@ -190,19 +193,25 @@ jQuery(document).ready(function ($) {
                     'security': nonce,
                 },
                 success: function (data) {
-              
-                    switch (true) {
-                        case (isVerified === 0):
 
-                            editUser.removeClass('verified');
-                            break;
-                        case (isVerified === 1):
+                    if (data && data.success && data.data) {
+                        var verifiedStatus = parseInt(data.data.verified, 10);
 
-                            editUser.addClass('verified');
-                            break;
+                        // Toggle the UI class based on the verified status returned by the server.
+                        switch (true) {
+                            case (verifiedStatus === 0):
+
+                                editUser.removeClass('verified');
+                                break;
+                            case (verifiedStatus === 1):
+
+                                editUser.addClass('verified');
+                                break;
+                        }
                     }
                 },
                 error: function (errorThrown) {
+                    // Keep default behavior; errors are handled via server response logging.
 
                 }
             });
@@ -221,7 +230,7 @@ jQuery(document).ready(function ($) {
 */
 function wpestate_upload_images_in_wpadmin(){
     
-    var idList          = ["category_featured_image_button","page_custom_image_button" , "page_custom_video_cover_image_button","page_custom_video_button","page_custom_video_webbm_button","page_custom_video_ogv_button" ];
+    var idList          = ["category_featured_image_button","category_featured_image_icon_button","page_custom_image_button" , "page_custom_video_cover_image_button","page_custom_video_button","page_custom_video_webbm_button","page_custom_video_ogv_button" ];
 
     for (var i = 0; i < idList.length; i++) {
         var currentId = idList[i];

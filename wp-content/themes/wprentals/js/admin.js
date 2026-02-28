@@ -7,7 +7,11 @@ jQuery(document).ready(function ($) {
     "use strict";
 
     wpestate_theme_options_sidebar();
-    
+    wpestate_checking_theme_code();
+    wpestate_deregister_theme_code();
+    wpestate_set_delete_actions();
+
+
        /*admin tabs*/
     $("#property_uploaded_thumb_wrapepr" ).sortable({
         revert: true,
@@ -94,12 +98,13 @@ jQuery(document).ready(function ($) {
                     var arrayLength = attachment.length;
                     for (var i = 0; i < arrayLength; i++) {
                         imgIdInput = metaBox.find( '#image_to_attach' ).val();
-                        $( '#image_to_attach' ).val(imgIdInput+attachment[i].id+",")
+                        $( '#image_to_attach' ).val(imgIdInput+","+attachment[i].id)
                         imgContainer.append( '<div class="uploaded_thumb" data-imageid="'+attachment[i].id+'">\n\
                             <img src="'+attachment[i].sizes.thumbnail.url+'"  style="max-width:100%;"/>\n\
                             <a target="_blank" href="'+admin_vars.admin_url+'post.php?post='+attachment[i].id+'&action=edit" class="attach_edit"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a><a class="attach_delete"><i class="fas fa-trash" aria-hidden="true"></i></span></div>' );
 
                     }
+                    wpestate_set_delete_actions();
             } );
 
             // Fires when a state activates.
@@ -136,37 +141,7 @@ jQuery(document).ready(function ($) {
             frame.open();  
         });
         
-        
-        $('.attach_delete').on( 'click', function() {
-
-            var curent,remove;
-            var img_remove= jQuery(this).parent().attr('data-imageid');
-            jQuery(this).parent().remove();
-
-            jQuery('#property_uploaded_thumb_wrapepr .uploaded_thumb').each(function(){
-                remove  =   jQuery(this).attr('data-imageid');
-                curent  =   curent+','+remove; 
-
-            });
-            
-            var nonce = jQuery('#wpestate_image_upload').val();
-            jQuery('#image_to_attach').val(curent); 
-            jQuery.ajax({
-                type: 'POST',
-                url: ajaxurl,
-                data: {
-                    'action'            :   'wpestate_delete_file',
-                    'attach_id'         :   img_remove,
-                    'security'          :   nonce,
-                    'isadmin'           :  1
-                },
-                success: function (data) {     
-                },
-                error: function (errorThrown) {  
-                }
-            });//end ajax   
-
-        });
+      
          
          
          
@@ -923,6 +898,163 @@ jQuery(document).ready(function ($) {
     
     
 });
+
+
+/*
+*
+*attachthumb
+*/
+function wpestate_set_delete_actions(){
+    jQuery('.attach_delete').unbind('click');
+
+
+
+    jQuery('.attach_delete').on( 'click', function() {
+        if (confirm(admin_vars.confirm_text)) {
+            var curent,remove;
+            var img_remove= jQuery(this).parent().attr('data-imageid');
+            var propertyID = jQuery('#propertyID').val();
+            jQuery(this).parent().remove();
+
+            jQuery('#property_uploaded_thumb_wrapepr .uploaded_thumb').each(function(){
+                remove  =   jQuery(this).attr('data-imageid');
+                curent  =   curent+','+remove;
+
+            });
+
+         
+
+            
+            var nonce = jQuery('#wpestate_attach_delete').val();
+            jQuery('#image_to_attach').val(curent);
+            jQuery.ajax({
+                type: 'POST',
+                url: ajaxurl,
+                data: {
+                    'action'            :   'wpestate_delete_file',
+                    'attach_id'         :   img_remove,
+                    'propertyID'        :   propertyID,
+                    'security'          :   nonce,
+                    'isadmin'           :  1
+                },
+                success: function (data) {
+                },
+                error: function (errorThrown) {
+                }
+            });//end ajax
+        }
+    });
+}
+
+
+
+
+function wpestate_deregister_theme_code(){
+    jQuery('#wpestate_deregister_ajax_license').on('click',function(){
+        var ajaxurl= admin_vars.ajaxurl;
+        var license_ajax_nonce      = jQuery('#wprentals_activate_license_nonce').val();
+        jQuery('#wpestate_deregister_license_notification').empty().text('processing');
+        jQuery('#wpestate_deregister_ajax_license').prop('disabled', true);
+        jQuery.ajax({
+            type: 'POST',
+            url: ajaxurl,
+            dataType: 'json',
+            data: {
+                'action'                    :   'wpestate_revoke_license',
+                'security'                  :   license_ajax_nonce
+
+            },
+            success: function (data) {     
+          
+                var message ='';
+               
+
+                
+                if (data.data && data.data.message) {
+                    message = data.data.message
+                }
+                jQuery('#wpestate_deregister_license_notification').empty().text(message);
+                setTimeout(function() {
+                    jQuery('#wpestate_deregister_ajax_license').prop('disabled', false);
+                    location.reload();
+                }, 3000);
+            },
+            error: function (errorThrown) { 
+              
+            }
+        });//end ajax   
+
+
+
+    });
+}
+
+
+
+
+function wpestate_checking_theme_code(){
+
+    jQuery('#wpestate_check_ajax_license').on('click',function(){
+        var ajaxurl= admin_vars.ajaxurl;
+        var wpestate_envato_username    = jQuery('#wpestate_envato_username').val();
+        var wpestate_envato_code    = jQuery('#wpestate_envato_code').val();
+        var license_ajax_nonce      = jQuery('#wprentals_activate_license_nonce').val();
+     
+
+
+        if(wpestate_envato_username=='' || wpestate_envato_code==''  ){
+            jQuery('#wpestate_register_license_notification').empty().text('Please fill all the forms');
+            return;
+        }
+
+        var termsCheckbox = document.getElementById("wpestate_terms");
+        if (!termsCheckbox.checked) {
+            jQuery('#wpestate_register_license_notification').empty().text('You need to agree with terms and conditions');
+            return;
+        }
+
+       
+
+        jQuery('#wpestate_check_ajax_license').prop('disabled', true);
+
+        jQuery('#wpestate_register_license_notification').empty().text('processing');
+
+        jQuery.ajax({
+            type: 'POST',
+            url: ajaxurl,
+            dataType: 'json',
+            data: {
+                'action'                    :   'wpestate_register_license',
+               
+                'wpestate_envato_username'  :   wpestate_envato_username,
+                'wpestate_envato_code'      :   wpestate_envato_code,
+                'security'                  :   license_ajax_nonce
+
+            },
+            success: function (data) {     
+             
+                var message ='';
+                
+                jQuery('#wpestate_envato_username').val('');
+                jQuery('#wpestate_envato_code').val('');
+               
+                jQuery('#wpestate_check_ajax_license').prop('disabled', false);
+                
+                if (data.data && data.data.message) {
+                    message = data.data.message
+                }
+                jQuery('#wpestate_register_license_notification').empty().text(message);
+            
+            },
+            error: function (errorThrown) { 
+              
+            }
+        });//end ajax   
+
+    });
+}
+
+
 function  wpestate_set_theme_tab_visible2(){
     var current_url=window.location.href;
     var page_par=findGetParameter('subpage');

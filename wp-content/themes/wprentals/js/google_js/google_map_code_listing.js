@@ -31,11 +31,14 @@ var is_zoom_end=0;
 function wprentals_initialize_map() {
     "use strict";
     var viewPlace, mapOptions, mapOptions_intern, styles;
-   
-    wprentals_map_general_start_map('prop');
-  
 
-   
+    wprentals_map_general_start_map('prop');
+
+    // if map was not initialized (no map container on page) exit early
+    if (typeof map === 'undefined' || !map) {
+        return;
+    }
+
     if (map_intern === 0) {
         ///////////////////////////////////////////////////////////////// header map
         if (googlecode_property_vars.generated_pins === '0') {

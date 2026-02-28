@@ -56,7 +56,7 @@ if(!is_wp_error($term)){
 $term_meta                      =   get_option( "taxonomy_$place_id");
 if(isset($term_meta['category_attach_id'])){
     $category_attach_id=$term_meta['category_attach_id'];
-    $category_tagline = $term_meta['category_tagline'];    
+    $category_tagline = isset($term_meta['category_tagline']) ? $term_meta['category_tagline'] : ''; 
     $category_featured_image= wp_get_attachment_image_src( $category_attach_id, 'property_full');
     $category_featured_image_url='';
     if(isset($category_featured_image[0])){
@@ -70,7 +70,7 @@ if(isset($term_meta['category_featured_image'])){
 
 if(isset($term_meta['category_attach_id'])){
     $category_attach_id=$term_meta['category_attach_id'];
-    $category_tagline = $term_meta['category_tagline'];    
+    $category_tagline = isset($term_meta['category_tagline']) ? $term_meta['category_tagline'] : '';  
     $category_featured_image= wp_get_attachment_image_src( $category_attach_id, 'property_full');
     $category_featured_image_url='';
     if(isset($category_featured_image[0])){

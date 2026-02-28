@@ -255,10 +255,8 @@ endif; //
 if( !function_exists('wprentals_show_extended_search') ): 
     function wprentals_show_extended_search($tip){
        
-        $terms = get_terms( array(
-            'taxonomy' => 'property_features',
-            'hide_empty' => false,
-        ) );
+
+        $terms =wpestate_get_cached_terms('property_features');
         
         foreach($terms as $key => $term){
             if (defined('ICL_SITEPRESS_VERSION')) {

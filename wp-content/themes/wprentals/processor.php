@@ -89,7 +89,7 @@ if (isset($_GET['token']) && isset($_GET['PayerID']) ){
     
             }else if($is_upgrade==1){
                 update_post_meta($listing_id, 'prop_featured', 1);
-                $invoice_id = wpestate_insert_invoice('Upgrade to Featured', esc_html__( 'One Time','wprentals'),$listing_id,$date,$current_user->ID,0,1,'' );
+                $invoice_id = wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_UPGRADE_TO_FEATURED, esc_html__( 'One Time','wprentals'),$listing_id,$date,$current_user->ID,0,1,'' );
                 $invoice_id =  update_post_meta($invoice_id, 'invoice_status', 'confirmed');
                 wpestate_email_to_admin(1);
             }else{
@@ -113,10 +113,10 @@ if (isset($_GET['token']) && isset($_GET['PayerID']) ){
                 
                 if($is_featured==1){
                     update_post_meta($listing_id, 'prop_featured', 1);
-                    $invoice_id = wpestate_insert_invoice('Publish Listing with Featured', esc_html__( 'One Time','wprentals'),$listing_id,$date,$current_user->ID,1,0,'' );
+                    $invoice_id = wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_PUBLISH_WITH_FEATURED, esc_html__( 'One Time','wprentals'),$listing_id,$date,$current_user->ID,1,0,'' );
                     update_post_meta($invoice_id, 'invoice_status', 'confirmed');
                 }else{
-                    $invoice_id =  wpestate_insert_invoice('Listing', esc_html__( 'One Time','wprentals'),$listing_id,$date,$current_user->ID,0,0,'' );
+                    $invoice_id =  wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_LISTING, esc_html__( 'One Time','wprentals'),$listing_id,$date,$current_user->ID,0,0,'' );
                     update_post_meta($invoice_id, 'invoice_status', 'confirmed');
                 }
                 wpestate_email_to_admin(0);
@@ -265,7 +265,7 @@ if (strcmp ($res, "VERIFIED") == 0) {
 function wpestate_retrive_user_by_profile($recurring_payment_id){   
     $recurring_payment_id=  str_replace('-', 'xxx', $recurring_payment_id);
     $arg=array(
-        'role'         => 'subscriber',
+       
         'meta_key'     => 'profile_id',
         'meta_value'   => $recurring_payment_id,
         'meta_compare' => '='

@@ -22,13 +22,7 @@ $wpestate_where_currency        =   esc_html( wprentals_get_option('wp_estate_wh
 get_header();
 $wpestate_options=wpestate_page_details($post->ID);
 
-$reservation_strings=array(
-    'Upgrade to Featured'           => esc_html__( 'Upgrade to Featured','wprentals'),
-    'Publish Listing with Featured' => esc_html__( 'Publish Listing with Featured','wprentals'),
-    'Package'                       => esc_html__( 'Package','wprentals'),
-    'Listing'                       => esc_html__( 'Listing','wprentals'),
-    'Reservation fee'               => esc_html__( 'Reservation fee','wprentals')
-);
+$reservation_strings = wpestate_get_invoice_type_labels();
 ?>
 
 <div class="row is_dashboard">
@@ -46,22 +40,35 @@ $reservation_strings=array(
 
         <div class="row admin-list-wrapper invoices-wrapper user_dashboard_panel">
         <?php
-            $args = array(
-                'post_type'        => 'wpestate_invoice',
-                'post_status'      => 'publish',
-                'posts_per_page'   => -1 ,
-                'author'           => $userID,
-                'meta_query'       => array(
-                        array(
-                            'key'       => 'invoice_type',
-                            'value'     =>  esc_html__( 'Reservation fee','wprentals'),
-                            'type'      =>  'char',
-                            'compare'   =>  'LIKE'
-                            )
-                ),
-            );
 
+$reservation_fee_key     = WP_ESTATE_INVOICE_TYPE_RESERVATION_FEE;
+$meta_query              = array(
+    'relation' => 'OR',
+    array(
+        'key'     => 'invoice_type',
+        'value'   => $reservation_fee_key,
+        'type'    => 'NUMERIC',
+        'compare' => '=',
+    ),
+);
 
+$legacy_reservation_values = wpestate_get_invoice_type_legacy_values($reservation_fee_key);
+if (!empty($legacy_reservation_values)) {
+    $meta_query[] = array(
+        'key'     => 'invoice_type',
+        'value'   => $legacy_reservation_values,
+        'type'    => 'CHAR',
+        'compare' => 'IN',
+    );
+}
+
+$args = array(
+    'post_type'        => 'wpestate_invoice',
+    'post_status'      => 'publish',
+    'posts_per_page'   => -1 ,
+    'author'           => $userID,
+    'meta_query'       => $meta_query,
+);
 
             $prop_selection = new WP_Query($args);
             $counter                =   0;
@@ -75,18 +82,19 @@ $reservation_strings=array(
                 $wpestate_where_currency        =   esc_html( wprentals_get_option('wp_estate_where_currency_symbol', '') );
                 while ($prop_selection->have_posts()): $prop_selection->the_post();
                     include(locate_template('dashboard/templates/invoice_listing_unit.php') );
-                    $status = esc_html(get_post_meta($post->ID, 'invoice_status', true));
-                    $type   = esc_html(get_post_meta($post->ID, 'invoice_type', true));
-                    $price  = esc_html(get_post_meta($post->ID, 'item_price', true));
+                    $status     = esc_html(get_post_meta($post->ID, 'invoice_status', true));
+                    $type_value = get_post_meta($post->ID, 'invoice_type', true);
+                    $type_key   = wpestate_get_invoice_type_key($type_value);
+                    $price      = floatval(get_post_meta($post->ID, 'item_price', true));
 
-                    if( trim($type) == 'Reservation fee' || trim($type) == esc_html__( 'Reservation fee','wprentals') ){
-                        if($status == 'confirmed' ){
+                    if ($type_key === WP_ESTATE_INVOICE_TYPE_RESERVATION_FEE) {
+                        if ($status == 'confirmed') {
                             $total_confirmed = $total_confirmed + $price;
                         }
-                        if($status == 'issued' ){
+                        if ($status == 'issued' && $total_issued !== '-') {
                             $total_issued = $total_issued + $price;
                         }
-                    }else{
+                    } else {
                         $total_issued='-';
                         $total_confirmed = $total_confirmed + $price;
                     }

@@ -15,7 +15,7 @@
 
 
     <div class="category_name">
-        <a class="featured_listing_title" href="<?php echo esc_attr($term_link);?>">
+        <a class="featured_listing_title wprentals_forward_click" href="<?php echo esc_attr($term_link);?>">
             <?php echo esc_html($category_name);?>
         </a>
     </div>

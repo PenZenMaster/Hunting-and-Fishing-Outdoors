@@ -46,37 +46,28 @@ $schema_flag=0;
     
     
     <div id="google_map_prop_list_sidebar" class="<?php echo esc_html('half_'. $wpestate_header_type); ?>">
-        <?php  include(locate_template('templates/compare_list.php')); ?> 
+        <?php  include(locate_template('templates/compare_list.php')); ?>
         <?php  include(locate_template('templates/advanced_search_map_list.php'));?>
-        <?php  include(locate_template('templates/spiner.php') ); ?> 
+        <?php  include(locate_template('templates/properties_list_templates/filters_templates/property_list_filters_search_hald_map.php')); ?>
+
+        <?php  include(locate_template('templates/spiner.php') ); ?>
             
         <div id="listing_ajax_container" class="ajax-map" itemscope itemtype ="http://schema.org/ItemList"> 
             
-            <?php if( !is_tax() ){
-                    if ( !empty(have_posts()) ) {
-                        while (have_posts()) : the_post();
+            <?php if( !is_tax() ){?>
+                <?php while (have_posts()) : the_post(); ?>
+                <?php 
                     if (esc_html( get_post_meta($post->ID, 'page_show_title', true) ) == 'yes') { 
                         if( $page_template=='advanced_search_results.php' ){?>
                             <h1 class="entry-title title_prop"><?php the_title(); print ': '.esc_html($prop_selection->found_posts).' '.esc_html__( 'results','wprentals');?></h1>
-                                    <?php 
-                                    }else{ ?>
+                        <?php }else{ ?>
                             <h1 class="entry-title title_prop"><?php the_title();?></h1>   
-                                    <?php 
+                        <?php } 
+                
                     }
-                                }
-                                // echo $post->ID;
-                                // echo "<pre>";
-                                // print_r($post);
-                                // exit;
-                                // the_title();
                 ?>
                 <div class="single-content half-single-content"><?php the_content();?></div>
-                            <?php
-                        endwhile; // end of the loop.  
-                    } else {
-
-                    }
-                    ?>  
+                <?php endwhile; // end of the loop.  ?>  
             <?php }else if( $page_template == 'advanced_search_results.php'  ){
                 print '<h1 class="entry-title title_prop">'.esc_html__( 'Search Results','wprentals').'</h1>';
             }else{ ?>
@@ -87,15 +78,7 @@ $schema_flag=0;
                 </h1>
         
             <?php }            
-            if($prop_selection->have_posts()) {                
        print trim($templates);
-            } else {
-                ?>
-                <div class="half_map_results">0  Results found!</div>
-                <span id="scrollhere"></span>
-                <span class="no_results">We didn't find any results</span>
-                <?php
-            }
                            
         ?>
         </div>

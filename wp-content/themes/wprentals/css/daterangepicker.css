@@ -15,7 +15,8 @@
     line-height: 1em;
     border: 1px solid #e7e9ef;
     padding: 20px;
-    box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px;
+    border-radius: 10px;
+    box-shadow: 0 2px 11px 0 rgb(181 127 250 / 10%);
 }
 
 .daterangepicker  thead{
@@ -27,6 +28,7 @@
   display: inline-block;
   border-bottom-color: rgba(0, 0, 0, 0.2);
   content: '';
+  display: none;
 }
 
 .daterangepicker:before {

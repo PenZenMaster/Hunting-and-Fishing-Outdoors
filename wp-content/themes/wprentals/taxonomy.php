@@ -1,4 +1,13 @@
 <?php
+if ( function_exists( 'wpestate_category_template_enabled' ) && function_exists( 'wpestate_render_current_category_template' )
+    && wpestate_category_template_enabled()
+) {
+    get_header();
+    wpestate_render_current_category_template();
+    get_footer();
+    return;
+}
+
 get_header();
 global $term;
 global $taxonmy;

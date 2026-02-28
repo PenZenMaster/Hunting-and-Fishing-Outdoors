@@ -13,27 +13,27 @@ function wpestate_required_plugins() {
 
 	$plugins = array(
                 array(
-                    'name'     			=> 'WpRentals Core functionality',
+                    'name'     			=> 'WPRentals Core Functionality',
                     'slug'     			=> 'wprentals-core',
                     'source'   			=> get_template_directory_uri()  . '/libs/plugins/wprentals-core.zip',
                     'required' 			=> true,
-                    'version' 			=> '3.11.4',
+                    'version' 			=> '3.17.0',
                     'force_activation' 		=> false,
                     'force_deactivation' 	=> false,
                     'external_url' 		=> '',
 		        ),
                 array(
-                    'name'     			=> 'WpRentals Elementor Widgets',
+                    'name'     			=> 'WPRentals Elementor Widgets',
                     'slug'     			=> 'wprentals-elementor',
                     'source'   			=> get_template_directory_uri()  . '/libs/plugins/wprentals-elementor.zip',
                     'required' 			=> true,
-                    'version' 			=> '3.11.1',
+                    'version' 			=> '3.17.0',
                     'force_activation' 		=> false,
                     'force_deactivation' 	=> false,
                     'external_url' 		=> '',
 		),
                 array(
-                    'name'     			=> 'WpRentals Gutenberg Blocks',
+                    'name'     			=> 'WPRentals Gutenberg Blocks',
                     'slug'     			=> 'rentals-gutenberg',
                     'source'   			=> get_template_directory_uri()  . '/libs/plugins/rentals-gutenberg.zip',
                     'required' 			=> false,
@@ -45,9 +45,9 @@ function wpestate_required_plugins() {
 		array(
                     'name'     			=> 'Revolution Slider',
                     'slug'     			=> 'revslider',
-                    'source'   			=> get_template_directory_uri()  . '/libs/plugins/revslider.zip',
+                    'source'   			=> get_template_directory_uri()  . '/libs/plugins/sliderrevolution-wordpress.zip',
                     'required' 			=> false,
-                    'version' 			=> '6.6.20',
+                    'version' 			=> '6.7.41',
                     'force_activation' 		=> false,
                     'force_deactivation' 	=> false,
                     'external_url' 		=> '',
@@ -57,7 +57,7 @@ function wpestate_required_plugins() {
                     'slug'     			=> 'js_composer',
                     'source'   			=> get_template_directory_uri()  . '/libs/plugins/js_composer.zip',
                     'required' 			=> false,
-                    'version' 			=> '7.3',
+                    'version' 			=> '8.7.2',
                     'force_activation' 		=> false,
                     'force_deactivation' 	=> false,
                     'external_url' 		=> '',
@@ -65,9 +65,9 @@ function wpestate_required_plugins() {
                 array(
                     'name'     			=> 'Ultimate Addons for Visual Composer',
                     'slug'     			=> 'Ultimate_VC_Addons',
-                    'source'   			=> get_template_directory_uri()  . '/libs/plugins/Ultimate_VC_Addons-3.19.19.zip',
+                    'source'   			=> get_template_directory_uri()  . '/libs/plugins/Ultimate_VC_Addons.zip',
                     'required' 			=> false,
-                    'version' 			=> '3.19.19',
+                    'version' 			=> '3.21.2',
                     'force_activation' 		=> false,
                     'force_deactivation' 	=> false,
                     'external_url' 		=> '',
@@ -75,9 +75,9 @@ function wpestate_required_plugins() {
                 ,array(
                     'name'     			=> 'One Click Demo Import',
                     'slug'     			=> 'one-click-demo-import',
-                    'source'   			=> 'https://downloads.wordpress.org/plugin/one-click-demo-import.3.2.0.zip',
+                    'source'   			=> 'https://downloads.wordpress.org/plugin/one-click-demo-import.3.4.0.zip',
                     'required' 			=> false,
-                    'version' 			=> '3.2.0',
+                    'version' 			=> '3.4.0',
                     'force_activation' 		=> false,
                     'force_deactivation' 	=> false,
                     'external_url' 		=> '',
@@ -95,13 +95,24 @@ function wpestate_required_plugins() {
                 array(
                     'name'     			=> 'Elementor',
                     'slug'     			=> 'elementor',
-                    'source'   			=> 'https://downloads.wordpress.org/plugin/elementor.3.18.3.zip',
+                    'source'   			=> 'https://downloads.wordpress.org/plugin/elementor.3.35.4.zip',
                     'required' 			=> true,
-                    'version' 			=> '3.18.3',
+                    'version' 			=> '3.35.4',
                     'force_activation' 		=> false,
                     'force_deactivation' 	=> false,
                     'external_url' 		=> '',
 		),
+
+                array(
+                    'name'     			=> 'SVG Support for Demo Import',
+                    'slug'     			=> 'svg-support',
+                    'source'   			=> 'https://downloads.wordpress.org/plugin/svg-support.2.5.14.zip',
+                    'required' 			=> false,
+                    'version' 			=> '2.5.14',
+                    'force_activation'  => false,
+                    'force_deactivation'=> false,
+                    'external_url' 		=> '',
+)
 	);
 
 

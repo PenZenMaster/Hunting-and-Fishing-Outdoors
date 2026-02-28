@@ -28,7 +28,7 @@ $wide_class = '';
                     $recent_posts = new WP_Query($args);
                     print '<ul>';
                     while ($recent_posts->have_posts()): $recent_posts->the_post();
-                        print '<li><a href="'.esc_url( get_permalink() )  . '">' . get_the_title() . '</a></li>';
+                        print '<li><a href="'.esc_url( get_permalink() )  . '">' . get_sanitized_truncated_title(0,0) . '</a></li>';
                     endwhile;
                     print '</ul>';
                     ?>
@@ -47,7 +47,7 @@ $wide_class = '';
                     $recent_posts = new WP_Query($args);
                     print '<ul>';
                     while ($recent_posts->have_posts()): $recent_posts->the_post();
-                        print '<li><a href="' . esc_url( get_permalink() )  . '">' . get_the_title() . '</a></li>';
+                        print '<li><a href="' . esc_url( get_permalink() )  . '">' .  get_sanitized_truncated_title(0,0) . '</a></li>';
                     endwhile;
                     print '</ul>';
                     ?>

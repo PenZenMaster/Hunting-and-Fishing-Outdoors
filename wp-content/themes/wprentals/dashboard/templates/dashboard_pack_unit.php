@@ -18,7 +18,7 @@ if($billing_freq>1){
 <div class="col-md-4">
     <div class="user_dashboard_panel pack_unit_list">
         <h4 class="user_dashboard_panel_title">
-           <?php echo get_the_title().' - <span class="submit-price">';
+           <?php echo get_sanitized_truncated_title(0, 0).' - <span class="submit-price">';
             if($where_currency=='after'){
                 print esc_html($pack_price).' '.esc_html($wpestate_currency).'</span>'; 
             }else{

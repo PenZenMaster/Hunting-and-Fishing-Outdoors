@@ -23,7 +23,7 @@ if($show_adv_search_general=='yes' && $search_on_start=='yes'
 
 
 if(isset($post->ID)){
-    $wpestate_header_type                =   get_post_meta ( $post->ID, 'header_type', true);
+    $wpestate_header_type                =   intval(get_post_meta ( $post->ID, 'header_type', true));
 }
 
 if(is_singular('estate_agent')){
@@ -59,6 +59,8 @@ if(!is_404()){
         
         
     }else{       
+
+      
         if(isset($post->ID)){
             $custom_image               =   esc_html( esc_html(get_post_meta($post->ID, 'page_custom_image', true)) );  
             $rev_slider                 =   esc_html( esc_html(get_post_meta($post->ID, 'rev_slider', true)) ); 
@@ -132,6 +134,7 @@ if($show_adv_search_general ==  'yes' && !is_404() ){
           //nothing  
         }else if($wpestate_header_type == 0){ 
             if($wpestate_global_header_type==4){
+               
                 $show_mobile=1;
                 if( wpestate_float_search_placement($post_id) ||  $page_template== 'splash_page.php'   ){
                     include(locate_template('templates/advanced_search.php') );
@@ -157,9 +160,11 @@ if($show_adv_search_general ==  'yes' && !is_404() ){
     
         }else{
             if($show_adv_search_slider=='yes'){
-                $show_mobile=1;
+                $show_mobile=1; 
                 if( wpestate_float_search_placement($post_id) ||  $page_template== 'splash_page.php'   ){
-                     include(locate_template('templates/advanced_search.php') );
+                    include(locate_template('templates/advanced_search.php') );
+                       
+                  
                 }
     
             }
@@ -169,7 +174,11 @@ if($show_adv_search_general ==  'yes' && !is_404() ){
             $show_mobile=1;  
             if($wpestate_global_header_type!==0){
                 if( wpestate_float_search_placement($post_id) ||  $page_template== 'splash_page.php'   ){
-                     include(locate_template('templates/advanced_search.php') );
+                   
+                    if(is_tax() && $wpestate_global_header_type_tax!=0 ){
+
+                        include(locate_template('templates/advanced_search.php') );
+                    }
                 }
 
             }

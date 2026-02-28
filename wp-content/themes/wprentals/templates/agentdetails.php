@@ -19,7 +19,10 @@ if ( get_post_type($prop_id) == 'estate_property' ){
 }
 $link = esc_url(get_permalink());
 if($preview_img==''){
-    $preview_img    =   get_stylesheet_directory_uri().'/img/default_user.png';
+    $preview_img = wprentals_get_option('wp_estate_default_user_image', 'url');
+    if ( empty($preview_img) ) {
+        $preview_img = get_stylesheet_directory_uri().'/img/default_user.png';
+    }
 }
 $verified_class = ( wpestate_userid_verified($agent_id) ) ? ' verified' : '';
 ?>

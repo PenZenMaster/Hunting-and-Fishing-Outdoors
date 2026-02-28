@@ -440,7 +440,7 @@ function wpestate_convert_to_redux_framework(){
     );
     
     $mandatory_fields           =   ( get_option('wp_estate_mandatory_page_fields','') );
-    Redux::setOption('wprentals_admin','wp_estate_mandatory_page_fields', $mandatory_fields);
+    Redux::set_option('wprentals_admin','wp_estate_mandatory_page_fields', $mandatory_fields);
     
     foreach ($all_options as $option){
         $option_value = get_option( $option, '');
@@ -450,32 +450,32 @@ function wpestate_convert_to_redux_framework(){
             
         if($option=='wp_estate_custom_fields'){
             $option_value = wpestate_convert_redux_wp_estate_custom_fields();
-            Redux::setOption('wprentals_admin','wpestate_custom_fields_list', $option_value);
+            Redux::set_option('wprentals_admin','wpestate_custom_fields_list', $option_value);
         }else if($option=='wp_estate_multi_curr'){
             $option_value = wpestate_convert_redux_wp_estate_multi_curr();
-            Redux::setOption('wprentals_admin','wpestate_currency', $option_value);
+            Redux::set_option('wprentals_admin','wpestate_currency', $option_value);
         }else if($option=='wp_estate_property_page_header'){
             $option_value = wpestate_convert_redux_wp_estate_property_page_header();
-            Redux::setOption('wprentals_admin','wp_estate_property_page_header', $option_value);
+            Redux::set_option('wprentals_admin','wp_estate_property_page_header', $option_value);
         }else if($option=='wp_estate_custom_listing_fields'){
             $option_value = wpestate_convert_redux_wp_estate_custom_listing_fields();
-            Redux::setOption('wprentals_admin','wp_estate_custom_listing_fields', $option_value);
+            Redux::set_option('wprentals_admin','wp_estate_custom_listing_fields', $option_value);
         }else if($option=='wp_estate_custom_infobox_fields'){
             $option_value = wpestate_convert_redux_wp_estate_custom_infobox_fields();
-            Redux::setOption('wprentals_admin','wp_estate_custom_infobox_fields', $option_value);
+            Redux::set_option('wprentals_admin','wp_estate_custom_infobox_fields', $option_value);
             
         }else if(in_array($option, $images_array)){
             $option_value   =   get_option( $option, ''); 
             $option_array   =   array('url'=>$option_value);
-            Redux::setOption('wprentals_admin',$option, $option_array);
+            Redux::set_option('wprentals_admin',$option, $option_array);
         }else if(in_array($option, $color_array)){
             $option_value=  get_option( $option, '');
             if($option_value!=''){
                 $option_value   =   '#'.get_option( $option, ''); 
             }
-            Redux::setOption('wprentals_admin',$option, $option_value);
+            Redux::set_option('wprentals_admin',$option, $option_value);
         }else{
-            Redux::setOption('wprentals_admin',$option, $option_value);
+            Redux::set_option('wprentals_admin',$option, $option_value);
         }
       
     }
@@ -494,7 +494,7 @@ function wpestate_convert_to_redux_framework(){
     $wpestate_set_search_array['adv_search_label']=$adv_search_label;
     $wpestate_set_search_array['search_field_label']=$adv_search_icon;
     
-    Redux::setOption('wprentals_admin','wpestate_set_search', $wpestate_set_search_array);
+    Redux::set_option('wprentals_admin','wpestate_set_search', $wpestate_set_search_array);
     
     
     
@@ -503,7 +503,7 @@ function wpestate_convert_to_redux_framework(){
     
     /// pins management 
     $taxonomy = 'property_action_category';
-    $tax_terms = get_terms($taxonomy,'hide_empty=0');
+    $tax_terms =  wpestate_get_cached_terms($taxonomy);
 
     if(is_array($tax_terms)){
         foreach ($tax_terms as $tax_term) { 
@@ -512,20 +512,20 @@ function wpestate_convert_to_redux_framework(){
             $limit54                 =  sanitize_key( wpestate_limit54($tax_term->slug));
             $option_value            =  get_option( $name, '');
             $option_array            =  array('url'=>$option_value);
-            Redux::setOption('wprentals_admin',$name, $option_array);
+            Redux::set_option('wprentals_admin',$name, $option_array);
         }   
     }
     
     
     $taxonomy_cat = 'property_category';
-    $categories = get_terms($taxonomy_cat,'hide_empty=0');
+    $categories =  wpestate_get_cached_terms($taxonomy_cat);
     if(is_array($categories)){
         foreach ($categories as $categ) {  
             $name                           =   sanitize_key ( wpestate_limit64('wp_estate_'.$categ->slug) );
             $limit54                        =   sanitize_key(wpestate_limit54($categ->slug));
             $option_value                   =   get_option( $name, '');
             $option_array                   =   array('url'=>$option_value);
-            Redux::setOption('wprentals_admin',$name, $option_array);
+            Redux::set_option('wprentals_admin',$name, $option_array);
 
         }
     }
@@ -537,7 +537,7 @@ function wpestate_convert_to_redux_framework(){
                     $name                       =   'wp_estate_'.$limit54;
                     $option_value            =  get_option( $name, '');
                     $option_array            =  array('url'=>$option_value);
-                    Redux::setOption('wprentals_admin',$name, $option_array);
+                    Redux::set_option('wprentals_admin',$name, $option_array);
                }
             }
 
@@ -1067,6 +1067,8 @@ function wp_estate_setup_older() {
             'attachid', 
             'embed_video_id', 
             'embed_video_type', 
+            'private_notes',
+            'checkin_message',
             'property_size', 
             'property_rooms', 
             'property_bedrooms', 

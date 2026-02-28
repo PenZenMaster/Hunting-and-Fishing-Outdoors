@@ -1,5 +1,5 @@
 <?php
-$propertyId =   $comment->comment_post_ID;
+$propertyId =   get_post_meta($comment->ID, 'attached_to', true);
 $preview    =   wp_get_attachment_image_src(get_post_thumbnail_id($propertyId), 'wpestate_slider_thumb');
      
 ?>

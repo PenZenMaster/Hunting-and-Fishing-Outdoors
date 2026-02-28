@@ -406,16 +406,16 @@ if (!function_exists('wpestate_direct_pay_pack_per_listing')):
 
         if ($include_feat==1) {
             if ($pay_status=='paid') {
-                $invoice_no = wpestate_insert_invoice('Upgrade to Featured', 'One Time', $listing_id, $date, $current_user->ID, 0, 1, '');
+                $invoice_no = wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_UPGRADE_TO_FEATURED, 'One Time', $listing_id, $date, $current_user->ID, 0, 1, '');
                 wpestate_email_to_admin(1);
                 $total_price    =   $price_featured_submission;
             } else {
-                $invoice_no = wpestate_insert_invoice('Publish Listing with Featured', 'One Time', $listing_id, $date, $current_user->ID, 1, 0, '');
+                $invoice_no = wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_PUBLISH_WITH_FEATURED, 'One Time', $listing_id, $date, $current_user->ID, 1, 0, '');
                 wpestate_email_to_admin(0);
                 $total_price    =   $price_submission + $price_featured_submission;
             }
         } else {
-            $invoice_no = wpestate_insert_invoice('Listing', 'One Time', $listing_id, $date, $current_user->ID, 0, 0, '');
+            $invoice_no = wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_LISTING, 'One Time', $listing_id, $date, $current_user->ID, 0, 0, '');
             wpestate_email_to_admin(0);
             $total_price    =   $price_submission;
         }
@@ -543,7 +543,7 @@ if (!function_exists('wpestate_direct_pay_pack')):
         $is_upgrade=0;
         $paypal_tax_id='';
 
-        $invoice_no = wpestate_insert_invoice('Package', 'One Time', $selected_pack, $date, $userID, $is_featured, $is_upgrade, $paypal_tax_id);
+        $invoice_no = wpestate_insert_invoice(WP_ESTATE_INVOICE_TYPE_PACKAGE, 'One Time', $selected_pack, $date, $userID, $is_featured, $is_upgrade, $paypal_tax_id);
 
         // send email
         $headers    = 'From: No Reply <noreply@'.esc_url(home_url('/')).'>' . "\r\n";
@@ -984,9 +984,16 @@ if (!function_exists('wpestate_ajax_filter_ondemand_listings_with_geo')):
         $templates = ob_get_contents();
         ob_end_clean();
      
-        $return_string .=   '<div class="half_map_results">'.$prop_selection->found_posts.' '.esc_html__(' Results found!', 'wprentals').'</div>';
         $return_string .=   $templates;
-        echo json_encode(array('added'=>true,'arguments'=>json_encode($args),'arg1'=>json_encode($args1), 'markers'=>json_encode($markers),'response'=>$return_string ));
+        $results_text = $prop_selection->found_posts . ' ' . esc_html__(' Results found!', 'wprentals');
+        echo json_encode(array(
+            'added'    => true,
+            'arguments'=> json_encode($args),
+            'arg1'     => json_encode($args1),
+            'markers'  => json_encode($markers),
+            'results'  => $results_text,
+            'response' => $return_string
+        ));
         die();
     }
 
@@ -1043,7 +1050,6 @@ if (!function_exists('wpestate_disable_listing')):
 
         if ($current_user->ID != $the_post->post_author) {
             exit('you don\'t have the right to delete this');
-            ;
         }
 
         if ($the_post->post_status=='disabled') {
@@ -1172,13 +1178,7 @@ if (!function_exists('wpestate_ajax_filter_invoices')):
             exit('out pls');
         }
         global $reservation_strings;
-        $reservation_strings=array(
-            'Upgrade to Featured'           => esc_html__('Upgrade to Featured', 'wprentals'),
-            'Publish Listing with Featured' => esc_html__('Publish Listing with Featured', 'wprentals'),
-            'Package'                       => esc_html__('Package', 'wprentals'),
-            'Listing'                       => esc_html__('Listing', 'wprentals'),
-            'Reservation fee'               => esc_html__('Reservation fee', 'wprentals')
-        );
+        $reservation_strings = wpestate_get_invoice_type_labels();
 
         $allowed_html = array();
         $userID                         =   $current_user->ID;
@@ -1192,13 +1192,34 @@ if (!function_exists('wpestate_ajax_filter_invoices')):
         $meta_query=array();
 
         if (isset($_POST['type']) &&  $_POST['type']!='') {
-            $temp_arr             =   array();
-            $type                 =   $reservation_strings[ wp_kses($_POST['type'], $allowed_html) ];
-            $temp_arr['key']      =   'invoice_type';
-            $temp_arr['value']    =   $type;
-            $temp_arr['type']     =   'char';
-            $temp_arr['compare']  =   'LIKE';
-            $meta_query[]         =   $temp_arr;
+            $requested_type       =   wpestate_get_invoice_type_key(wp_kses($_POST['type'], $allowed_html));
+            if ($requested_type === null && is_numeric($_POST['type'])) {
+                $requested_type = intval($_POST['type']);
+            }
+
+            if ($requested_type !== null) {
+                $type_meta = array(
+                    'relation' => 'OR',
+                    array(
+                        'key'     => 'invoice_type',
+                        'value'   => $requested_type,
+                        'type'    => 'NUMERIC',
+                        'compare' => '=',
+                    ),
+                );
+
+                $legacy_values = wpestate_get_invoice_type_legacy_values($requested_type);
+                if (!empty($legacy_values)) {
+                    $type_meta[] = array(
+                        'key'     => 'invoice_type',
+                        'value'   => $legacy_values,
+                        'type'    => 'CHAR',
+                        'compare' => 'IN',
+                    );
+                }
+
+                $meta_query[] = $type_meta;
+            }
         }
 
 
@@ -1246,14 +1267,15 @@ if (!function_exists('wpestate_ajax_filter_invoices')):
             include(locate_template('dashboard/templates/invoice_listing_unit.php') );
             $inv_id =   get_the_ID();
             $status =   esc_html(get_post_meta($inv_id, 'invoice_status', true));
-            $type   =   esc_html(get_post_meta($inv_id, 'invoice_type', true));
-            $price  =   esc_html(get_post_meta($inv_id, 'item_price', true));
+            $type_value = get_post_meta($inv_id, 'invoice_type', true);
+            $type_key   = wpestate_get_invoice_type_key($type_value);
+            $price      = floatval(get_post_meta($inv_id, 'item_price', true));
 
-            if (trim($type) == 'Reservation fee' || trim($type) == esc_html__('Reservation fee', 'wprentals')) {
+            if ($type_key === WP_ESTATE_INVOICE_TYPE_RESERVATION_FEE) {
                 if ($status == 'confirmed') {
                     $total_confirmed = $total_confirmed + $price;
                 }
-                if ($status == 'issued') {
+                if ($status == 'issued' && $total_issued !== '-') {
                     $total_issued = $total_issued + $price;
                 }
             } else {
@@ -1358,7 +1380,10 @@ if (!function_exists('wpestate_update_menu_bar')):
 
             $user_small_picture_id      =   get_the_author_meta('small_custom_picture', $user_id, true);
             if ($user_small_picture_id == '') {
-                $user_small_picture=get_stylesheet_directory_uri().'/img/default_user_small.png';
+                $user_small_picture = wprentals_get_option('wp_estate_default_user_image', 'url');
+                if ( empty($user_small_picture) ) {
+                    $user_small_picture = get_stylesheet_directory_uri().'/img/default_user.png';
+                }
             } else {
                 $user_small_picture=wp_get_attachment_image_src($user_small_picture_id, 'wpestate_user_thumb');
             }
@@ -1450,16 +1475,26 @@ if (!function_exists('wpestate_ajax_register_form')):
         }
 
 
+        if (!wpestate_can_register_users()) {
+            echo json_encode(
+                array(
+                    'register' => false,
+                    'message'  => esc_html__('User registration is currently disabled.', 'wprentals')
+                )
+            );
+            exit();
+        }
+
         $allowed_html   =   array();
         $user_email     =   trim(sanitize_text_field($_POST['user_email_register']));
-        $user_name      =   trim(sanitize_text_field($_POST['user_login_register']));
+        $user_name      =   empty(trim(sanitize_text_field($_POST['user_login_register']))) ? $user_email : trim(sanitize_text_field($_POST['user_login_register']));
         $user_phone     =   trim(sanitize_text_field($_POST['user_phone']));
 
 
-        if (preg_match("/^[0-9A-Za-z_]+$/", $user_name) == 0) {
-            echo json_encode(array('register'=>false,'message'=>esc_html__('Invalid username (do not use special characters or spaces)!', 'wprentals')));
-            die();
-        }
+        // if (preg_match("/^[0-9A-Za-z_]+$/", $user_name) == 0) {
+        //     echo json_encode(array('register'=>false,'message'=>esc_html__('Invalid username (do not use special characters or spaces)!', 'wprentals')));
+        //     die();
+        // }
 
 
         if ($user_email=='' || $user_name=='') {
@@ -1522,20 +1557,83 @@ if (!function_exists('wpestate_ajax_register_form')):
 
 
             if (is_wp_error($user_id)) {
-                // do nothing
+                echo json_encode(array('register'=>false,'message'=>esc_html__('Error creating the user', 'wprentals')));
+                die();
             } else {
-                if (isset($_POST['user_type'])) {
-                    update_user_meta($user_id, 'user_type', intval($_POST['user_type']));
+                $separate_users_status  =   esc_html ( wprentals_get_option('wp_estate_separate_users') );
+                $publish_only           =   esc_html ( wprentals_get_option('wp_estate_publish_only') );
+
+                if( 'no' === $separate_users_status && trim($publish_only) != '' ){
+                    $role           = defined('WPRENTALS_ROLE_RENTER') ? WPRENTALS_ROLE_RENTER : 'renter';
+                    $role_assigned  = wprentals_register_user_role($user_id, $role);
+                    if (!$role_assigned) {
+                        echo json_encode(array('register'=>false,'message'=>esc_html__('Role Assignment Failed.', 'wprentals')));
+                        die();
+                    }
+                    update_user_meta($user_id, 'user_type', 1);
+                }else{
+                    if (isset($_POST['user_type'])) {
+
+
+                    $user_type= intval($_POST['user_type']);
+                            // Map user types to roles
+                            $user_roles = [
+                        0 => defined('WPRENTALS_ROLE_OWNER') ? WPRENTALS_ROLE_OWNER : 'owner',
+                        1 => defined('WPRENTALS_ROLE_RENTER') ? WPRENTALS_ROLE_RENTER : 'renter'
+                    ];
+
+                            // Get and sanitize user type
+                    if (!array_key_exists($user_type, $user_roles)) {
+                        echo json_encode(array('register'=>false,'message'=>esc_html__('Invalid User Type.', 'wprentals')));
+                        die();
+                    }
+
+                    $role_assigned = wprentals_register_user_role($user_id, $user_roles[$user_type]);
+                    if (!$role_assigned) {
+                        echo json_encode(array('register'=>false,'message'=>esc_html__('Role Assignment Failed.', 'wprentals')));
+                        die();
+                    }
+
+                            // Update user meta for user_type
+                            update_user_meta($user_id, 'user_type', $user_type);
+
+                    // Register as agent for profile page
+                    if($user_type ==  0){
+                     wpestate_register_as_user($user_name, $user_id);
+                    }
+
+                    }else {
+
+                    // If user_type isn't set at all, make them a renter
+                    $role =  defined('WPRENTALS_ROLE_OWNER') ? WPRENTALS_ROLE_OWNER : 'owner';
+                    $role_assigned = wprentals_register_user_role($user_id,$role);
+
+
+                    if (!$role_assigned) {
+                        echo json_encode(array('register'=>false,'message'=>esc_html__('Role Assignment Failed.', 'wprentals')));
+                        die();
+                    }
+
+                    // Update user meta for user_type
+                    update_user_meta($user_id, 'user_type', 0);
+                      // Register as agent for profile page
+                      wpestate_register_as_user($user_name, $user_id);
+                }
                 }
 
-
-                if (isset($_POST['user_phone'])) {
+            if (isset($_POST['user_phone'])) {
                     update_user_meta($user_id, 'mobile', sanitize_text_field($_POST['user_phone']));
                     $agent_id   =   intval(get_user_meta($user_id, 'user_agent_id', true));
                     if($agent_id!= 0){
                         update_post_meta( $agent_id, 'agent_mobile', sanitize_text_field($_POST['user_phone']) );
                     }
  
+                }
+
+                // Sync agent email for owner profiles created at registration.
+                $agent_id = intval(get_user_meta($user_id, 'user_agent_id', true));
+                if ($agent_id !== 0 && $user_email !== '') {
+                    update_post_meta($agent_id, 'agent_email', $user_email);
                 }
 
                 if ($enable_user_pass_status=='yes') {
@@ -1545,10 +1643,6 @@ if (!function_exists('wpestate_ajax_register_form')):
                 }
                 wpestate_update_profile($user_id);
                 wpestate_wp_new_user_notification($user_id, $random_password) ;
-
-                if (intval($_POST['user_type'])==0) {
-                    wpestate_register_as_user($user_name, $user_id);
-                }
             }
         } else {
             echo json_encode(array('register'=>false,'message'=>esc_html__('Email already exists.  Please choose a new one!', 'wprentals')));
@@ -1561,33 +1655,35 @@ endif; // end   wpestate_ajax_register_form
 /// register as agent
 ////////////////////////////////////////////////////////////////////////////////
 if (!function_exists('wpestate_register_as_user')):
-    function wpestate_register_as_user($user_name, $user_id, $first_name='', $last_name='')
-    {
-        $post = array(
-            'post_title'	=> $user_name,
-            'post_status'	=> 'publish',
-            'post_type'         => 'estate_agent' ,
-        );
+	function wpestate_register_as_user($user_name, $user_id, $first_name = '', $last_name = ''){
+		if (user_can($user_id, 'publish_estate_agents')){
+            
+			$post = array(
+				'post_title'  => $user_name,
+				'post_status' => 'publish',
+				'post_type'   => 'estate_agent',
+				'post_author' => $user_id
+			);
 
-        $post_id =  wp_insert_post($post);
-        update_post_meta($post_id, 'user_meda_id', $user_id);
-        update_post_meta($post_id, 'user_agent_id', $user_id) ;
-        update_user_meta($user_id, 'user_agent_id', $post_id) ;
+			$post_id = wp_insert_post($post);
+			update_post_meta($post_id, 'user_meda_id', $user_id);
+			update_post_meta($post_id, 'user_agent_id', $user_id);
+			update_user_meta($user_id, 'user_agent_id', $post_id);
 
+			if(esc_html(wprentals_get_option('wp_estate_separate_users', '')) == 'yes'){
+				$type = wprentals_core_user_has_role($user_id, 'owner') ? 0 : 1;
+				update_post_meta($post_id, 'user_sub_type', $type);
+			}
+		}
 
+		if($first_name != ''){
+			update_user_meta($user_id, 'first_name', $first_name);
+		}
+		if($last_name != ''){
+			update_user_meta($user_id, 'last_name', $last_name);
+		}
 
-        if (esc_html(wprentals_get_option('wp_estate_separate_users', ''))=='yes') {
-            $type=get_user_meta($user_id, 'user_type', true);
-            update_post_meta($post_id, 'user_sub_type', $type) ;
-        }
-
-        if ($first_name!='') {
-            update_user_meta($user_id, 'first_name', $first_name) ;
-        }
-        if ($last_name!='') {
-            update_user_meta($user_id, 'last_name', $last_name) ;
-        }
-    }
+	}
 endif;
 
  add_action('edit_user_profile_update', 'wpestate_update_extra_profile_fields');
@@ -1899,7 +1995,9 @@ if (!function_exists('wpestate_ajax_update_profile')):
 
         $agent_id   =   get_user_meta($userID, 'user_agent_id', true);
 
-        wpestate_update_user_agent($agent_id, $firstname, $secondname, $useremail, $userphone, $userskype, $profile_image_url, $usermobile, $about_me, $profile_image_url_small, $userfacebook, $usertwitter, $userlinkedin, $userpinterest, $live_in, $i_speak, $login_name, $payment_info, $youtube, $instagram, $userwebsite) ;
+		if (user_can($userID, 'edit_estate_agent', intval($agent_id))){
+			wpestate_update_user_agent($agent_id, $firstname, $secondname, $useremail, $userphone, $userskype, $profile_image_url, $usermobile, $about_me, $profile_image_url_small, $userfacebook, $usertwitter, $userlinkedin, $userpinterest, $live_in, $i_speak, $login_name, $payment_info, $youtube, $instagram, $userwebsite) ;
+		}
 
 
         if ($current_user->user_email != $useremail) {
@@ -1957,8 +2055,9 @@ if (!function_exists('wpestate_ajax_update_profile')):
                 $owner_id   =   intval(get_user_meta($userID, 'user_agent_id', true));
 
                 $arguments  =   array(
-                        'user_login'          =>   $current_user->user_login,
-
+                        'user_login'        =>   $current_user->user_login,
+                        'user_id'           =>   $userID,
+                        'user_profile_url'  =>   esc_url(sprintf('%suser-edit.php?user_id=%d', esc_url(admin_url()), absint($userID))),
                     );
 
                 wpestate_select_email_type($company_email, 'new_user_id_verification', $arguments);
@@ -1986,14 +2085,9 @@ if (!function_exists('wpestate_delete_profile')):
         }
 
         $args = array(
-                'post_type' => array('estate_property',
-                                    'estate_agent',
-                                    'post',
-                                    'wpestate_message',
-                                    'attachment'
-                                    ),
-                'author'           =>  $userID,
-                'posts_per_page'    => -1,
+                'post_type'         =>  'any',
+                'author'            =>  $userID,
+                'posts_per_page'    =>  -1,
             );
 
 
@@ -2027,20 +2121,52 @@ endif; // end   wpestate_delete_profile
 
 
 if (! function_exists('wpestate_update_verification')) {
+    /**
+     * Handle admin requests for updating a user's verification status.
+     *
+     * Expects a valid nonce, user ID, and verification flag (0 or 1) via POST
+     * and returns a JSON response describing the outcome.
+     */
     function wpestate_update_verification()
     {
-        //check_ajax_referer( 'wprentals_user_verfication_nonce', 'security' );
+        // Validate the request nonce before making any changes.
+        check_ajax_referer( 'wprentals_user_verfication_nonce', 'security' );
+
+
+        if (!current_user_can('edit_users')) {
+            wp_send_json_error(
+                array(
+                    'message' => esc_html__( 'You do not have permissions for this action.', 'wprentals' ),
+                )
+            );
+        }
+
+
+
         $userid   = intval(sanitize_text_field($_POST['userid']));
         $verified = intval(sanitize_text_field($_POST['verified']));
 
         if (is_numeric($userid) && $userid != 0 && ($verified == 0 || $verified == 1)) {
+            // Persist the verification status on the user meta.
             $r = update_user_meta($userid, 'user_id_verified', $verified);
 
             if ($r) {
-                print 'ok';
+                wp_send_json_success(
+                    array(
+                        'userid'   => $userid,
+                        'verified' => $verified,
+                        'updated'  => $r,
+                    )
+                );
             }
         }
-        die();
+
+        // Return an error when the update could not be performed.
+        wp_send_json_error(
+            array(
+                'message' => esc_html__( 'User verification could not be updated.', 'wprentals' ),
+            )
+        );
     }
 }
 add_action('wp_ajax_wpestate_update_verification', 'wpestate_update_verification');
@@ -2469,7 +2595,9 @@ if (!function_exists('wpestate_ajax_filter_listings')):
             $wpestate_options                  =   wpestate_page_details(intval($_POST['page_id']));
         }
 
-
+        if (isset($_POST['is_archive']) && 'yes'== $_POST['is_archive'] ) {
+            $wpestate_full_page=1;
+        }
 
         //////////////////////////////////////////////////////////////////////////////////////
         ///// category filters
@@ -2585,6 +2713,7 @@ if (!function_exists('wpestate_ajax_filter_listings')):
 
         if ($prop_selection->have_posts()) {
             while ($prop_selection->have_posts()): $prop_selection->the_post();
+ 
             include(locate_template('templates/property_unit.php'));
             endwhile;
             wprentals_pagination_ajax($prop_selection->max_num_pages, $range =2, $paged, 'pagination_ajax');
@@ -3127,7 +3256,7 @@ if (!function_exists('wpestate_ajax_resend_for_approval')):
                 print '<span class="info-container_status">'.esc_html__('Published!', 'wprentals').'</span>';
             } else {
                 print '<span class="sent_approval">'.esc_html__('Sent for approval', 'wprentals').'</span>';
-                $submit_title   =   get_the_title($prop_id);
+                $submit_title   =    get_sanitized_truncated_title($prop_id, 0);
                 $arguments=array(
                     'submission_title'        =>    $submit_title,
                     'submission_url'          =>   esc_url(get_permalink($prop_id))
@@ -3302,7 +3431,7 @@ if (!function_exists('wpestate_ajax_paypal_pack_recuring_generation_rest_api')):
             $pack_price                     =   get_post_meta($pack_id, 'pack_price', true);
             $billing_period                 =   get_post_meta($pack_id, 'biling_period', true);
             $billing_freq                   =   intval(get_post_meta($pack_id, 'billing_freq', true));
-            $pack_name                      =   get_the_title($pack_id);
+            $pack_name                      =    get_sanitized_truncated_title($pack_id, 0);
             $submission_curency_status      =   esc_html(wprentals_get_option('wp_estate_submission_curency', ''));
 
             $host                           =   'https://api.sandbox.paypal.com';
@@ -3503,3 +3632,49 @@ if (!function_exists('wpestate_ajax_filter_listings_search_on_main_map')):
     }
 
 endif; // end   ajax_filter_listings  x
+
+add_action('wp_ajax_nopriv_wrentals_advanced_search_filters', 'wrentals_advanced_search_filters');
+add_action('wp_ajax_wrentals_advanced_search_filters', 'wrentals_advanced_search_filters');
+
+if (!function_exists('wrentals_advanced_search_filters')):
+    function wrentals_advanced_search_filters()
+    {
+        check_ajax_referer('wpestate_search_nonce', 'security');
+
+        global $post, $current_user, $wpestate_options, $wpestate_currency, $wpestate_where_currency, $wpestate_listing_type, $wpestate_property_unit_slider, $wpestate_show_compare_only;
+
+        $args_string = isset($_POST['args']) ? wp_unslash($_POST['args']) : '';
+        $order_val   = isset($_POST['value']) ? intval($_POST['value']) : 0;
+        $page_id     = isset($_POST['page_id']) ? intval($_POST['page_id']) : 0;
+        $args        = json_decode(stripslashes($args_string), true);
+
+        if (!is_array($args)) {
+            wp_die();
+        }
+
+        $wpestate_property_unit_slider = esc_html(wprentals_get_option('wp_estate_prop_list_slider', ''));
+        $wpestate_listing_type         = wprentals_get_option('wp_estate_listing_unit_type', '');
+        $wpestate_options              = wpestate_page_details($page_id);
+        $wpestate_currency             = esc_html(wprentals_get_option('wp_estate_currency_label_main', ''));
+        $wpestate_where_currency       = esc_html(wprentals_get_option('wp_estate_where_currency_symbol', ''));
+        $wpestate_show_compare_only    = 'no';
+        $current_user                  = wp_get_current_user();
+
+        $order_array = wpestate_create_query_order_by_array($order_val);
+        $args        = array_merge($args, $order_array['order_array']);
+
+        $prop_selection = new WP_Query($args);
+
+        if ($prop_selection->have_posts()) {
+            while ($prop_selection->have_posts()) {
+                $prop_selection->the_post();
+                include(locate_template('templates/property_unit.php'));
+            }
+            wp_reset_postdata();
+        } else {
+            print '<span class="no_results">' . esc_html__("We didn't find any results", "wprentals") . '</span>';
+        }
+
+        wp_die();
+    }
+endif;

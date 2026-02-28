@@ -26,41 +26,102 @@ function ocdi_import_files() {
 
     $demos=array(
         'main-demo' =>  array(
-                        'import_file_name'          =>  'Main demo',
-                        'import_file_url'           =>  '',
-                        'import_widget_file_url'    =>  '',
-                        'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/main-demo-preview.jpg')  ,
-                        'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
-                        'preview_url'               => 'https://main.wprentals.org/',
-                        'import_redux'              =>  array(
-                                                            array(
-                                                            'file_url'      => '',                                                            
-                                                            'option_name'   => 'wprentals_admin',
-                                                            ),
-                                                        ),
-                    ),
+            'import_file_name'          =>  'Main demo',
+            'import_file_url'           =>  '',
+            'import_widget_file_url'    =>  '',
+            'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/main-demo-preview.jpg')  ,
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
+            'preview_url'               => 'https://main.wprentals.org/',
+            'import_redux'              =>  array(
+                                                array(
+                                                'file_url'      => '',                                                            
+                                                'option_name'   => 'wprentals_admin',
+                                                ),
+                                            ),
+        ),
+
+        'honolulu-demo' =>  array(
+            'import_file_name'          =>  'Honolulu Demo',  
+            'import_file_url'           =>  '',
+            'import_widget_file_url'    =>  '',
+            'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/honolulu-preview.jpg')  ,
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
+            'preview_url'               => 'https://honolulu.wprentals.org/',
+            'import_redux'              =>  array(
+                                                array(
+                                                'file_url'      => '',                                                            
+                                                'option_name'   => 'wprentals_admin',
+                                                ),
+                                            ),
+        ),
+
+        'cabos-demo' =>  array(
+            'import_file_name'          =>  'Cabos Demo',  
+            'import_file_url'           =>  '',
+            'import_widget_file_url'    =>  '',
+            'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/cabos-preview.jpg')  ,
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
+            'preview_url'               => 'https://cabos.wprentals.org/',
+            'import_redux'              =>  array(
+                                                array(
+                                                'file_url'      => '',                                                            
+                                                'option_name'   => 'wprentals_admin',
+                                                ),
+                                            ),
+        ),
 
         'paphos-demo' =>  array(
-                        'import_file_name'          =>  'Paphos Demo',  
+            'import_file_name'          =>  'Paphos Demo',  
+            'import_file_url'           =>  '',
+            'import_widget_file_url'    =>  '',
+            'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/paphos-preview.jpg')  ,
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
+            'preview_url'               => 'https://paphos.wprentals.org/',
+            'import_redux'              =>  array(
+                                                array(
+                                                'file_url'      => '',                                                            
+                                                'option_name'   => 'wprentals_admin',
+                                                ),
+                                            ),
+        ),
+                    
+        'maldives-demo' =>  array(
+                        'import_file_name'          =>  'Maldives Demo',  
                         'import_file_url'           =>  '',
                         'import_widget_file_url'    =>  '',
-                        'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/paphos-preview.jpg')  ,
-                        'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
-                        'preview_url'               => 'https://paphos.wprentals.org/',
+                        'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/maldives-preview.jpg')  ,
+                        'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
+                        'preview_url'               => 'https://maldives.wprentals.org/',
                         'import_redux'              =>  array(
                                                             array(
                                                             'file_url'      => '',                                                            
                                                             'option_name'   => 'wprentals_admin',
                                                             ),
                                                         ),
-                    ),  
+        ),
+        
+        'barcelona-demo' =>  array(
+            'import_file_name'          =>  'Barcelona Demo',  
+            'import_file_url'           =>  '',
+            'import_widget_file_url'    =>  '',
+            'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/barcelona-preview.jpg')  ,
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
+            'preview_url'               => 'https://barcelona.wprentals.org/',
+            'import_redux'              =>  array(
+                                                array(
+                                                'file_url'      => '',                                                            
+                                                'option_name'   => 'wprentals_admin',
+                                                ),
+                                            ),
+        ),  
+                            
         
         'tenerife-demo' =>  array(
             'import_file_name'          =>  'Tenerife Demo',  
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/tenerife-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://tenerife.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -76,7 +137,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/madeira-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://madeira.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -90,7 +151,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/demo1-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://demo1.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -105,7 +166,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/santorini-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               =>'https://santorini.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -120,7 +181,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/ibiza-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://ibiza.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -135,7 +196,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/solo-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://solo.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -150,7 +211,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/solo2-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://solo2.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -165,7 +226,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/solo3-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://solo3.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -180,8 +241,23 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/solo4-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://solo4.wprentals.org/',
+            'import_redux'              =>  array(
+                                                array(
+                                                'file_url'      => '',                                                            
+                                                'option_name'   => 'wprentals_admin',
+                                                ),
+                                            ),
+        ), 
+        
+        'solo5-demo' =>  array(
+            'import_file_name'          =>  'Solo Owner Demo 5',  
+            'import_file_url'           =>  '',
+            'import_widget_file_url'    =>  '',
+            'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/solo5-preview.jpg')  ,
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
+            'preview_url'               => 'https://solo5.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
                                                 'file_url'      => '',                                                            
@@ -195,7 +271,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/cancun-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               =>  'https://cancun.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -210,7 +286,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/hawaii-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               =>  'https://hawaii.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -226,7 +302,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/tuscany-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://tuscany.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -242,7 +318,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/iceland-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://iceland.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -257,7 +333,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/yacht-elementor-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://rentayacht.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -273,7 +349,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/boat-bakery-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://rentaboat.wprentals.org/',
             'import_redux'              =>  array(
                                                 array(
@@ -289,7 +365,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/sky-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               => 'https://skirent.wprentals.org',
             'import_redux'              =>  array(
                                                 array(
@@ -304,7 +380,7 @@ function ocdi_import_files() {
             'import_file_url'           =>  '',
             'import_widget_file_url'    =>  '',
             'import_preview_image_url'  =>  get_theme_file_uri('wpestate_templates/office-preview.jpg')  ,
-            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wpresidence' ),
+            'import_notice'             =>  esc_html__( 'Clear theme cache after demo import is complete!', 'wprentals' ),
             'preview_url'               =>'https://office.wprentals.org',
             'import_redux'              =>  array(
                                                 array(

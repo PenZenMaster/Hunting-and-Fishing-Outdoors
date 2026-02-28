@@ -87,17 +87,22 @@ if($page_template=='contact_page.php' ||
    <div id="gmap-noresult">
        <?php esc_html_e('We didn\'t find any results','wprentals');?>
    </div>
-   
+
    <div class="gmap-controls">
         <?php
         // show or not the open close map button
-        if( isset($post->ID) ){
+        if( isset($post->ID) ){ 
             if (wpestate_get_map_open_close_status($post->ID) == 0 ){
-                print ' <div id="openmap"><i class="fas fa-angle-down"></i>'.esc_html__( 'open map','wprentals').'</div>';
+                if(!isset($is_map_taxonomy_elementor)){
+                    print ' <div id="openmap"><i class="fas fa-angle-down"></i>'.esc_html__( 'open map','wprentals').'</div>';
+                }
             }
         }else{
             if( esc_html( wprentals_get_option('wp_estate_keep_min','' ) )==0){
-                print ' <div id="openmap"><i class="fas fa-angle-down"></i>'.esc_html__( 'open map','wprentals').'</div>';
+                if(!isset($is_map_taxonomy_elementor)){
+                    print ' <div id="openmap"><i class="fas fa-angle-down"></i>'.esc_html__( 'open map','wprentals').'</div>';
+                }
+            
             }
         }
         ?>

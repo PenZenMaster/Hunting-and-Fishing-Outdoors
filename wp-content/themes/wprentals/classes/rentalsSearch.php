@@ -217,10 +217,8 @@ class WpRentalsSearch {
     */
     function show_extended_search($tip){
 
-        $terms = get_terms( array(
-            'taxonomy' => 'property_features',
-            'hide_empty' => false,
-        ) );
+  
+        $terms =wpestate_get_cached_terms('property_features');
 
         foreach($terms as $key => $term){
             if (defined('ICL_SITEPRESS_VERSION')) {
@@ -425,7 +423,7 @@ class WpRentalsSearch {
             $term_value =   '';
 
             if( isset( $_REQUEST[$field] ) ){
-                $term_value = sanitize_text_field ( rawurldecode($_REQUEST[$field]) );
+                $term_value = wpestate_sanitize_text_array ( $_REQUEST[$field] );
             }
 
             $return_string.=  '<div class=" '.esc_attr($form_class).' '.esc_attr( str_replace(" ","_",$label) ).' '.$icon['class'].' ">';
@@ -555,9 +553,12 @@ class WpRentalsSearch {
         $form_field         =   strtolower($field);
 
         if($form_field=='none'){
-
             //nothing
             $return_string .='';
+        }else if(   strtolower($form_field)=='property_beds_baths'  ){
+            $return_string .=$this->wpestate_show_beds_baths_component($label,$position);
+        }else if(   strtolower($form_field)=='property_price_v2'  ){
+            $return_string .= $this->wpestate_display_price_v2($label,$position);
         }else if(   strtolower($form_field)=='guest_no' &&  wprentals_get_option('wp_estate_custom_guest_control','') =='yes' ){
             $return_string .= $this->wpestate_display_guest_no_field($label,$position);
         }else if(   strtolower($form_field)=='location' ){
@@ -583,11 +584,10 @@ class WpRentalsSearch {
 
         }else if ($this->rentals_is_tax_case($form_field) ){
 
-            // In case of a Taxonomy dropdown filed
-            $list_args          =   wpestate_get_select_arguments();
-            $dropdown_list      =   wpestate_get_action_select_list_4all($list_args,$form_field);
-            $return_string      .=  wpestate_build_dropdown_adv_new('',$form_field,$term_value,$dropdown_list,$label);
-
+   
+            $appendix='';
+            $active='active';
+            $return_string .= wpestate_show_dropdown_taxonomy_v21($form_field,$term_value, $label, $appendix,$active); 
         }else{
             //  in case we have an item from custom field
            $return_string.=$this->search_field_from_custom_fields($key,$form_field,$label,$term_value,$position);
@@ -629,24 +629,11 @@ function search_field_from_custom_fields($key,$form_field,$label,$term_value,$po
         }
     }
 
-    
- 
-        
-        
         
     $adv_search_how_internal= $this->adv_search_how;  
     if( $this->search_type =='elementor' ){
-
         $elementor_search_name_how      = "elementor_search_how_" . $this->postid;
-     //   $elementor_search_name_what     = "elementor_search_what_" . $this->postid;
-       // $elementor_search_name_label    = "elementor_search_label_" . $this->postid;
-
-        //$adv_search_what        =   get_option($elementor_search_name_what,true);
         $adv_search_how_internal         =   get_option($elementor_search_name_how,true);
-        //$adv_search_label       =   get_option($elementor_search_name_label,true);
-
-
-       
     } 
         
 
@@ -667,14 +654,11 @@ function search_field_from_custom_fields($key,$form_field,$label,$term_value,$po
             }
         }
 
-
-
-
         $return_string.='<input type="text"    id="'.$field_id.'"  name="'.sanitize_key($form_field).'"'  . ' placeholder="'. stripslashes(wp_kses($label,$this->allowed_html)).'" ';
         $return_string.= ' class="advanced_select form-control custom_icon_class_input" value="';
 
         if (isset($_GET[sanitize_key($form_field)])) {
-            $return_string.=  esc_attr( $_GET[sanitize_key($form_field)] );
+            $return_string.=  esc_attr( stripslashes( $_GET[sanitize_key($form_field)] ) );
         }
         $return_string.='" />';
 
@@ -758,6 +742,29 @@ function custom_field_dropdown_list($key,$i){
 
     function search_field_get_label($key){
         $label  =       $this->adv_search_label [$key];
+    
+        $translation_labels=array(
+            'Where do you want to go ?'  =>  esc_html__('Where do you want to go ?','wprentals'),
+             'Check-In'                  =>  esc_html__('Check-In','wprentals'),
+             'Check-Out'                 =>  esc_html__('Check-Out','wprentals'),
+             'Guests'                    =>  esc_html__('Guests','wprentals'),
+             'Type Keyword'              =>  esc_html__('Type Keyword','wprentals'),
+             'Rooms'                     =>  esc_html__('Rooms','wprentals'),
+             'All Types'                 =>  esc_html__('All Types','wprentals'),
+             'All Sizes'                 =>  esc_html__('All Sizes','wprentals'),
+             'Bedrooms'                  =>  esc_html__('Bedrooms','wprentals'),
+             'Baths'                     =>   esc_html__('Baths','wprentals'),
+             'Price Range'               =>  esc_html__('Price Range','wprentals'),
+             'Location'               =>  esc_html__('Location','wprentals'),
+             'Type'               =>  esc_html__('Type','wprentals'),
+             'Category'               =>  esc_html__('Category','wprentals'),
+             'Bathrooms'               =>  esc_html__('Bathrooms','wprentals'),
+        );
+     
+        if(isset($translation_labels [   $this->adv_search_label [$key] ])){
+            $label  =   $translation_labels [   $this->adv_search_label [$key] ];
+        }
+    
 
         if (function_exists('icl_translate') ){
             $label     =   icl_translate('wprentals','wp_estate_custom_search_'.$label, $label ) ;
@@ -909,9 +916,241 @@ function custom_field_dropdown_list($key,$i){
         $return=wpestate_show_advanced_guest_form($label, $position,'' );
         return $return;
     }
+     
+    /**
+    *  display beds and baths custom control
+    *
+    *
+    * @since    3.1
+    * @access   public
+    */
+        
+
+    function wpestate_show_beds_baths_component($label,$position){
+        $beds_values     = wprentals_get_option('wp_estate_beds_component_values', '');
+        $baths_values    = wprentals_get_option('wp_estate_baths_component_values', '');
+        $beds_selection  = $this->wpestate_get_component_selection($beds_values, 'wp_estate_beds_component','active');
+        $baths_selection = $this->wpestate_get_component_selection($baths_values, 'wp_estate_baths_component','active');
+    
+        $default_value=esc_html__('Beds/Baths', 'wprentals');
+        if($label!='') $default_value=$label;
+    
+        $return_string='';
+        $is_half=null;
+   
+        
+        
+        $componentsbeds='';
+        $componentsbaths='';
+        if(( isset($_REQUEST['componentsbeds']) || isset($_REQUEST['componentsbaths']))  ){
+            if( isset($_REQUEST['componentsbeds']) ){
+                $componentsbeds  = floatval( $_REQUEST['componentsbeds'] );
+            }
+    
+            if( isset($_REQUEST['componentsbaths']) ){
+                $componentsbaths = floatval($_REQUEST['componentsbaths']);
+            }       
+            $default_value= floatval( $componentsbeds) .'+ '.esc_html__('bd','wprentals').'/'.floatval($componentsbaths).'+ '.esc_html__('ba','wprentals');
+        }
+    
+      
+        $componentsbeds_value ='';
+        if(isset( $_REQUEST['componentsbeds'])){
+            $componentsbeds_value =sanitize_text_field($_REQUEST['componentsbeds']);
+        }
+        $componentsbaths_value ='';
+        if(isset( $_REQUEST['componentsbaths'])){
+            $componentsbeds_value =sanitize_text_field($_REQUEST['componentsbaths']);
+        }
+    
+    
+        $return_string .= '
+            <div class="dropdown form-control custom_icon_class wpestate-multiselect-custom-style  wpestate-beds-baths-popoup-component" style="width:100%;">
+                <div class="filter_menu_trigger   dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:100%;">
+                    ' . esc_html($default_value) . '
+                    <span class="caret caret_filter "></span>
+                </div>
+                <div class="dropdown-menu wpestate-beds-baths-popoup-wrapper">
+                    <h3>' . esc_html__('Beds', 'wprentals') . '</h3>
+                    <div>' . $beds_selection . '</div>
+                    <h3>' . esc_html__('Baths', 'wprentals') . '</h3>
+                    <div>' . $baths_selection . '</div>
+                    <div>
+                        <div  class="wpestate-beds-baths-popoup-reset" data-default-value="'.esc_attr($default_value).'">' . esc_html__('Reset', 'wprentals') . '</div>
+                        <div  class="wpestate-beds-baths-popoup-done">' . esc_html__('Done', 'wprentals') . '</div>
+                    </div>
+                    <input type="hidden" name="componentsbeds"   class="wpresidence-componentsbeds"  value="'.esc_html( $componentsbeds_value).'">
+                    <input type="hidden" name="componentsbaths"  class="wpresidence-componentsbaths" value="'.esc_html ($componentsbaths_value).'">
+                </div>
+            </div>';
+  
+    
+        return $return_string;
+    }
+
+
+
+    function wpestate_get_component_selection($component_values, $class_prefix,$active) {
+        $component_values_array = explode(',', $component_values);
+    
+      
+     
+        $component_selection = array_map(function($value) use ($class_prefix,$active) {
+                $selected_class = '';
+    
+                if($active =='active'):
+                    if ($class_prefix === 'wp_estate_beds_component' && isset($_REQUEST['componentsbeds']) && $value == $_REQUEST['componentsbeds']) {
+                        $selected_class = ' wp_estate_component_item_selected';
+                    } elseif ( $class_prefix === 'wp_estate_baths_component' && isset($_REQUEST['componentsbaths']) && $value == $_REQUEST['componentsbaths']) {
+                        $selected_class = ' wp_estate_component_item_selected';
+                    }
+                endif;
+    
+                return '<div class="' . esc_attr($class_prefix) . '_item' . $selected_class . '" data-value="' . floatval($value) . '">' . esc_html($value) . '</div>';
+            }, $component_values_array);
     
     
     
+    
+        return implode('', $component_selection);
+    }
+
+
+
+    /**
+    *  display price v2 search form
+    *
+    *
+    * @since    3.1
+    * @access   public
+    */
+
+    
+    function wpestate_display_price_v2($label,$position=''){
+
+        $return_string='';
+      
+        
+        if($position=='mainform'){
+            $slider_id      =   'slider_price';
+            $price_low_id   =   'price_low';
+            $price_max_id   =   'price_max';
+            $ammount_id     =   'amount';
+            
+        }else if($position=='sidebar') {
+            $slider_id      =   'slider_price_widget';
+            $price_low_id   =   'price_low_widget';
+            $price_max_id   =   'price_max_widget';
+            $ammount_id     =   'amount_wd';
+            
+        }else if($position=='shortcode') {
+            $slider_id      =   'slider_price_sh';
+            $price_low_id   =   'price_low_sh';
+            $price_max_id   =   'price_max_sh';
+            $ammount_id     =   'amount_sh';
+            
+        }else if($position=='mobile') {
+            $slider_id      =   'slider_price_mobile';
+            $price_low_id   =   'price_low_mobile';
+            $price_max_id   =   'price_max_mobile';
+            $ammount_id     =   'amount_mobile';
+           
+        }else if($position=='half') {
+            $slider_id='slider_price';
+            $price_low_id   =   'price_low';
+            $price_max_id   =   'price_max';
+            $ammount_id     =   'amount';
+            
+        }
+        $default_value=esc_html__('Price', 'wprentals');
+        if($label!='') $default_value=$label;
+
+        if(isset($_REQUEST['price_label_component']) && $_REQUEST['price_label_component']!=''  ){
+            $default_value= sanitize_text_field( $_REQUEST['price_label_component'] );
+        }
+
+        $label_value='';
+        if(isset($_GET['price_label_component']) ){
+            $label_value=sanitize_text_field( $_GET['price_label_component']);
+        }
+
+
+
+   
+        $min_price_slider   = ( floatval(wprentals_get_option('wp_estate_show_slider_min_price','')) );
+        $max_price_slider   = ( floatval(wprentals_get_option('wp_estate_show_slider_max_price','')) );
+
+        if(isset($_GET['price_low'])){
+            $min_price_slider   =  floatval($_GET['price_low']) ;
+        }
+
+        if(isset($_GET['price_low'])){
+            $max_price_slider=  floatval($_GET['price_max']) ;
+        }
+
+        $wpestate_where_currency=   esc_html( wprentals_get_option('wp_estate_where_currency_symbol', '') );
+        $wpestate_currency      =   esc_html( wprentals_get_option('wp_estate_currency_symbol', '') );
+
+        $price_slider_label_data = wpestate_show_price_label_slider_v2($min_price_slider,$max_price_slider,$wpestate_currency,$wpestate_where_currency);
+
+
+        $price_slider_label         =   $price_slider_label_data['label'];
+        $price_slider_label_min     =   $price_slider_label_data['label_min'];
+        $price_slider_label_max     =   $price_slider_label_data['label_max'];
+
+        $return_string='
+        <div class="dropdown form-control dropdown custom_icon_class wpestate-multiselect-custom-style   wpestate-beds-baths-popoup-component" style="width:100%;">
+            <div  class="filter_menu_trigger   dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-default-value="'.esc_attr($default_value).'" style="width:100%;">
+            ' . esc_html($default_value) . '
+            <span class="caret caret_filter "></span>
+            </div>
+            <div class="dropdown-menu wpestate-price-popoup-wrapper">
+            <h3>' . esc_html__('Price selector', 'wprentals') . '</h3>';
+
+                        $return_string.='<div class="wpestate_pricev2_component_adv_search_wrapper">
+                        <input type="text" id="component_'.$price_low_id.'" class="component_adv_search_elementor_price_low price_active wpestate-price-popoup-field-low"   value="'.$price_slider_label_min.'" data-value="'.esc_attr($price_slider_label_min).'" />
+                        <input type="text" id="component_'.$price_max_id.'" class="component_adv_search_elementor_price_max price_active wpestate-price-popoup-field-max"   value="'.$price_slider_label_max.'" data-value="'.esc_attr($price_slider_label_max).'" />
+                        </div>';
+
+
+                        $return_string.='<div class="adv_search_slider">';
+
+                        $return_string.=' 
+                            <p>
+                                <label for="amount">'. esc_html__('Price range:','wprentals').'</label>
+                                <span id="'.$ammount_id.'"  style="border:0;  font-weight:bold;" data-default="'.esc_attr($price_slider_label).'" >'.$price_slider_label.'</span>
+                            </p>
+                            <div id="'.$slider_id.'"></div>';
+                        $custom_fields = wprentals_get_option('wpestate_currency',''); 
+                        if( !empty($custom_fields) && isset($_COOKIE['my_custom_curr']) &&  isset($_COOKIE['my_custom_curr_pos']) &&  isset($_COOKIE['my_custom_curr_symbol']) && $_COOKIE['my_custom_curr_pos']!=-1){
+                            $i=intval($_COOKIE['my_custom_curr_pos']);
+
+                            if( !isset($_GET['price_low']) && !isset($_GET['price_max'])  ){
+                                $min_price_slider       =   $min_price_slider * $custom_fields[$i][2];
+                                $max_price_slider       =   $max_price_slider * $custom_fields[$i][2];
+                            }
+                        }
+
+                     //   $return_string.='
+                       //    <input type="hidden" id="'.$price_low_id.'"  name="price_low"  value="'.$min_price_slider.'"/>
+                      //      <input type="hidden" id="'.$price_max_id.'"  name="price_max"  value="'.$max_price_slider.'"/>
+                      //  </div>';
+
+                        $return_string .= '
+                        <input type="hidden" id="' . $price_low_id . '"  name="price_low"  class="single_price_low" data-value="' . floatval($min_price_slider) . '" value="' . floatval($min_price_slider) . '"/>
+                        <input type="hidden" id="' . $price_max_id . '"  name="price_max"  class="single_price_max" data-value="' . floatval($max_price_slider) . '" value="' . floatval($max_price_slider) . '"/>
+                        <input type="hidden"  class="price_label_component" name="price_label_component"   value="'.esc_html($label_value).'" />';
+                        $return_string.='</div>';
+
+
+        $return_string .='
+        <div  class="wpestate-price-component-popoup-reset">' . esc_html__('Reset', 'wprentals') . '</div>
+        <div  class="wpestate-price-component-popoup-done">' . esc_html__('Done', 'wprentals') . '</div>
+    </div>
+</div>';
+        
+        return $return_string;
+    }
     
     
     /**
@@ -978,7 +1217,7 @@ function custom_field_dropdown_list($key,$i){
             $return.=  '<input type="text" autocomplete="off"   id="search_location'.$position.$wpestate_internal_search.'"      class="form-control" name="search_location" placeholder="'.$label_to_show.'" value="'.$search_location.'"  >';
         }
 
-
+        $inputId= "search_location".$position.$wpestate_internal_search;
         $return.='  <input type="hidden" autocomplete="off" id="advanced_city'.esc_attr($position).'"      class="form-control" name="advanced_city" data-value=""   value="'.esc_attr($advanced_city).'" >
                     <input type="hidden" autocomplete="off" id="advanced_area'.esc_attr($position).'"      class="form-control" name="advanced_area"   data-value="" value="'.esc_attr($advanced_area).'" >
                     <input type="hidden" autocomplete="off" id="advanced_country'.esc_attr($position).'"   class="form-control" name="advanced_country"   data-value="" value="'.esc_attr($advanced_country).'" >
@@ -988,27 +1227,16 @@ function custom_field_dropdown_list($key,$i){
 
         $availableTags=get_option('wpestate_autocomplete_data',true);
         $show_adv_search_general            =   wprentals_get_option('wp_estate_wpestate_autocomplete','');
-        if($show_adv_search_general=='no'){
+        $wpestate_autocomplete_use_list             =   wprentals_get_option('wp_estate_wpestate_autocomplete_use_list','');
+
+        if($show_adv_search_general=='no' && $wpestate_autocomplete_use_list!=='yes'){
 
                 $return.= '<script type="text/javascript">
                 //<![CDATA[
                 jQuery(document).ready(function(){
                     var availableTags = ['.$availableTags.'];
-                    jQuery("#search_location_autointernal,#search_locationmobile_autointernal,#search_locationsidebar_autointernal,#search_locationshortcode_autointernal,#search_location_filter_autointernal,#search_locationhalf_autointernal").autocomplete({
-                        source: function(request, response) {
-                            var results = jQuery.ui.autocomplete.filter(availableTags, request.term);
-                            response(results.slice(0, 10));
-                        },
-                        select: function (a, b) {
-                            jQuery(".stype").val(b.item.category);
-
-                            if (document.getElementById("search_location_filter_autointernal")) {
-
-                                jQuery("#search_location_filter_autointernal").val(b.item.label);
-                                wpestate_start_filtering_ajax_map(1);
-                            }
-                        }
-                    });
+                    var inputId="'.$inputId.'";
+                    wprentalsInitializeAutocomplete(availableTags,inputId);
                 });
                 //]]>
                 </script>';
@@ -1021,9 +1249,6 @@ function custom_field_dropdown_list($key,$i){
 
 
 
-
-
-
      /**
     *  get dropddown for rooms, bedrooms. bathrooms or guests
     *
@@ -1033,6 +1258,23 @@ function custom_field_dropdown_list($key,$i){
     */
 
     function get_rooms_select_list_dropdow($search_field,$label){
+
+
+        if($search_field=='property_bedrooms'){
+            $beds_values     = wprentals_get_option('wp_estate_beds_component_values', '');
+            if($beds_values!=''){
+                $values_array =  explode(',', $beds_values);
+                return $this->wprentals_custom_values_dropdowns($label,$values_array);
+            }
+      
+        }else if($search_field=='property_bathrooms'){
+            $baths_values    = wprentals_get_option('wp_estate_baths_component_values', '');
+            if($baths_values!=''){
+                $values_array =  explode(',', $baths_values);
+                return $this->wprentals_custom_values_dropdowns($label,$values_array);
+            }   
+        }
+
 
         $i=0;
         $rooms_select_list =   ' <li role="presentation" data-value="all">'.esc_html($label).'</li>';
@@ -1050,7 +1292,23 @@ function custom_field_dropdown_list($key,$i){
         return $rooms_select_list;
 
     }
-
+     /**
+    *  get dropddown for rooms, bedrooms. bathrooms or guests
+    *
+    *
+    * @since    3.1
+    * @access   public
+    */
+    function wprentals_custom_values_dropdowns($label,$values_array){
+        $select_list =   ' <li role="presentation" data-value="all">'.esc_html($label).'</li>';
+        if(is_array($values_array)){
+            foreach($values_array as $key=>$value){
+                $select_list.='<li data-value="'.floatval($value).'"  value="'.floatval($value).'">'.esc_html($value).'</li>';
+            } 
+        }
+        
+        return $select_list;
+    }
 
     /**
     *  display search form elementor
@@ -1196,3 +1454,79 @@ function wpestate_elementor_show_button($settings){
 
 //end class
 }
+
+
+/* 
+ * Function to display the orderby dropdown menu for property listings.
+ * It uses different sorting options depending on the context (search results, taxonomy, etc.).
+ */
+if (!function_exists('wprentals_display_orderby_dropdown')):
+
+    // Define the function if it doesn't already exist
+    function wprentals_display_orderby_dropdown($postID){
+
+        // Retrieve available sorting options
+        $sort_options_array = wpestate_listings_sort_options_array();
+
+        // Get the current listing filter option from the post meta
+        $listing_filter = get_post_meta($postID, 'listing_filter', true);
+
+        // If the current page is using the advanced search results template, use the corresponding filter option
+        if (is_page_template('advanced_search_results.php')) {
+            $listing_filter = intval(wprentals_get_option('wp_estate_property_list_type_adv_order', ''));
+        }
+
+        // If an order search query parameter is present, override the listing filter
+        if (isset($_GET['order_search'])) {
+            $listing_filter = intval($_GET['order_search']);
+        }
+
+        // Treat "0" as an empty selection so the default label is displayed
+        if (intval($listing_filter) === 0) {
+            $listing_filter = '';
+        }
+
+        // If we are on a taxonomy archive page, use the taxonomy-specific filter option
+        //if (is_tax()) {
+       //     $listing_filter = intval(wpresidence_get_option('wp_estate_property_list_type_tax_order', ''));
+        //}
+
+        // Initialize variables for dropdown output
+        $listings_list      = '';
+        $selected_order     = esc_html__('Default', 'wprentals');
+        $selected_order_num = '';
+
+        // Build the list items for the dropdown
+        foreach ($sort_options_array as $key => $value) {
+            $listings_list .= '<li role="presentation" class="wprentals_adv_listing_filters_headli" data-value="' . esc_attr($key) . '">' . esc_html($value) . '</li>';
+
+            if ($listing_filter !== '' && $key == $listing_filter) {
+                $selected_order     = $value;
+                $selected_order_num = $key;
+            }
+        }
+
+        // Allowed HTML for dropdown list items
+        $allowed_html_list = array(
+            'li' => array(
+                'role'       => array(),
+                'class'      => array(),
+                'data-value' => array(),
+            ),
+            'span' => array(
+                'class' => array(),
+            ),
+        );
+
+        // Output dropdown structure compatible with wpestate_start_filtering
+        echo '<div class="dropdown listing_filter_select">';
+        echo '    <div data-toggle="dropdown" id="a_filter_order" class="filter_menu_trigger" data-value="' . esc_attr($selected_order_num) . '">';
+        echo          esc_html($selected_order) . '<span class="caret caret_filter"></span>';
+        echo '    </div>';
+        echo '    <ul id="filter_order" class="dropdown-menu filter_menu" role="menu" aria-labelledby="a_filter_order">';
+        echo          wp_kses($listings_list, $allowed_html_list);
+        echo '    </ul>';
+        echo '</div>';
+
+    }
+endif;

@@ -3,8 +3,8 @@
       <a href="<?php print esc_url($link); ?>">
       <?php
 
-      $title=get_the_title();
-      echo ( html_entity_decode( $title ));
+      echo $title=get_sanitized_truncated_title(0, 0); 
+      
 
       ?>
       </a>

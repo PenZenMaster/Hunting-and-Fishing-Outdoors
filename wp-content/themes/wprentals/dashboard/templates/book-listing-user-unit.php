@@ -88,17 +88,15 @@ if ($wpestate_where_currency == 'before') {
 
                 print '<span class="confirmed_booking" data-invoice-confirmed="'.esc_attr($invoice_no).'" data-booking-confirmed="'.esc_attr($post->ID).'">'.esc_html__( 'Invoice Details','wprentals').'</span>';
                 print '<span class="trip_details" data-invoice-confirmed="'.esc_attr($invoice_no).'" data-booking-confirmed="'.esc_attr($post->ID).'">'.esc_html__( 'Trip Details','wprentals').'</span>';
-                $allow_review = get_post_meta($post->ID, 'allow_review', true);
-                 if($allow_review == 'yes'){
-                    if(strtotime($booking_to_date) < time() ){
-                        if ( get_post_meta($booking_id,'review_by_'.$userID,true) != 'has' ){
-                            print '<span class="tag-post-review post_review" data-bookid="'.esc_attr($post->ID).'" data-listing-review="'.esc_attr($booking_id).'">'.esc_html__( 'Post Review','wprentals').'</span>'; 
-                        }else{
-                            print '<span class="you_already_review">'.esc_html__( 'You already reviewed this property!','wprentals').'</span>';
-                        }
+
+                if(strtotime($booking_to_date) < time() ){
+                    if ( get_post_meta($booking_id,'review_by_'.$userID,true) != 'has' ){
+                        print '<span class="tag-post-review post_review" data-bookid="'.esc_attr($post->ID).'" data-listing-review="'.esc_attr($booking_id).'">'.esc_html__( 'Post Review','wprentals').'</span>';
                     }else{
-                        print '<span class="post_review_later">'.esc_html__( 'You can post the review after the trip!','wprentals').'</span>';
+                        print '<span class="you_already_review">'.esc_html__( 'You already reviewed this property!','wprentals').'</span>';
                     }
+                }else{
+                    print '<span class="post_review_later">'.esc_html__( 'You can post the review after the trip!','wprentals').'</span>';
                 }
 
             }else if( $booking_status=='waiting'){

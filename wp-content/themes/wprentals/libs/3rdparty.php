@@ -197,7 +197,7 @@ function wpestate_create_paypal_payment_plan($pack_id,$token){
     $paypal_status                  =   esc_html( wprentals_get_option('wp_estate_paypal_api','') );
     $billing_period                 =   get_post_meta($pack_id, 'biling_period', true);
     $billing_freq                   =   intval(get_post_meta($pack_id, 'billing_freq', true));
-    $pack_name                      =   get_the_title($pack_id);
+    $pack_name                      =   get_sanitized_truncated_title($pack_id, 0);
             
     $host   =   'https://api.sandbox.paypal.com';
     if($paypal_status=='live'){
@@ -336,7 +336,7 @@ function wpestate_create_paypal_payment_agreement($pack_id,$token){
     $paypal_status                  =   esc_html( wprentals_get_option('wp_estate_paypal_api','') );
     $billing_period                 =   get_post_meta($pack_id, 'biling_period', true);
     $billing_freq                   =   intval(get_post_meta($pack_id, 'billing_freq', true));
-    $pack_name                      =   get_the_title($pack_id);
+    $pack_name                      =   get_sanitized_truncated_title($pack_id, 0);
             
     $host   =   'https://api.sandbox.paypal.com';
     if($paypal_status=='live'){

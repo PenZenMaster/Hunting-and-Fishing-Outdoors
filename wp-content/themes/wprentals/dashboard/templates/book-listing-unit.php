@@ -65,26 +65,11 @@ $price_per_booking         =   wpestate_show_price_booking($booking_array['total
 
     <div class="info-container_booking book_listing_user_confirmed">
         <?php
-        if ($booking_status=='confirmed'){  
+        if ($booking_status=='confirmed'){
 
             if( $author!= $user_login ){
-              //Allow Review Button for listing owner
-              $allow_review = get_post_meta($post->ID, 'allow_review', true);
-              //Allow Review Button for listing owner
                 print '<span class="confirmed_booking" data-invoice-confirmed="'.esc_attr($invoice_no).'" data-booking-confirmed="'.esc_attr($post->ID).'">'.esc_html__( 'View Details','wprentals').'</span>';
                 print '<span class="cancel_user_booking" data-listing-id="'.esc_attr($booking_id).'"  data-booking-confirmed="'.esc_attr($post->ID).'">'.esc_html__( 'Cancel booking','wprentals').'</span>';
-
-                //Allow Review Button for listing owner starts here
-                if($allow_review == 'yes'){
-                    print '<span class="allow_user_review" data-booking-id="'.esc_attr($booking_id).'" data-allow-review="'.$allow_review.'" data-booking-confirmed="'.esc_attr($post->ID).'">'.esc_html__( 'Do not Allow for Review','wprentals').'</span>';
-                  }else{
-                      print '<span class="allow_user_review" data-booking-id="'.esc_attr($booking_id).'" data-allow-review="no" data-booking-confirmed="'.esc_attr($post->ID).'">'.esc_html__( 'Allow Review','wprentals').'</span>';
-                      //print '<p class="vdf_user_review vdf_review_not_allowed">User cannot review now</p>';
-                      
-                  }
-                  print '<p class="vdf_user_review vdf_review_allowed">User can review now</p>';
-                   //Allow Review Button for listing owner ends here
-              
             }else{
                 print '<span class="cancel_own_booking" data-listing-id="'.esc_attr($booking_id).'"  data-booking-confirmed="'.esc_attr($post->ID).'">'.esc_html__( 'Cancel my own booking','wprentals').'</span>';
             }
@@ -102,7 +87,10 @@ $price_per_booking         =   wpestate_show_price_booking($booking_array['total
           <span class="full_invoice_reminder" data-invoiceid="<?php print esc_attr($invoice_no); ?>" data-bookid="<?php print esc_attr($post->ID);?>"><?php esc_html_e('Send reminder email!','wprentals');?></span>
         <?php }
 
-
+        
+        if( $author!= $user_login ){
+            print '<span class="contact_client_reservation" data-bookid="'.esc_attr($post->ID).'">'.esc_html__( 'Contact Client','wprentals').'</span>';
+        }
         ?>
 
     </div>

@@ -36,7 +36,7 @@ if( isset( $_GET['listing_edit'] ) && is_numeric( $_GET['listing_edit'] ) ){
 
     $show_err                       =   '';
     $action                         =   'edit';
-    $submit_title                   =   get_the_title($edit_id);
+    $submit_title                   =   get_sanitized_truncated_title($edit_id, 0); 
     $submit_description             =   get_post_field('post_content', $edit_id);
 
     $action_array=array("description","location","price","details","images","amenities","calendar");
@@ -75,6 +75,7 @@ if( isset( $_GET['listing_edit'] ) && is_numeric( $_GET['listing_edit'] ) ){
             $property_country       =  esc_html   ( get_post_meta($edit_id, 'property_country', true) );
             $property_admin_area    =  esc_html   ( get_post_meta($edit_id, 'property_admin_area', true) );
             $instant_booking        =  esc_html   ( get_post_meta($edit_id, 'instant_booking', true) );
+            $wp_estate_replace_booking_form_local = esc_html   ( get_post_meta($edit_id, 'wp_estate_replace_booking_form_local', true) );  
             $children_as_guests       =  esc_html   ( get_post_meta($edit_id, 'children_as_guests', true) );
             $private_notes          =  esc_html   ( get_post_meta($edit_id, 'private_notes', true) );
             $checkin_message          =  esc_html   ( get_post_meta($edit_id, 'checkin_message', true) );
@@ -82,6 +83,11 @@ if( isset( $_GET['listing_edit'] ) && is_numeric( $_GET['listing_edit'] ) ){
             if($instant_booking==1){
                 $instant_booking = 'checked';
             }
+
+             if($wp_estate_replace_booking_form_local==1){
+                $wp_estate_replace_booking_form_local = 'checked';
+            }
+
              if($children_as_guests==1){
                 $children_as_guests = 'checked';
             }
@@ -155,8 +161,6 @@ if( isset( $_GET['listing_edit'] ) && is_numeric( $_GET['listing_edit'] ) ){
             $booking_start_hour             =   esc_html   ( get_post_meta($edit_id, 'booking_start_hour', true) );
             $booking_end_hour               =   esc_html   ( get_post_meta($edit_id, 'booking_end_hour', true) );
  
-            $morning_price                  =   floatval   ( get_post_meta($edit_id, 'morning_price', true) );
-            $afternoon_price                =   floatval   ( get_post_meta($edit_id, 'afternoon_price', true) );
             
             if($city_fee_percent==1){
                 $city_fee_percent= 'checked';
@@ -170,12 +174,6 @@ if( isset( $_GET['listing_edit'] ) && is_numeric( $_GET['listing_edit'] ) ){
 
             if($property_price==0){
                 $property_price='';
-            }
-            if($morning_price == 0){
-                $morning_price='';
-            }
-            if($afternoon_price == 0){
-                $afternoon_price='';
             }
 
             if($cleaning_fee==0){
@@ -276,11 +274,9 @@ if( isset( $_GET['listing_edit'] ) && is_numeric( $_GET['listing_edit'] ) ){
 
         }else if ($action =='amenities'){
 
-            $terms = get_terms( array(
-                'taxonomy' => 'property_features',
-                'hide_empty' => false,
-            ) );
-            foreach($terms as $key => $term){
+            $tax_terms_area =wpestate_get_cached_terms('property_features');
+
+            foreach($tax_terms_area as $key => $term){
                 $post_var_name      =   wpestate_limit45($term->slug);
 
                 if(isset( $_POST[$post_var_name])){

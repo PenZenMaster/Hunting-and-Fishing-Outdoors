@@ -10,7 +10,7 @@ $link       =   esc_url(get_permalink());
 <div class=" blog_featured <?php echo esc_attr($design_class); ?>">
     <div class="blog_unit places1" data-link="<?php print esc_url($link);?>"> 
         <?php 
-        $title      =   get_the_title();
+        $title      =   get_sanitized_truncated_title(0, 0);
         $preview    =   wp_get_attachment_image_src(get_post_thumbnail_id(), 'wpestate_property_featured');
         
         if( trim($design_class) =='type_1_class'){
@@ -32,7 +32,7 @@ $link       =   esc_url(get_permalink());
             print   '<div class="featured-article-date ">'. get_the_date().'</div>'; 
         }
         ?>
-        <a href="<?php echo esc_url(get_permalink()); ?>" class="blog-title-link"><?php print get_the_title(); ?></a>
+        <a href="<?php echo esc_url(get_permalink()); ?>" class="blog-title-link"><?php print get_sanitized_truncated_title(0, 0); ?></a>
         <?php
             if( trim($design_class) =='type_1_class'){
         ?>

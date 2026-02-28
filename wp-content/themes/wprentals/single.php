@@ -12,6 +12,9 @@ if ( 'wpestate_message' == get_post_type() || 'wpestate_invoice' == get_post_typ
 ?>
 
 <?php if (! function_exists('elementor_theme_do_location') || ! elementor_theme_do_location('single')) { ?>
+    <?php if (function_exists('wpestate_single_post_enabled') && wpestate_single_post_enabled()) { ?>
+        <?php wpestate_render_single_post(); ?>
+    <?php } else { ?>
     <div itemscope itemtype="http://schema.org/Article" id="post" <?php post_class('row content-fixed');?>>
     <?php   include(locate_template('templates/breadcrumbs.php'));?>
     <div class=" <?php print esc_attr( $wpestate_options['content_class']); ?> ">
@@ -94,9 +97,15 @@ if ( 'wpestate_message' == get_post_type() || 'wpestate_invoice' == get_post_typ
         </div>    
      
             
-        <!-- #related posts start-->    
-        <?php  include(locate_template('templates/related_posts.php'));?>    
-        <!-- #end related posts -->   
+        <!-- #related posts start-->
+        <?php
+        $related_post_id = isset( $post->ID ) ? $post->ID : 0;
+
+        if ( function_exists( 'wprentals_render_related_posts' ) ) {
+            echo wprentals_render_related_posts( $related_post_id );
+        }
+        ?>
+        <!-- #end related posts -->
         
         <!-- #comments start-->
         <?php if ( get_comments_number(get_the_ID() ) !==0 ) :?>
@@ -108,6 +117,7 @@ if ( 'wpestate_message' == get_post_type() || 'wpestate_invoice' == get_post_typ
     </div>
        
 <?php  include(get_theme_file_path('sidebar.php')); ?>
-</div>   
+</div>
+    <?php } ?>
 <?php } ?>
 <?php get_footer(); ?>

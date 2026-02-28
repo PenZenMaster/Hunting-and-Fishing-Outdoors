@@ -167,7 +167,19 @@
                <?php 
                 
                if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'header' ) ) {
-                    wprentals_show_header_wrapper($transparent_class,$wide_class,$header_map_class,$header_wide,$top_menu_hover_type,$wpestate_is_top_bar_class,$wpestate_header_type,$header_align);
+                    if ( function_exists( 'wpestate_header_enabled' ) && wpestate_header_enabled() ) {
+                        if ( ! function_exists( 'wpestate_before_header_enabled' ) || wpestate_before_header_enabled() ) {
+                            do_action( 'wpestate_before_header' );
+                        }
+
+                        do_action( 'wpestate_header_studio' );
+
+                        if ( ! function_exists( 'wpestate_after_header_enabled' ) || wpestate_after_header_enabled() ) {
+                            do_action( 'wpestate_after_header' );
+                        }
+                    } else {
+                        wprentals_show_header_wrapper($transparent_class,$wide_class,$header_map_class,$header_wide,$top_menu_hover_type,$wpestate_is_top_bar_class,$wpestate_header_type,$header_align);
+                    }
                 }
                 
                 
@@ -206,9 +218,28 @@
                                 }
                             } else {
                                 if ( is_singular('estate_agent') ) {
-                                    include(locate_template('templates/owner_details_header.php'));
+
+                                    if (function_exists('wpestate_single_agent_enabled') && wpestate_single_agent_enabled()) {
+
+                                    }else{
+                                        include(locate_template('templates/owner_details_header.php'));
+                                        print '  <div class="content_wrapper ' .esc_attr($wide_page_class). ' row ">';
+                                    }
+
+                                }else if( is_singular('post') ){
+
+                                        if (function_exists('wpestate_single_post_enabled') && wpestate_single_post_enabled()) {
+
+                                        }else{
+                                        
+                                            print '  <div class="content_wrapper ' .esc_attr($wide_page_class). ' row ">';
+                                        }
+
+
+                                }else{
+                                    print '  <div class="content_wrapper ' .esc_attr($wide_page_class). ' row ">';
                                 }
-                                print '  <div class="content_wrapper ' .esc_attr($wide_page_class). ' row ">';
+                            
                             }
                         }
                     } else {

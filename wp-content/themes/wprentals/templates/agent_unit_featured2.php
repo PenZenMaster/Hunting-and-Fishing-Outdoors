@@ -4,8 +4,14 @@ global $notes;
 
 $thumb_id   =   get_post_thumbnail_id($post->ID);
 $preview    =   wp_get_attachment_image_src($thumb_id, 'wpestate_property_featured');
+if (is_array($preview) && isset($preview[0])) {
+    $background_image = esc_url($preview[0]);
+} else {
+    $background_image = ''; // Fallback for when no image is available
+}
 
-$name       =   get_the_title($post->ID);
+
+$name       =   get_sanitized_truncated_title($post->ID, 0);
 $link       =   esc_url(get_permalink());
 $col_class = 4;
 if (isset($wpestate_options['content_class']) && $wpestate_options['content_class'] == 'col-md-12') {
@@ -20,7 +26,7 @@ $comments_data      =   wpestate_review_composer($post->ID);
         <?php print wpestate_display_verification_badge($owner_id,2);?>
 
         <div class="feature_agent_image_unit_wrapper_color" >
-            <div class="feature_agent_image_unit_wrapper"  style="background-image:url(<?php  print esc_url($preview[0]); ?>)">
+            <div class="feature_agent_image_unit_wrapper"  style="background-image:url(<?php  print esc_url($background_image); ?>)">
             </div>
         </div>
     

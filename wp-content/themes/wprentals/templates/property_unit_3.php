@@ -30,7 +30,7 @@ $measure_sys        =   '';
 
 $col_class  =   'col-md-6';
 $col_org    =   4;
- $title=get_the_title($post->ID);
+$title              =   get_sanitized_truncated_title($post->ID, 0);
 
 if(isset($is_shortcode) && $is_shortcode==1 ){
     $col_class='col-md-'.esc_attr($wpestate_row_number_col).' shortcode-col';
@@ -99,7 +99,10 @@ if( $schema_flag==1) {
             }
             
             if($preview_agent_img   ==  ''){
-                $preview_agent_img    =   get_stylesheet_directory_uri().'/img/default_user_small.png';
+                $preview_agent_img = wprentals_get_option('wp_estate_default_user_image', 'url');
+                if ( empty($preview_agent_img) ) {
+                    $preview_agent_img = get_stylesheet_directory_uri().'/img/default_user.png';
+                }
             }
 
             $agent_link         =   esc_url(get_permalink($agent_id));
@@ -127,6 +130,16 @@ if( $schema_flag==1) {
             <div class="title-container">
 
                 <?php
+                $total_stars = get_post_meta($post->ID , 'property_stars', TRUE);
+                if (!$total_stars) {
+                    $total_stars = wpestate_calculate_property_rating($post->ID );
+                }
+
+
+                $tmp_rating = json_decode($total_stars, TRUE);
+                $review_number = number_format((float)$tmp_rating['rating'], 2, '.', '');
+                print   '<meta itemprop="ratingValue" content="'.floatval($review_number).'"/>';
+
                 if(wpestate_has_some_review($post->ID)!==0){
                     print wpestate_display_property_rating( $post->ID );
                 }else{

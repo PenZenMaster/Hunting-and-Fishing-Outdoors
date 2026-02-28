@@ -27,7 +27,7 @@ foreach($comments as $comment) :
         $userid_agent   =   get_user_meta($userId, 'user_agent_id', true);
     }else{
         $userid_agent   =   get_user_meta($userId, 'user_agent_id', true);
-        $reviewer_name  =   get_the_title($userid_agent);    
+        $reviewer_name  =   get_sanitized_truncated_title($userid_agent, 0); 
         if($userid_agent==''){
             $reviewer_name=   $comment->comment_author;
         }

@@ -56,7 +56,7 @@ if ($agent_id!=0){
                     $agent_linkedin      = esc_html( get_post_meta($post->ID, 'agent_linkedin', true) );
                     $agent_pinterest     = esc_html( get_post_meta($post->ID, 'agent_pinterest', true) );
                     $link                = esc_url ( get_permalink() );
-                    $name                = get_the_title();
+                    $name                = get_sanitized_truncated_title(0, 0);
                     $content             = get_the_content();
                     $content             = apply_filters('the_content', $content);
                     $content             = str_replace(']]>', ']]&gt;', $content);
@@ -77,7 +77,10 @@ if ($agent_id!=0){
        }
 }   // end if !=0
 if($preview_img==''){
-    $preview_img    =   get_stylesheet_directory_uri().'/img/default_user.png';
+    $preview_img = wprentals_get_option('wp_estate_default_user_image', 'url');
+    if ( empty($preview_img) ) {
+        $preview_img = get_stylesheet_directory_uri().'/img/default_user.png';
+    }
 }
 $verified_class = ( wpestate_userid_verified($owner_id) ) ? ' verified' : '';
 
@@ -111,7 +114,8 @@ if($listing_page_type==2 || $listing_page_type==3 || $listing_page_type==4 || $l
         } 
     ?>
         
-    <?php if( wprentals_get_option('wp_estate_replace_booking_form','') == 'no'){ ?>    
+    <?php 
+        if( !wpestate_decide_to_use_contact_form($prop_id) ){ ?>  
         <div  id="contact_me_long" class=" owner_read_more " data-postid="<?php esc_attr(the_ID());?>" >
             <?php esc_html_e('Contact Owner','wprentals');?>
         </div>
@@ -138,7 +142,7 @@ if($listing_page_type==2 || $listing_page_type==3 || $listing_page_type==4 || $l
             }
         ?>
         
-        <?php if( wprentals_get_option('wp_estate_replace_booking_form','') == 'no'){ ?>    
+        <?php if( !wpestate_decide_to_use_contact_form($prop_id) ){ ?>     
             <div  id="contact_me_long" class="  " data-postid="<?php esc_attr(the_ID());?>" ><?php esc_html_e('Contact Owner','wprentals');?></div>
         <?php } ?>
         

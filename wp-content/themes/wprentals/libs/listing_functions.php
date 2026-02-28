@@ -255,7 +255,18 @@ if(!function_exists('wprentals_get_owner_section')):
                         $agent_id = get_the_ID(); 
                         $thumb_id           = get_post_thumbnail_id($agent_id);
                         $preview            = wp_get_attachment_image_src(get_post_thumbnail_id(), 'thumbnail');
-                        $preview_img         = $preview[0];
+     
+                        if(isset($preview[0])){
+                            $preview_img               =    $preview[0];
+                        }
+                    
+                        if($preview_img==''){
+                            $preview_img = wprentals_get_option('wp_estate_default_user_image', 'url');
+                            if ( empty($preview_img) ) {
+                                $preview_img = get_stylesheet_directory_uri().'/img/default-user.png';
+                            }
+                        }
+
                         $agent_skype         = esc_html( get_post_meta($agent_id, 'agent_skype', true) );
                         $agent_phone         = esc_html( get_post_meta($agent_id, 'agent_phone', true) );
                         $agent_mobile        = esc_html( get_post_meta($agent_id, 'agent_mobile', true) );
@@ -276,7 +287,7 @@ if(!function_exists('wprentals_get_owner_section')):
                         $agent_linkedin      = esc_html( get_post_meta($agent_id, 'agent_linkedin', true) );
                         $agent_pinterest     = esc_html( get_post_meta($agent_id, 'agent_pinterest', true) );
                         $link                = esc_url ( get_permalink() );
-                        $name                = get_the_title();
+                        $name                =  get_sanitized_truncated_title(0, 0);
                         $content             = get_the_content();
                         $content             = apply_filters('the_content', $content);
                         $content             = str_replace(']]>', ']]&gt;', $content);
@@ -299,7 +310,10 @@ if(!function_exists('wprentals_get_owner_section')):
 
 
         if($preview_img==''){
-            $preview_img    =   get_stylesheet_directory_uri().'/img/default_user.png';
+            $preview_img = wprentals_get_option('wp_estate_default_user_image', 'url');
+            if ( empty($preview_img) ) {
+                $preview_img = get_stylesheet_directory_uri().'/img/default_user.png';
+            }
         }
         $verified_class = ( wpestate_userid_verified($owner_id) ) ? ' verified' : '';
 
@@ -322,8 +336,7 @@ if(!function_exists('wprentals_get_owner_section')):
         
             } 
 
-        
-            if( wprentals_get_option('wp_estate_replace_booking_form','') == 'no'){  
+             if( !wpestate_decide_to_use_contact_form($prop_id) ){ 
                 $return_string.='<div  id="contact_me_long" class=" owner_read_more " data-postid="'. esc_attr($prop_id).'">
                     '.esc_html__('Contact Owner','wprentals').'
                 </div>';
@@ -356,8 +369,10 @@ endif;
 
 
 if(!function_exists('wprentals_get_similar_listing')):
-function wprentals_get_similar_listing($postID){
-       
+function wprentals_get_similar_listing($postID,$listings_number_input=3,$is_shortcode_input=0,$wpestate_row_number_col_input=''){
+
+    
+
         $is_widget              = 0;
         $wpestate_full_page     = 1;
         $counter                = 0;
@@ -433,6 +448,16 @@ function wprentals_get_similar_listing($postID){
         if(isset($show_sim_two) && $show_sim_two==1){
             $similar_no=2;
         }
+
+        if($is_shortcode_input==1){
+            global $is_shortcode;
+            global $wpestate_row_number_col;
+            $similar_no=$listings_number_input;
+            $is_shortcode=$is_shortcode_input;
+            $wpestate_row_number_col=$wpestate_row_number_col_input;
+        }
+
+
     
         $args=array(
             'showposts'             => $similar_no,      
@@ -539,152 +564,6 @@ if( !function_exists('wpestate_property_show_map')):
 
     }
 endif;
-
-
-
-
-
-/*
-*
-* Property reviews 
-*
-*/
-if( !function_exists('wpestate_property_show_reviews')):
-    function wpestate_property_show_reviews($postID ){
-        $return_string='';
-
-        $nr_of_reviews    = wp_count_comments( $postID );
-        $cpaged           = ( get_query_var( 'rp' ) != '' ) ? get_query_var( 'rp' ) : 1;
-        $reviews_per_page = 7;// set low for testing purposes
-        $review_pages     = ceil( $nr_of_reviews->approved / $reviews_per_page );
-        
-        $args = array(
-            'number'  => intval( $reviews_per_page ),
-            'post_id' => $postID, // use post_id, not post_ID
-            'paged'   => intval( $cpaged )
-        );
-        
-        $comments   =   get_comments($args);
-        $coments_no =   0;
-        $stars_total=   0;
-        $review_templates=' ';
-        
-        foreach($comments as $comment) :
-            $coments_no++;
-            
-            $userId         =   $comment->user_id;
-         
-            if($userId == 1){
-                $reviewer_name="admin";
-                $userid_agent   =   get_user_meta($userId, 'user_agent_id', true);
-            }else{
-                $userid_agent   =   get_user_meta($userId, 'user_agent_id', true);
-                $reviewer_name  =   get_the_title($userid_agent);    
-                if($userid_agent==''){
-                    $reviewer_name=   $comment->comment_author;
-                }
-                
-            }
-        
-            if($userid_agent==''){
-                $user_small_picture_id     =    get_the_author_meta( 'small_custom_picture' ,  $comment->user_id,true  );
-                $preview                   =    wp_get_attachment_image_src($user_small_picture_id,'wpestate_user_thumb');
-                $preview_img               =    '';
-                if(isset($preview[0])){
-                    $preview_img               =    $preview[0];
-                }
-              
-            }else{
-                $thumb_id           = get_post_thumbnail_id($userid_agent);
-                $preview            = wp_get_attachment_image_src($thumb_id, 'thumbnail');
-                $preview_img               =    '';
-                if(isset($preview[0])){
-                    $preview_img               =    $preview[0];
-                }
-            }
-        
-            if($preview_img==''){
-                   $preview_img    =   get_stylesheet_directory_uri().'/img/default-user.png';
-            }
-            
-            $rating= get_comment_meta( $comment->comment_ID , 'review_stars', true );
-            $review_templates.='  
-                 <div class="listing-review">
-                             
-        
-                                <div class="col-md-8 review-list-content norightpadding">
-                                    <div class="reviewer_image"  style="background-image: url('.esc_url($preview_img).');"></div>
-                                  
-                                    <div class="reviwer-name">'.esc_html($reviewer_name).'</div>
-                                    
-                                    <div class="review-date">
-                                        '.esc_html__( 'Posted on ','wprentals' ). ' '. get_comment_date('j F Y',$comment->comment_ID).' 
-                                    </div>
-                                    
-                                    <div class="property_ratings">';
-        
-                                    $review_templates .= wpestate_display_rating($rating, 'total');
-                                    $total_rating = wpestate_get_star_total_rating($rating);
-                                    $review_templates.=' <span class="ratings-star">( ' . $total_rating . ' ' . esc_html__( 'of','wprentals').' 5)</span>
-                                    </div>
-        
-                                    <div class="review-content">
-                                        '. $comment->comment_content;
-                                        
-                                        $owner_reply = get_comment_meta($comment->comment_ID,'owner_reply',true);   
-           
-                                        if($owner_reply!=''){
-                                            $review_templates.='<div class="review-content-owner-reply">';
-                                            $review_templates.= '<h4 class="reviwer-name">'.esc_html('Owner Reply','wprentals').'</h4>';
-                                            $review_templates.= $owner_reply;
-                                            $review_templates.='</div>';
-                                        }
-
-
-                                    $review_templates.='</div>
-                                </div>
-                            </div>       ';
-        
-        endforeach;
-        
-        if($coments_no>0){
-            $list_rating = get_post_meta($postID, 'property_stars', TRUE);
-            if ( ! $list_rating ) {
-                $list_rating = wpestate_calculate_property_rating( $postID );
-            }
-        
-        $return_string.='    
-        <div class="property_page_container for_reviews">
-            <div class="listing_reviews_wrapper">
-                    <div class="listing_reviews_container">
-                        <h3 id="listing_reviews" class="panel-title">
-                               '.sprintf( _n('%d Review', '%d Reviews', $coments_no, 'wprentals'), $nr_of_reviews->approved ).'                                                            
-                        </h3>
-                        
-                        <div class="property_ratings">
-                            '.wpestate_display_rating($list_rating, 'complete').'
-                        </div>
-        
-                        '.trim($review_templates);
-                        ob_start();
-                        wpestate_review_pagination($review_pages, 2);
-                        $pagination=ob_get_contents();
-                        ob_end_clean();
-
-                        $return_string.=$pagination.'
-                </div>
-              
-            </div>
-        </div>';
-        } 
-    
-        return $return_string;
-    }
-endif;
-
-
-
-
 
 
 
@@ -890,17 +769,7 @@ if (!function_exists('wpestate_property_gallery_section')):
            
         <div class="panel-body imagebody imagebody_new">';
              
-            $arguments = array(
-                'numberposts'       =>  -1,
-                'post_type'         =>  'attachment',
-                'post_parent'       =>  $post_id,
-                'post_status'       =>  null, 
-                'orderby'           =>  'menu_order',
-                'post_mime_type'    =>  'image',
-                'order'             =>  'ASC'
-            );
-          
-            $post_attachments   = get_posts($arguments);
+            $post_attachments=wpestate_generate_property_slider_image_ids($post_id,true);
 
             $count=0;
 
@@ -909,7 +778,10 @@ if (!function_exists('wpestate_property_gallery_section')):
 
             
             $total_pictures=count ($post_attachments);
-            foreach ($post_attachments as $attachment) {
+            foreach ($post_attachments as $attachment_id) {
+                if (!wp_attachment_is_image($attachment_id)) {
+                    continue; // Skip this attachment if it's not an image
+                }
                 $count++;  
             
                 if($total_pictures<=4){
@@ -918,7 +790,7 @@ if (!function_exists('wpestate_property_gallery_section')):
                         $new_total_pictures=3;
                     }
             
-                    $full_prty          = wp_get_attachment_image_src($attachment->ID, 'wpestate_property_listings_page');
+                    $full_prty          = wp_get_attachment_image_src($attachment_id, 'wpestate_property_listings_page');
                     if($count!=4){
                         if( $count <= $new_total_pictures-1){
                             $return_string.= '<div class="col-md-4 image_gallery" style="background-image:url('.esc_url($full_prty[0]).')"> <div class="img_listings_overlay" ></div> </div>';
@@ -932,17 +804,17 @@ if (!function_exists('wpestate_property_gallery_section')):
             
                 if( $total_pictures> 4){
                     if($count <= 3 ){
-                        $full_prty          = wp_get_attachment_image_src($attachment->ID, 'wpestate_property_places');
+                        $full_prty          = wp_get_attachment_image_src($attachment_id, 'wpestate_property_places');
                         $return_string.=  '<div class="col-md-4 image_gallery" style="background-image:url('.esc_url($full_prty[0]).')"> <div class="img_listings_overlay" ></div> </div>';
             
                     }
                     if($count ==4 ){
-                        $full_prty          = wp_get_attachment_image_src($attachment->ID, 'wpestate_property_places');
+                        $full_prty          = wp_get_attachment_image_src($attachment_id, 'wpestate_property_places');
                         $return_string.=  '<div class="col-md-8 image_gallery" style="background-image:url('.esc_url($full_prty[0]).')  ">   <div class="img_listings_overlay" ></div></div>';
                     }
             
                     if($count ==5 ){
-                        $full_prty          = wp_get_attachment_image_src($attachment->ID, 'wpestate_property_listings_page');
+                        $full_prty          = wp_get_attachment_image_src($attachment_id, 'wpestate_property_listings_page');
                         $return_string.=  '<div class="col-md-4 image_gallery" style="background-image:url('.esc_url($full_prty[0]).')  ">
                             <div class="img_listings_overlay img_listings_overlay_last" ></div>
                             <span class="img_listings_mes">'.esc_html__( 'See all','wprentals').' '.esc_html($total_pictures).' '.esc_html__( 'photos','wprentals').'</span></div>';
@@ -1104,10 +976,8 @@ function wpestate_features_and_ammenities_wrapper($post_id, $wpestate_property_f
     $return_string='<div class="panel-wrapper features_wrapper">';
 
 
-    $terms = get_terms(array(
-                'taxonomy' => 'property_features',
-                'hide_empty' => false,
-            ));
+ 
+    $terms =wpestate_get_cached_terms('property_features');
     if (count($terms)!=0 && !count($terms)!=1) {
         if ($wpestate_property_features_text =='') {
             $return_string.= '<a class="panel-title" id="listing_ammenities" data-toggle="collapse" data-parent="#accordion_prop_addr" href="#collapseFour"><span class="panel-title-arrow"></span>'.esc_html__('Amenities and Features', 'wprentals').'</a>';
@@ -1226,7 +1096,7 @@ if (!function_exists('wprentals_card_owner_name')):
         
         $author_id          =   wpsestate_get_author($post_id);
         $agent_id           =   get_user_meta($author_id, 'user_agent_id', true);
-        $name               =   get_the_title($agent_id);
+        $name               =   get_sanitized_truncated_title($agent_id, 0);
 
         if($name==''){
             $first_name             =   get_the_author_meta( 'first_name' , $author_id );
@@ -1246,7 +1116,7 @@ function wprentals_icon_bar_design()
 {
     global $post;
     $custom_listing_fields = wprentals_get_option('wp_estate_property_page_header', '');
-
+    $wp_estate_property_page_icon_area_text_position = wprentals_get_option('wp_estate_property_page_icon_area_text_position', '');
 
 
 
@@ -1264,14 +1134,19 @@ function wprentals_icon_bar_design()
             if ($value!='') {
                 print '<span class="no_link_details custom_prop_header">';
 
-                if ($field[0]!='') {
-                    print '<strong>'.esc_html(stripslashes($field[0])).'</strong> ';
-                } elseif ($field[3]!='') {
-                    print '<img src="'.esc_url($field[3]).'" alt="'.esc_html__('icon', 'wprentals').'">';
-                } elseif ($field[1]!='') {
-                    print '<i class="'.esc_attr($field[1]).'"></i>';
-                }
+                    if ($field[0]!='' && $wp_estate_property_page_icon_area_text_position=='start') {
+                        print '<strong>'.esc_html(stripslashes($field[0])).'</strong> ';
+                    } 
+                    if ($field[3]!='') {
+                        print '<img src="'.esc_url($field[3]).'" alt="'.esc_html__('icon', 'wprentals').'">';
+                    } elseif ($field[1]!='') {
+                        print '<i class="'.esc_attr($field[1]).'"></i>';
+                    }
+                  
                 print '<span>';
+
+
+
                 $measure_sys        =   esc_html(wprentals_get_option('wp_estate_measure_sys', ''));
                 if ($field[2]=='property_size') {
                     print number_format($value) . ' '.$measure_sys.'<sup>2</sup>';
@@ -1279,6 +1154,9 @@ function wprentals_icon_bar_design()
                     print trim($value);
                 }
 
+                if ($field[0]!='' && $wp_estate_property_page_icon_area_text_position=='end') {
+                    print '<strong style="margin-left:5px;">'.esc_html(stripslashes($field[0])).'</strong> ';
+                } 
                 print '</span>';
 
                 print '</span>';
@@ -1296,12 +1174,12 @@ function wprentals_icon_bar_classic($property_action, $property_category, $renta
 {
     if ($property_action!='') {
 
-        print '<div class="actions_icon category_details_wrapper_icon">'.trim($property_action).' <span class="property_header_separator">|</span></div>
+        print '<div class="no_link_details ">'.wpestate_return_svg_icon('building.svg').trim($property_action).' <span class="property_header_separator">|</span></div>
         <div class="schema_div_noshow"  itemprop="actionStatus">'.strip_tags($property_action).'</div>';
     }
 
     if ($property_category!='') {
-        print'<div class="types_icon category_details_wrapper_icon">'. trim($property_category).'<span class="property_header_separator">|</span></div>
+        print'<div class="no_link_details ">'.wpestate_return_svg_icon('living.svg'). trim($property_category).'<span class="property_header_separator">|</span></div>
         <div class="schema_div_noshow"  itemprop="additionalType">'. strip_tags($property_category).'</div>';
     }
 
@@ -1309,19 +1187,27 @@ function wprentals_icon_bar_classic($property_action, $property_category, $renta
     if ($rental_type==0) {
         if ($guests==0) {
             //nothing
-        } elseif ($guests==1) {
-            print '<div class="no_link_details category_details_wrapper_icon guest_header_icon">'.$guests.' '. esc_html__('Guest', 'wprentals').'</div>';
-        } else {
-            print '<div class="no_link_details category_details_wrapper_icon guest_header_icon">'.$guests.' '. esc_html__('Guests', 'wprentals').'</div>';
-        }
+        } else{
+            $guest_text = sprintf(
+                _n('%s Guest', '%s Guests', $guests, 'wprentals'),
+                number_format_i18n($guests)
+            );
+            print '<div class="no_link_details  ">'.wpestate_return_svg_icon('users.svg').esc_html($guest_text).'</div>';
+    
+        } 
+        
+        
+    
 
         print '<span class="property_header_separator">|</span>';
+            $bedrooms_text = sprintf(
+                _n('%s Bedroom', '%s Bedrooms', $bedrooms, 'wprentals'),
+                number_format_i18n($bedrooms)
+            );
 
-        if ($bedrooms==1) {
-            print  '<span class="no_link_details category_details_wrapper_icon bedrooms_header_icon">'.$bedrooms.' '.esc_html__('Bedroom', 'wprentals').'</span>';
-        } else {
-            print  '<span class="no_link_details category_details_wrapper_icon bedrooms_header_icon">'.$bedrooms.' '.esc_html__('Bedrooms', 'wprentals').'</span>';
-        }
+        print  '<span class="no_link_details  ">'.wpestate_return_svg_icon('bed.svg').esc_html($bedrooms_text).'</span>';
+       
+     
         print '<span class="property_header_separator">|</span>';
 
     }
@@ -1344,170 +1230,6 @@ function wp_get_attachment($attachment_id)
         'title' => $attachment->post_title
     );
 }
-///////////////////////////////////////////////////////////////////////////////////////////
-// List features and ammenities
-///////////////////////////////////////////////////////////////////////////////////////////
-if (!function_exists('wpestate_build_terms_array')):
-    function wpestate_build_terms_array()
-    {
-        $parsed_features = wpestate_request_transient_cache('wpestate_get_features_array');
-        if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
-            $parsed_features=false;
-        }
-        if ($parsed_features===false) {
-            $parsed_features=array();
-            $terms = get_terms(array(
-                    'taxonomy' => 'property_features',
-                    'hide_empty' => false,
-                    'parent'=> 0
-
-                ));
-
-
-            foreach ($terms as $key=>$term) {
-                $temp_array=array();
-                $child_terms = get_terms(array(
-                        'taxonomy' => 'property_features',
-                        'hide_empty' => false,
-                        'parent'=> $term->term_id
-                    ));
-
-                $children=array();
-                if (is_array($child_terms)) {
-                    foreach ($child_terms as $child_key=>$child_term) {
-                        $children[]=$child_term->name;
-                    }
-                }
-
-                $temp_array['name']=$term->name;
-                $temp_array['childs']=$children;
-
-                $parsed_features[]=$temp_array;
-            }
-            if ( !defined( 'ICL_LANGUAGE_CODE' ) ) {
-                wpestate_set_transient_cache('wpestate_get_features_array', $parsed_features, 60*60*4);
-            }
-                
-        }
-
-        return $parsed_features;
-    }
-endif;
-
-
-
-
-
-if (!function_exists('estate_listing_features')):
-    function estate_listing_features($post_id)
-    {
-        $single_return_string   =   '';
-        $multi_return_string    =   '';
-        $show_no_features       =   esc_html(wprentals_get_option('wp_estate_show_no_features', ''));
-        $property_features      =   get_the_terms($post_id, 'property_features');
-        $parsed_features        =   wpestate_build_terms_array();
-
-
-
-        if (is_array($parsed_features)) {
-            foreach ($parsed_features as $key => $item) {
-                if (count($item['childs']) >0) {
-                    $multi_return_string_part=  '<div class="listing_detail col-md-12 feature_block_'.$item['name'].' ">';
-                    $multi_return_string_part.=  '<div class="feature_chapter_name col-md-12">'.$item['name'].'</div>';
-
-                    $multi_return_string_part_check='';
-                    if (is_array($item['childs'])) {
-                        foreach ($item['childs'] as $key_ch=>$child) {
-                            $temp   = wpestate_display_feature($show_no_features, $child, $post_id, $property_features);
-                            $multi_return_string_part .=$temp;
-                            $multi_return_string_part_check.=$temp;
-                        }
-                    }
-                    $multi_return_string_part.=  '</div>';
-
-                    if ($multi_return_string_part_check!='') {
-                        $multi_return_string.=$multi_return_string_part;
-                    }
-                } else {
-                    $single_return_string .= wpestate_display_feature($show_no_features, $item['name'], $post_id, $property_features);
-                }
-            }
-        }
-        if (trim($single_return_string)!='') {
-            $multi_return_string= $multi_return_string.'<div class="listing_detail col-md-12 feature_block_others "><div class="feature_chapter_name col-md-12">'.esc_html__('Other Features ', 'wprentals').'</div>'.$single_return_string.'</div>';
-        }
-        return $multi_return_string;
-    }
-endif; // end   estate_listing_features
-
-
-
-
-
-
-
-if (!function_exists('wpestate_display_feature')):
-    function wpestate_display_feature($show_no_features, $term_name, $post_id, $property_features)
-    {
-        $return_string  =   '';
-        $term_object    =   get_term_by('name', $term_name, 'property_features');
-        $term_meta      =   get_option("taxonomy_$term_object->term_id");
-        $term_icon      =   '';
-        $term_icon_wp   =   '';
-
-
-        if ($term_meta!='') {
-            $term_icon =  '<img class="property_features_svg_icon" src="'.$term_meta['category_featured_image'].'" >';
-      
-            if( $term_meta['category_featured_image'] !='' ){
-                $term_icon_wp = wp_remote_get($term_meta['category_featured_image']);
-              //  $term_icon='<svg width="18" height="18" style="color:#a8fc81;fill:#a8fc81;">       
-               // <image xlink:href="'.esc_url($term_meta['category_featured_image'] ).'"  width="18" height="18"/>    
-                //</svg>';
-            }
-
-
-            if (is_wp_error($term_icon_wp)) {
-                $term_icon='';
-            } else {
-                $term_icon=wp_remote_retrieve_body($term_icon_wp);
-
-               //$term_icon='<svg width="18" height="18">       
-                //    <image xlink:href="'.esc_url($term_meta['category_featured_image']).'" src="yourfallback.png" width="18" height="18"/>    
-                 //   </svg>';
-            }
-
-     
-        }
-
-        if ($show_no_features!='no') {
-            if (is_array($property_features) && array_search($term_name, array_column($property_features, 'name')) !== false) {
-                if ($term_icon=='') {
-                    $term_icon='<i class="fas fa-check checkon"></i>';
-                }
-
-                $return_string .= '<div class="listing_detail col-md-6">'.$term_icon. trim($term_name) . '</div>';
-            } else {
-                if ($term_icon=='') {
-                    $term_icon='<i class="fas fa-times"></i>';
-                }
-                $return_string  .=  '<div class="listing_detail not_present col-md-6">'.$term_icon. trim($term_name). '</div>';
-            }
-        } else {
-            if (is_array($property_features) &&  array_search($term_name, array_column($property_features, 'name')) !== false) {
-                if ($term_icon=='') {
-                    $term_icon='<i class="fas fa-check checkon"></i>';
-                }
-                $return_string .=  '<div class="listing_detail col-md-6">'.$term_icon. trim($term_name) .'</div>';
-            }
-        }
-
-        return $return_string;
-    }
-endif;
-
-
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -2563,7 +2285,7 @@ if (!function_exists('estate_listing_details')):
                 $label = stripslashes($label);
 
                 if ($label!='' && $value!='') {
-                    $return_string.= '<div class="listing_detail list_detail_prop_'.(strtolower(str_replace(' ', '_', $label))).' col-md-6"><span class="item_head">'.ucwords($label).':</span> ';
+                    $return_string.= '<div class="listing_detail list_detail_prop_'.(strtolower(str_replace(' ', '_', $label))).' col-md-6"><span class="item_head">'.$label.':</span> ';
                     $return_string.= stripslashes($value);
                     $return_string.='</div>';
                 }
@@ -2573,7 +2295,7 @@ if (!function_exists('estate_listing_details')):
 
         //END Custom Fields
         $i=0;
-        $custom_details = get_post_meta($post_id, 'property_custom_details', true);
+        $custom_details = maybe_unserialize(get_post_meta($post_id, 'property_custom_details', true));
 
         if (!empty($custom_details)) {
             foreach ($custom_details as $label=>$value) {
@@ -2585,7 +2307,7 @@ if (!function_exists('estate_listing_details')):
                 $label = stripslashes($label);
 
                 if ($value!='') {
-                    $return_string.= '<div class="listing_detail list_detail_prop_'.(strtolower(str_replace(' ', '_', $label))).' col-md-6"><span class="item_head">'.ucwords($label).':</span> ';
+                    $return_string.= '<div class="listing_detail list_detail_prop_'.(strtolower(str_replace(' ', '_', $label))).' col-md-6"><span class="item_head">'.$label.':</span> ';
                     $return_string.= stripslashes($value);
                     $return_string.='</div>';
                 }

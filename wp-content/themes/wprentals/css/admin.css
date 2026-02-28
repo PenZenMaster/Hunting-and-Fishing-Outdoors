@@ -23,9 +23,6 @@ body.login div#login h1 a {
     height: 300px!important;
 }
 
-.redux-container{
-    background: #3e4454;
-}
 .redux-container .redux-main{
     background: #fff!important;
     border-left: 1px solid #ffffff;
@@ -252,6 +249,8 @@ body.login div#login h1 a {
     min-width: 80px;
     max-width: 80px;
     margin-top: -5px!important;
+    line-height: 30px;
+
 }
 
 .wp-picker-container input[type=text].wp-color-picker {
@@ -279,8 +278,7 @@ body.login div#login h1 a {
 #wp_estate_custom_css-editor {
     height: 500px!important;
 }
-
-.redux-container .redux-group-tab {
+.wp-admin .redux-container .redux-group-tab {
     padding: 10px 30px;
 }
 .redux-container .redux_field_th {
@@ -368,14 +366,27 @@ textarea#wp_estate_copyright_message-textarea,
     margin: 20px 0px;
 }
 
+.redux-container textarea{
+    border: 1px solid #ddd;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+    background-color: #fff;
+    color: #32373c;
+}
 
-/*.toplevel_page_WpRentals select,
-.redux-container select{
-        height: 36px!important;;
-}*/
+.redux-container  select {
+    background-color: #fff ;
+    border: 1px solid #ddd ;
+    max-width: 100%;;
+    width: 100%;
+}
+.redux-main .button.remove-image:hover, .redux-main .removeCSS:hover {
+    color: #313643;
+}
 
-.toplevel_page_WpRentalsChildtheme input,
-.toplevel_page_WpRentals input {
+
+/* .wp-admin .redux-container input, */
+.wp-admin .toplevel_page_WpRentalsChildtheme input,
+.wp-admin .toplevel_page_WpRentals input {
     box-shadow: none !important;
     background-clip: padding-box;
     -moz-background-clip: padding;
@@ -383,7 +394,6 @@ textarea#wp_estate_copyright_message-textarea,
     vertical-align: middle;
     height: 36px;
     padding: 7px 9px;
-/*    min-width: 300px;*/
     max-width: 300px;
     -webkit-appearance: none;
     border: 1px solid #ddd!important;
@@ -393,6 +403,28 @@ textarea#wp_estate_copyright_message-textarea,
     outline: 0;
     transition: 50ms border-color ease-in-out;
 }
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+}
+.select2-container--default .select2-selection--single .select2-selection__clear {
+    height: 33px;
+}
+.redux-container .select2-container .select2-selection--single{
+   height: 36px;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 36px;
+    height: 36px;
+}
+
+.redux-container .select2-container--default.select2-container--focus .select2-selection--multiple{
+    border: 1px solid #ddd!important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.07)!important;
+    background-color: #fff!important;
+    color: #32373c!important;
+}
+
 #wp_estate_mandatory_page_fields-select,
 #wp_estate_submission_page_fields-select{
     width:300px!important;
@@ -423,7 +455,8 @@ textarea#wp_estate_copyright_message-textarea,
     height: 25px!important;
     min-width: auto;
 }
-
+/* #redux_bottom_save,
+#redux_top_save,
 #redux_save_sticky,
 #redux_save{
     height: 36px;
@@ -435,8 +468,19 @@ textarea#wp_estate_copyright_message-textarea,
     background-color: #4ecb8f!important;
     color: #fff!important;
     border-color: #4ecb8f!important;
+} */
+
+.redux-main .redux_field_search {
+    top: 5px;
+    right: 526px;
+    min-height: 36px;
 }
 
+/* #redux-defaults-bottom,
+#redux-defaults-section-bottom,
+#redux-defaults-top,
+#redux-defaults,
+#redux-defaults-section-top,
 #redux-defaults-section-sticky,
 #redux-defaults-sticky,
 #redux-defaults-section,
@@ -450,11 +494,9 @@ textarea#wp_estate_copyright_message-textarea,
     background-color: #a0a5aa!important;
     color: #fff!important;
     border-color: #7482a8!important;
-}
+} */
 
 input[type=checkbox]:checked:before {
-
-    color: #1e8cbe;
 
 }
 .toplevel_page_WpRentalsChildtheme input[type=checkbox]:checked:before,
@@ -490,12 +532,12 @@ input[type=checkbox]:checked:before {
     display: inline-block;
 }
 
-#custom_fields_search select,
+/* #custom_fields_search select,
 #custom_fields_wrapper select,
 #custom_fields  select {
     width:140px!important;
     min-width:140px!important;
-}
+} */
 
 .modal_notice{
     position: absolute;
@@ -770,6 +812,7 @@ input[type=checkbox]:checked:before {
     float:left;
     margin-right:50px;
     margin-bottom: 15px;
+    flex: 1;
 }
 
 .field_item_unit strong {
@@ -779,16 +822,16 @@ input[type=checkbox]:checked:before {
 }
 
 
-.field_item input {
+/* .field_item input {
     width: 125px!important;
     min-width: 125px!important;
-}
+} */
 
 .field_row{
     margin-bottom: 15px;
     float: left;
     width: 100%;
-    border-bottom: 1px solid #FFE7E7;
+    display: flex;
     padding-bottom: 15px;
 }
 
@@ -820,7 +863,7 @@ input[type=checkbox]:checked:before {
     width: 100%;
 }
 
-.redux-container-wpestate_custom_fields_list .deletefieldlink,
+/* .redux-container-wpestate_custom_fields_list .deletefieldlink,
 .redux-container-wpestate_currency .deletefieldlink {
     margin-left: 0px;
     color: #ef521d;
@@ -836,11 +879,11 @@ input[type=checkbox]:checked:before {
     line-height: 36px;
     margin-top: 17px;
     text-decoration: none;
-}
+} */
 
 
 
-#add_field2,
+/* #add_field2,
 #add_field{
     margin: 10px 0px 17px 0px;
     background-color: #4ecb8f;
@@ -848,13 +891,13 @@ input[type=checkbox]:checked:before {
     padding: 10px;
     text-decoration: none;
     display: inline-block;
-}
+} */
 
 .redux-main #redux-sticky #info_bar .expand_options {
     display: none!important;
 }
 
-#add_field2 {
+/* #add_field2 {
     background-color: #313643!important;
     color: #f3f4f7!important;
     min-height: 36px;
@@ -869,7 +912,7 @@ input[type=checkbox]:checked:before {
     text-decoration: none;
     line-height: 36px;
     height: 36px;
-}
+} */
 
 #add_curency2,
 #add_curency{
@@ -947,10 +990,7 @@ input[type=checkbox]:checked:before {
     padding-bottom: 15px;
 }
 
-.meta-box-sortables select {
-    max-width: 306px;
-    width: 100%;
-}
+
 
 .third-meta-options {
     width: 33%;
@@ -971,10 +1011,10 @@ input[type=checkbox]:checked:before {
     display:block!important;
 }
 
-.edit-comments-php .response.column-response {
+/* .edit-comments-php .response.column-response {
     width: 100%;
     display: table-cell!important;
-}
+} */
 /* Patterns admin
 /////////////////////////////////////////////////////////////////////////////////////*/
 
@@ -1452,7 +1492,7 @@ input[type=checkbox]:checked:before {
 }
 
 .colorpickerHolder div{
-    background:transparent url(css-images/select2.png) repeat scroll center center;
+    
     height:30px;
     left:4px;
     top:4px;
@@ -1470,59 +1510,6 @@ input[type=checkbox]:checked:before {
 
  ========================================================================*/
 
-.tabs {
-    display: block;
-    width:700px;
-    margin-top:30px;
-    border:1px solid #CCC;
-}
-
-.tabs ul {
-    margin: 0;
-    padding: 0;
-    height: 20px;
-    border-bottom: 1px solid #CCC;
-}
-
-.tabs li {
-    display: block;
-    width:200px;
-    padding: 0;
-    margin: 0 10px 0 0;
-    line-height: 30px;
-    float: left;
-    color: #999;
-    cursor: default;
-}
-
-.tabs li a {
-    display: block;
-    width: auto;
-    height: 29px;
-    padding: 0 9px;
-    line-height: 30px;
-    border: 1px solid #CCC;
-    margin: 0 -1px 0 0;
-    color: #05390a;
-    background: #5dbb73;
-    text-decoration: none;
-}
-
-.tabs li a:hover {
-    text-decoration: none;
-}
-
-.tabs li.active a {
-    height: 30px;
-    font-weight: bold;
-    background: #ebffef;
-    border-width: 1px 1px 0 1px;
-}
-
-.tabs div {
-    display: none;
-    padding: 20px 10px;
-}
 
 #googleMap > div{
     display: block;
@@ -2120,12 +2107,12 @@ textarea, input, select {
     min-width: 300px;
 }
 
-#custom_fields_search select,
+/* #custom_fields_search select,
 #custom_fields_wrapper select,
 #custom_fields  select {
     width:135px!important;
     min-width:135px!important;
-}
+} */
 
 
 
@@ -2914,17 +2901,6 @@ textarea, input, select {
     width: 250px;
 }
 
-#wpestate_dashboard_links form{
-    margin-top: 10px;
-}
-
-#wpestate_set_payments,
-#wpestate_dashboard_new_property,
-#wpestate_dashboard_welcome,
-#wpestate_dashboard_links{
-    height: 287px;
-}
-
 #start_wprentals_setup:hover{
     background-color: #b881fc;
     border-color: #b881fc;
@@ -2943,12 +2919,6 @@ textarea, input, select {
     max-width: 200px;
     height: auto
 }
-
-.wpestate_dashboard_welcome .dashboard_widget_logo {
-    width:130px;
-    height: auto;
-}
-
 
 .wpestate_admin_menu ul li ul {
     visibility: hidden;
@@ -3127,10 +3097,6 @@ textarea, input, select {
     margin-top: 0px;
 }
 
-#category_featured_image_button {
-    padding-top: 0px!important;
-    margin-top: 0px;
-}
 
 
 /*!
@@ -3511,7 +3477,7 @@ textarea, input, select {
     border: 1px solid #ccc;
     position: absolute;
     width: 34px;
-    height: 34px;
+    height: 33px;
     top: 15px;
     right: 0px;
     line-height: 34px;
@@ -3648,11 +3614,11 @@ textarea, input, select {
     overflow: auto;
 }
 
-.property_options_wrapper_list {
+/* .property_options_wrapper_list {
     float: left;
     width: 220px;
     height: 100%;
-}
+} */
 .property_tab_item.active_tab {
     color: #3a4659;
     background: #fdfdfd;
@@ -3660,17 +3626,17 @@ textarea, input, select {
 .property_tab_item.active_tab {
     display: block;
 }
-.property_tab_item {
+/* .property_tab_item {
     width: 200px;
     background: #3C90BE;
     color: #fff;
     padding: 10px;
     border-bottom: 1px solid #79b1d0;
     cursor: pointer;
-}
-.property_options_content_wrapper {
+} */
+/* .property_options_content_wrapper {
     padding-left: 230px;
-}
+} */
 
 #new_tabbed_interface .inside {
     margin: 0px;
@@ -3682,11 +3648,11 @@ input[type=checkbox] {
     margin-top: 1px;
 }
 
-.property_tab_item_content {
+/* .property_tab_item_content {
     display: none;
     background: #fdfdfd;
-    padding: 13px;
-}
+    /* padding: 13px; */
+} */
 
 .property_tab_item_content.active_tab {
     display: block;
@@ -3754,6 +3720,13 @@ textarea#virtual_tour {
     line-height: 30px;
     height: 30px;
     vertical-align: baseline;
+    max-width: 300px;
+}
+
+#wprentals_admin-wp_estate_custom_listing_fields input,
+#wprentals_admin-wp_estate_custom_infobox_fields input,
+#wprentals_admin-wp_estate_property_page_header input {
+    width: 100%;
 }
 
 .ui-checkboxradio-icon.ui-corner-all.ui-icon.ui-icon-background.ui-icon-blank{
@@ -3806,4 +3779,35 @@ textarea#virtual_tour {
 }
 #wpestate_terms{
     height: 1rem!important;
+}
+
+
+.wpestate_admin_image_size{
+    display: flex;
+    gap:15px;
+    margin-bottom: 10px;
+}
+
+.wpestate_admin_image_size select{
+    min-width: 100px;
+}
+
+.wpestate_admin_image_size_explanations{
+    display: flex;
+    flex-direction: column;
+}
+.wpestate_admin_image_size_explanations_title{
+    padding-top: 20px;
+    width: 100px;
+}
+
+.wpsestate_admin_notice{
+    background-color: red;
+    color:#fff;
+    padding: 20px;
+}
+
+
+#page_show_title{
+    width: 200px;
 }

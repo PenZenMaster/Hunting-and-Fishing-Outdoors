@@ -11,14 +11,28 @@ global $custom_fields_array;
 global $edit_link_location;
 global $submission_page_fields;
 global $extra_options;
-
-
 $measure_sys            = esc_html(wprentals_get_option('wp_estate_measure_sys', ''));
+
+$max_bedrooms  = apply_filters('wpestate_max_bedrooms', 9999);
+$property_bedrooms = intval($property_bedrooms);
+if ( $property_bedrooms > $max_bedrooms ) {
+    $property_bedrooms = $max_bedrooms;
+}
+if ( $property_bedrooms < 0 ) {
+    $property_bedrooms = 0;
+}
+
+$max_bathrooms = apply_filters('wpestate_max_bathrooms', 9999);
+$property_bathrooms = floatval($property_bathrooms);
+if ( $property_bathrooms > $max_bathrooms ) {
+    $property_bathrooms = $max_bathrooms;
+}
+if ( $property_bathrooms < 0 ) {
+    $property_bathrooms = 0;
+}
 
 $i=0;
 $custom_fields_show ='';
-
-
 if (!empty($custom_fields)) {
     while ($i< count($custom_fields)) {
         $name               =   $custom_fields[$i][0];
@@ -45,7 +59,7 @@ if (!empty($custom_fields)) {
         $custom_fields_show.= '<div class="col-md-6"><p>';
         $value  =   $custom_fields_array[$slug];
         if (is_array($submission_page_fields) && (in_array($prslig, $submission_page_fields) ||  in_array($slug, $submission_page_fields))) {
-            $custom_fields_show.=  wpestate_show_custom_field(0, $slug, $name, $label, $type, $order, $dropdown_values, $post_id, $value); 
+            $custom_fields_show.=  wpestate_show_custom_field(0, $slug, $name, $label, $type, $order, $dropdown_values, $post_id, $value);
         }
 
         $custom_fields_show.= '</p></div>';
@@ -60,12 +74,6 @@ if (!empty($custom_fields)) {
         <div class="col-md-12" id="profile_message"></div>
         <div class="row">
             <div class="col-md-12">
-                <?php
-                if (is_array($submission_page_fields) && in_array('prop_action_category_submit', $submission_page_fields)) {
-                            $term_id = get_post_meta($edit_id,'prop_action_category_selected',true);
-                            $term_name = get_term( $term_id )->name;
-                            if($term_id == '3' || $term_id == '364') {
-                                ?>
                 <div class="col-md-3 dashboard_chapter_label"><?php esc_html_e('Listing Details', 'wprentals');?></div>
 
 
@@ -74,81 +82,75 @@ if (!empty($custom_fields)) {
                     $rental_type=wprentals_get_option('wp_estate_item_rental_type');
 
                     ?>
-                        
+                        <?php
+                        if (is_array($submission_page_fields) && in_array('property_size', $submission_page_fields)) {
+                            ?>
+                            <div class="col-md-6">
+                                <p>
+                                    <label for="property_size"> <?php esc_html_e('Size in', 'wprentals');
+                            print ' '.esc_html($measure_sys).'<sup>2</sup>'; ?></label>
+                                    <input type="text" id="property_size" size="40" class="form-control"  name="property_size" value="<?php print esc_html($property_size); ?>">
+                                </p>
+                            </div>
+                        <?php
+                        } ?>
+
 
 
                         <?php
-                        
-                               
-                                if (is_array($submission_page_fields) && in_array('property_size', $submission_page_fields)) {
-                                    ?>
-                                    <div class="col-md-6">
-                                        <p>
-                                            <label for="property_size"> <?php esc_html_e('Size in', 'wprentals');
-                                    print ' '.esc_html($measure_sys).'<sup>2</sup>'; ?></label>
-                                            <input type="text" id="property_size" size="40" class="form-control"  name="property_size" value="<?php print esc_html($property_size); ?>">
-                                        </p>
-                                    </div>
-                                <?php
-                                } 
+                        if (is_array($submission_page_fields) && in_array('property_rooms', $submission_page_fields)) {
+                            ?>
+                            <div class="col-md-6">
+                                <p>
+                                    <label for="property_rooms"><?php esc_html_e('Rooms', 'wprentals'); ?></label>
+                                    <input type="text" id="property_rooms" size="40" class="form-control"  name="property_rooms" value="<?php print esc_html($property_rooms); ?>">
+                                </p>
+                            </div>
+                        <?php
+                        } ?>
 
-                                if (is_array($submission_page_fields) && in_array('property_rooms', $submission_page_fields)) {
-                                    ?>
-                                    <div class="col-md-6">
-                                        <p>
-                                            <label for="property_rooms"><?php esc_html_e('Rooms', 'wprentals'); ?></label>
-                                            <input type="text" id="property_rooms" size="40" class="form-control"  name="property_rooms" value="<?php print esc_html($property_rooms); ?>">
-                                        </p>
-                                    </div>
-                                <?php
-                                } ?>
+                        <?php
+                        if (is_array($submission_page_fields) && in_array('property_bedrooms', $submission_page_fields)) {
+                            ?>
+                            <div class="col-md-6 " id="property_bedrooms_wrappr">
+                                <p>
+                                    <label for="property_bedrooms "><?php esc_html_e('Bedrooms', 'wprentals'); ?></label>
+                                    <input type="text" id="property_bedrooms" size="40" class="form-control"  name="property_bedrooms" value="<?php print esc_html($property_bedrooms); ?>">
+                                </p>
+                            </div>
 
+                        <?php
+                        $beds_options_string='';
+                            $beds_options=get_post_meta($edit_id, 'property_bedrooms_details', true); ?>
 
+                            <input type='hidden' id='beds_options_string' value='<?php echo json_encode($beds_options); ?>'>
+                            <script type="text/javascript">
+                                //<![CDATA[
+                                jQuery(document).ready(function(){
+                                    wpestate_show_bedrooms_input(<?php print esc_html($property_bedrooms); ?>,<?php echo "'".json_encode($beds_options)."'"; ?>);
+                                });
+                                //]]>
+                            </script>
 
-                                <?php
-                                if (is_array($submission_page_fields) && in_array('property_bedrooms', $submission_page_fields)) {
-                                    ?>
-                                    <div class="col-md-6 " id="property_bedrooms_wrappr">
-                                        <p>
-                                            <label for="property_bedrooms "><?php esc_html_e('Bedrooms', 'wprentals'); ?></label>
-                                            <input type="text" id="property_bedrooms" size="40" class="form-control"  name="property_bedrooms" value="<?php print esc_html($property_bedrooms); ?>">
-                                        </p>
-                                    </div>
-
-                                <?php
-                                $beds_options_string='';
-                                    $beds_options=get_post_meta($edit_id, 'property_bedrooms_details', true); ?>
-
-                                    <input type='hidden' id='beds_options_string' value='<?php echo json_encode($beds_options); ?>'>
-                                    <script type="text/javascript">
-                                        //<![CDATA[
-                                        jQuery(document).ready(function(){
-                                            wpestate_show_bedrooms_input(<?php print esc_html($property_bedrooms); ?>,<?php echo "'".json_encode($beds_options)."'"; ?>);
-                                        });
-                                        //]]>
-                                    </script>
-
-                                <?php
-                                }
-                                ?>
-
-                                <?php
-                                if (is_array($submission_page_fields) && in_array('property_bathrooms', $submission_page_fields)) { 
-                                    ?>
-                                    <div class="col-md-6">
-                                        <p>
-                                            <label for="property_bedrooms"><?php esc_html_e('Bathrooms', 'wprentals'); ?></label>
-                                            <input type="text" id="property_bathrooms" size="40" class="form-control"  name="property_bathrooms" value="<?php print esc_html($property_bathrooms); ?>">
-                                        </p>
-                                    </div>
-                                <?php
-                                } 
-                           
-                    ?>
+                        <?php
+                        }
+                        ?>
 
 
 
 
+
+                    <?php
+                        if (is_array($submission_page_fields) && in_array('property_bathrooms', $submission_page_fields)) {
+                            ?>
+                            <div class="col-md-6">
+                                <p>
+                                    <label for="property_bedrooms"><?php esc_html_e('Bathrooms', 'wprentals'); ?></label>
+                                    <input type="text" id="property_bathrooms" size="40" class="form-control"  name="property_bathrooms" value="<?php print esc_html($property_bathrooms); ?>">
+                                </p>
+                            </div>
+                        <?php
+                        } ?>
 
             <!-- Add custom details -->
             <?php
@@ -212,8 +214,6 @@ if (!empty($custom_fields)) {
 
         </div>
         <?php
-         }
-        }
         if (is_array($submission_page_fields) && (
                     in_array('cancellation_policy', $submission_page_fields) ||
                       in_array('smoking_allowed', $submission_page_fields) ||

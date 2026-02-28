@@ -118,7 +118,7 @@ if( !function_exists('wprentals_use_google_places') ):
             return true;
         }else if ( ($adv_search_type=='type3' || $adv_search_type=='type4') && $use_google_on_search=='yes'){
             $adv_search_what                    =   wprentals_get_option('wp_estate_adv_search_what','');
-            if( in_array('Location', $adv_search_what)  ){
+            if( is_array($adv_search_what) && in_array('Location', $adv_search_what)  ){
                 return true;
             }
         }

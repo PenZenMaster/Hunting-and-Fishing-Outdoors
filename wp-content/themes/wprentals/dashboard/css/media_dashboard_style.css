@@ -1,12 +1,50 @@
-@media only screen and (max-width:1536px){
-
-.booking-calendar-wrapper-allinone .calendar_pad_title,
-.calendar_pad, .booking-calendar-wrapper-allinone .dayname {
-    width: 29px;
-    font-size: 12px;
-}
-}
-
+@media only screen and (min-width: 1870px){
+  .booking-calendar-wrapper-allinone .calendar_pad_title, 
+  .calendar_pad, .booking-calendar-wrapper-allinone .dayname {
+      width: 37px;
+  }
+  } 
+  
+  @media only screen and (min-width: 2020px){
+  .booking-calendar-wrapper-allinone .calendar_pad_title, 
+  .calendar_pad, .booking-calendar-wrapper-allinone .dayname {
+      width: 39px;
+  }
+  } 
+  
+  @media only screen and (min-width: 2090px){
+  .booking-calendar-wrapper-allinone .calendar_pad_title, 
+  .calendar_pad, .booking-calendar-wrapper-allinone .dayname {
+      width: 43px;
+  }
+  } 
+  
+  @media only screen and (min-width: 2240px){
+  .booking-calendar-wrapper-allinone .calendar_pad_title, 
+  .calendar_pad, .booking-calendar-wrapper-allinone .dayname {
+      width: 47px;
+  }
+  } 
+  
+  @media only screen and (min-width: 2380px){
+  .booking-calendar-wrapper-allinone .calendar_pad_title, 
+  .calendar_pad, .booking-calendar-wrapper-allinone .dayname {
+      width: 54px;
+  }
+  }
+  @media only screen and (min-width: 2530px){
+  .booking-calendar-wrapper-allinone .calendar_pad_title, 
+  .calendar_pad, .booking-calendar-wrapper-allinone .dayname {
+      width: 55px;
+  }
+  
+  .user_dashboard_panel.wprentals_allinone_wrapper{
+      min-width:1900px;
+      max-width:1900px;
+  }
+  } 
+  
+  
 @media only screen and (max-width:1366px){
 
     .property_dashboard_location_wrapper{
@@ -177,6 +215,7 @@
 		margin-top: 15px;
 
 }
+}
 
 
 
@@ -344,6 +383,19 @@
 	.feature_chapter_name {
 		padding-left: 15px;
 	}
+
+  .wpestate-dashboard-review-content .review-date{
+    left: 15px;
+    top: 20px;
+  }
+
+  .wpestate-repy-review-wrapper, .wpestate-dashboard-review-content .review-content {
+    margin-top: 10px;
+  }
+
+  .wpestate-dashboard-review-content .listing_title_book{
+    margin-bottom: 45px;
+  }
 }	
 
 
@@ -401,21 +453,27 @@
       width: 7px;
   }
 
-  #wpestate_stripe_booking,
-  .info-container_booking span,
-  .info-container_booking span:first-child {
-      margin-left: 0px;
-      width: 100%;
-      text-align: center;
-  }
-  
-  .info-container_booking .trip_details {
-    margin: 0px 0px;
-  }
 
   .listing_title_book{
     padding-left: 0px;
   }
+
+  .info-container_booking{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .info-container_booking span:first-child,
+  .info-container_booking span{
+    margin: 0px;
+  }
+
+  .info-container_booking span:first-child{
+    margin-left:0px;
+  }
+
 }
 
 @media only screen and (max-width: 414px){

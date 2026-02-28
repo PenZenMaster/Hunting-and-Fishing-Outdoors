@@ -90,25 +90,27 @@ $wpestate_options               =   wpestate_page_details($post->ID);
 
         $search_listing_array=array();
 
-
         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
             if( !empty($all_my_post) ){
-                
-               
+
                 $args = array(
-                    'number'          => '15',
-                    'paged'           => $paged,
-                    'orderby'         => 'comment_date',
-                    'order'           => 'DESC',
-                    'post__in'          => $all_my_post,
-                  
+                    'post_type' => 'estate_review',
+                    'post_status' => 'publish',
+                    'paged' => $paged,
+                    'posts_per_page' => 15,
+                    'post_parent' => 0,
+                    'meta_query' => array(
+                        array(
+                            'key' => 'attached_to',
+                            'value' => $all_my_post,
+                            'compare' => 'IN'
+                        )
+                    )
                 );
 
-              
-                $review_selection = get_comments($args);
-                
-                $args['count']=true;
-                $total_number = get_comments($args);
+                $reviews = new WP_Query($args);
+                $review_selection = $reviews->posts;
+                $total_number = $reviews->found_posts;
 
                 foreach($review_selection as $comment) :              
                   include(locate_template('dashboard/templates/property-review-unit.php') ) ;

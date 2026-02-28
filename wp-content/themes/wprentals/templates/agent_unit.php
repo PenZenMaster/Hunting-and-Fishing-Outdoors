@@ -3,12 +3,16 @@ global $wpestate_options;
 global $unit_class;
 $thumb_id           = get_post_thumbnail_id($post->ID);
 $preview            = wp_get_attachment_image_src(get_post_thumbnail_id(), 'wpestate_blog_unit');
-$name               = get_the_title();
+$name               = get_sanitized_truncated_title(0, 0);
 $link               = esc_url(get_permalink());
 
 
 if( !isset($preview[0]) || $preview[0]==''){
-    $thumb_prop = '<img itemprop="image" src="'.get_stylesheet_directory_uri().'/img/default_user.png" class="b-lazy" alt="'.esc_html__('image','wprentals').'">';   
+    $preview_img = wprentals_get_option('wp_estate_default_user_image', 'url');
+    if ( empty($preview_img) ) {
+        $preview_img = get_stylesheet_directory_uri().'/img/default_user.png';
+    }
+    $thumb_prop = '<img itemprop="image" src="'.$preview_img.'" class="b-lazy" alt="'.esc_html__('image','wprentals').'">';   
 }else{
     $thumb_prop = '<img itemprop="image"  src="'.esc_url($preview[0]).'" alt="agent-images" class="b-lazy">';
 }

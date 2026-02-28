@@ -5,14 +5,18 @@ $sidebar_class='';
 
 if( is_front_page() ){
     $sidebar_class.= '  '; 
-}
+} 
 
 if( is_singular('post')){
     $sidebar_class.= ' sidebar_post ';
 }
 
+if( "yes" ==  wprentals_get_option('wp_estate_global_sticky_sidebar' ) ){
+    $wpestate_options['sidebar_class'] = $wpestate_options['sidebar_class'].' wpestate_sidebar_sticky '; 
+}
+
 if( ('no sidebar' != $wpestate_options['sidebar_class']) && ('' != $wpestate_options['sidebar_class'] ) && ('none' != $wpestate_options['sidebar_class']) ){ ?>    
-    <div class="col-xs-12 <?php print esc_attr($wpestate_options['sidebar_class']).' '.esc_attr($sidebar_class ); ?> widget-area-sidebar" id="primary" >
+  <div class="col-xs-12 <?php print esc_attr($wpestate_options['sidebar_class']).' '.esc_attr($sidebar_class ); ?> widget-area-sidebar" id="primary" >
         
         <?php  
             if ( class_exists( 'WooCommerce' ) &&  is_checkout() ) {

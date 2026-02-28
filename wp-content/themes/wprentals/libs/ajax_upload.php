@@ -2,33 +2,84 @@
 
 add_action('wp_ajax_wpestate_delete_file',             'wpestate_delete_file');
 
-
-
-
-
 if( !function_exists('wpestate_delete_file') ):
+     /**
+     * AJAX handler for deleting a media attachment associated with a property.
+     *
+     * Validates the request nonce, ensures the requester is logged in, verifies the
+     * attachment and property relationship, and enforces ownership/capability checks
+     * before removing the featured image reference and permanently deleting the file.
+     */
+
     function wpestate_delete_file(){
-        check_ajax_referer( 'wpestate_image_upload', 'security' );
+
+        $is_admin_request = isset($_POST['isadmin']) && intval($_POST['isadmin']) === 1;
+
+        if ( $is_admin_request ) {
+            check_ajax_referer( 'wpestate_attach_delete', 'security' );
+        } else {
+            check_ajax_referer( 'wpestate_image_upload', 'security' );
+        }
+
+
         $current_user = wp_get_current_user();
-        $userID =   $current_user->ID;
-      
-        if ( !is_user_logged_in() ) {   
+        $userID       = $current_user->ID;
+
+        if ( ! is_user_logged_in() ) {
             exit('ko');
         }
-        if($userID === 0 ){
+
+        if ( $userID === 0 ) {
             exit('out pls');
         }
-     
-        
-        $attach_id = intval($_POST['attach_id']);
-        
-        $the_post= get_post( $attach_id); 
 
-        if( $userID != $the_post->post_author ) {
-            exit('you don\'t have the right to delete this');;
+
+        $attach_id  = isset($_POST['attach_id']) ? intval($_POST['attach_id']) : 0;
+        $propertyID = isset($_POST['propertyID']) ? intval($_POST['propertyID']) : 0;
+
+        if ( $attach_id === 0 || $propertyID === 0 ) {
+            exit('missing data');
         }
-        
-        wp_delete_attachment($attach_id, true);
+
+        $attachment = get_post( $attach_id );
+        $property   = get_post( $propertyID );
+
+        if ( ! $attachment || 'attachment' !== $attachment->post_type ) {
+            exit('invalid attachment');
+        }
+
+         if ( ! $property ) {
+            exit('invalid property');
+        }
+
+        // Compute ownership and capability flags used for authorization decisions.
+        $user_owns_attachment = (int) $attachment->post_author === $userID;
+        $user_owns_property    = (int) $property->post_author === $userID;
+        $can_delete_attachment = current_user_can( 'delete_post', $attach_id );
+
+        // Require property ownership or an explicit capability to delete the attachment.
+        if ( ! $user_owns_property && ! $can_delete_attachment ) {
+            exit('you don\'t have the right to delete this');
+        }
+
+        // Ensure the attachment is linked to the property when the user lacks global delete capabilities.
+        $attachment_parent_id = (int) wp_get_post_parent_id( $attach_id );
+
+        if ( $attachment_parent_id && $attachment_parent_id !== $propertyID && ! $can_delete_attachment ) {
+            exit('you don\'t have the right to delete this');
+        }
+
+        // Remove the featured image reference if the attachment is currently set as thumbnail.
+        if ( get_post_thumbnail_id( $propertyID ) === $attach_id ) {
+            delete_post_thumbnail( $propertyID );
+        }
+
+        // Delete the attachment when the user owns it, owns the property, or has the capability to delete.
+        if ( $user_owns_attachment || $can_delete_attachment || $user_owns_property ) {
+            wp_delete_attachment( $attach_id, true );
+        }
+
+
         exit;
     }
 endif;
@@ -36,35 +87,6 @@ endif;
 
 
 add_action('wp_ajax_wpestate_me_upload',             'wpestate_me_upload');
-add_action('wp_ajax_aaiu_delete',           'wpestate_me_delete_file');
-
-
-
-
-function wpestate_me_delete_file(){
-    $current_user = wp_get_current_user();
-    $userID =   $current_user->ID;
-
-    if ( !is_user_logged_in() ) {   
-        exit('ko');
-    }
-    if($userID === 0 ){
-        exit('out pls');
-    }
-
-
-
-    $attach_id = intval($_POST['attach_id']);
-    $the_post= get_post( $attach_id); 
-
-    if( $current_user->ID != $the_post->post_author ) {
-        exit('you don\'t have the right to delete this');;
-    }
-
- 
-    wp_delete_attachment($attach_id, true);
-    exit;
-}
 
 function wpestate_me_upload(){
     $current_user = wp_get_current_user();

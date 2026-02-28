@@ -4,7 +4,7 @@ $the_id = get_the_ID();
 
 <div class="col-md-12 invoice_unit " data-booking-confirmed="<?php echo esc_attr(get_post_meta($the_id, 'item_id', true));?>" data-invoice-confirmed="<?php print intval($the_id); ?>">
     <div class="col-md-2 invoice_unit_title_wrapper">
-         <?php echo get_the_title(); ?>
+         <?php echo get_sanitized_truncated_title(0, 0);  ?>
     </div>
 
     <div class="col-md-2">
@@ -13,13 +13,8 @@ $the_id = get_the_ID();
 
     <div class="col-md-2">
         <?php
-         $string= esc_html(get_post_meta($the_id, 'invoice_type', true));
-
-        if(isset($reservation_strings[ $string]) && $reservation_strings[ $string]!=''){
-           print esc_html( $reservation_strings[ $string] );
-        }else{
-            print esc_html ($string );
-        }
+        $invoice_type_value = get_post_meta($the_id, 'invoice_type', true);
+        echo esc_html(wpestate_get_invoice_type_label($invoice_type_value));
         ?>
     </div>
 

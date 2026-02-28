@@ -20,14 +20,8 @@ function wpestate_add_feature_to_search($input,$is_half=''){
         }
       
     }else{
-       
-        $terms = get_terms( array(
-            'taxonomy' => 'property_features',
-            'hide_empty' => false,
-        ) );
- 
       
-        
+        $terms =wpestate_get_cached_terms('property_features');
         foreach($terms as $key => $term){
             $input_name=$term->slug;
             if ( isset( $input[$input_name] ) && $input[$input_name]==1 ){
@@ -123,61 +117,52 @@ function wpestate_search_type_inject($categ_select_list,$action_select_list,$whe
                 }
                 print '"></div>';
        
-       
-                if( isset($_GET['property_category']) && $_GET['property_category']!=''&& $_GET['property_category']!='all'  ){
-                    $full_name = get_term_by('slug', esc_html( wp_kses( $_GET['property_category'],$allowed_html) ),'property_category');
-                    $adv_categ_value= $adv_categ_value1=$full_name->name;
-                    $adv_categ_value1 = mb_strtolower ( str_replace(' ', '-', $adv_categ_value1));
+                $form_field =   'property_category';
+                $icon       =   '<i class="custom_icon_class_icon fas fa-clone"></i>';
+                $active     =   'active';
+                $appendix   =   '';
+                $label      =   '';
+                $term_value='';
+                if( isset( $_REQUEST[$form_field] ) ){
+                    $term_value = wpestate_sanitize_text_array($_REQUEST[$form_field] );
+                
+                    if(is_string($term_value)){ 
+                        $full_name  = get_term_by('slug', $term_value,'property_category');
+                        $label      = $full_name->name;
+                    }
                 }else{
-                    $adv_categ_value    =  wpestate_category_labels_dropdowns('main');
-                    $adv_categ_value1   ='all';
-                }
-        
-                print '
-                <div class="'.$col_class.'">
-                   <i class="custom_icon_class_icon fas fa-clone"></i>
-                    <div class="dropdown form-control custom_icon_class icon_categlist " >
-                        <div data-toggle="dropdown" id="adv_categ" class="filter_menu_trigger     "  data-value="'.esc_attr( strtolower ( rawurlencode( $adv_categ_value1))).'"> 
-                            '.$adv_categ_value.'               
-                        <span class="caret caret_filter"></span> </div>           
-                        <input type="hidden" id="property_category" name="property_category" value="';
-                        if(isset($_GET['property_category'])){
-                            echo strtolower ( esc_attr( $_GET['property_category'] ) );
-                        }
-                       echo'">
-                        <ul  class="dropdown-menu filter_menu" role="menu" aria-labelledby="adv_categ">
-                            '.$categ_select_list.'
-                        </ul>
-                    </div>    
-                </div>';
-       
-                if(isset($_GET['property_action_category']) && $_GET['property_action_category']!='' && $_GET['property_action_category']!='all'){
-                    $full_name = get_term_by('slug', esc_html( wp_kses( $_GET['property_action_category'],$allowed_html) ),'property_action_category');
-                    $adv_actions_value=$adv_actions_value1= $full_name->name;
-                    $adv_actions_value1 = mb_strtolower ( str_replace(' ', '-', $adv_actions_value1) );
-                }else{
-                    $adv_actions_value= wpestate_category_labels_dropdowns('second');
-                    $adv_actions_value1='all';
+                    $label  =  wpestate_category_labels_dropdowns('main');
                 }
 
-                print'
-                <div class="'.$col_class.'">  
-                    <i class="custom_icon_class_icon fas fa-boxes"></i>
-                    <div class="dropdown form-control dropdown custom_icon_class icon_actionslist form-control " >
-                        <div data-toggle="dropdown" id="adv_actions" class="filter_menu_trigger  " data-value="'.esc_attr(strtolower ( rawurlencode ( $adv_actions_value1) )).'"> 
-                            '.$adv_actions_value.' 
-                        <span class="caret caret_filter"></span> </div>           
-                        <input type="hidden" id="property_action_category" name="property_action_category" value="'; 
-                        if(isset($_GET['property_action_category'])){
-                             echo  strtolower( esc_attr($_GET['property_action_category']) );
+                print '<div class=" '.esc_attr($col_class).' ">';
+                print $icon;
+                print  wpestate_show_dropdown_taxonomy_v21($form_field,$term_value, $label, $appendix,$active); 
+                print '</div>';
 
-                        }; 
-                        echo '">
-                        <ul  class="dropdown-menu filter_menu" role="menu" aria-labelledby="adv_actions">
-                            '.$action_select_list.'
-                        </ul>        
-                    </div>
-                </div>';
+
+
+                $form_field =   'property_action_category';
+                $icon       =   '<i class="custom_icon_class_icon fas fa-boxes"></i>';
+                $active     =   'active';
+                $appendix   =   '';
+                $label ='';
+                $term_value='';
+                if( isset( $_REQUEST[$form_field] ) ){
+                    $term_value = wpestate_sanitize_text_array($_REQUEST[$form_field] );
+                    if(is_string($term_value)){ 
+                        $full_name  = get_term_by('slug', $term_value,'property_action_category');
+                        $label      = $full_name->name;
+                    }
+                }else{
+                    $label  =  wpestate_category_labels_dropdowns('main2');
+                }
+
+                print '<div class=" '.esc_attr($col_class).' ">';
+                print  $icon;
+                print  wpestate_show_dropdown_taxonomy_v21($form_field,$term_value, $label, $appendix,$active); 
+                print '</div>';
+       
+
                         
         $retur= ob_get_contents();
         ob_end_clean();

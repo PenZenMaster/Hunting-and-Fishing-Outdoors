@@ -13,10 +13,9 @@ $userID                     =   $current_user->ID;
 $user_option                =   'favorites'.$userID;
 $wpestate_curent_fav        =   get_option($user_option);
 $icons                      =   array();
-$taxonomy                   =   'property_action_category';
-$tax_terms                  =   get_terms($taxonomy);
-$taxonomy_cat               =   'property_category';
-$categories                 =   get_terms($taxonomy_cat);
+
+$tax_terms                  =   wpestate_get_cached_terms('property_action_category');
+$categories                 =    wpestate_get_cached_terms('property_category');
 $show_compare=1;
 
 

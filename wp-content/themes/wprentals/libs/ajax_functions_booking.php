@@ -1,79 +1,4 @@
 <?php
-/*
-* Reply to review 
-*
-*
-*/
-
-add_action('wp_ajax_wpestate_review_message_reply', 'wpestate_review_message_reply' );
-
-if( !function_exists('wpestate_review_message_reply') ):
-    function wpestate_review_message_reply(){
-
-        
-        check_ajax_referer( 'wprentals_reviews_actions_nonce', 'security' );
-        $current_user   =   wp_get_current_user();
-        $userID         =   $current_user->ID;
-        if ( !is_user_logged_in() ) {
-            exit('ko');
-        }
-        if($userID === 0 ){
-            exit('out pls');
-        }
-
-      
-
-
-        $commentId         =   intval($_POST['commentId']);
-        $propertyid        =   esc_html($_POST['propertyid']);
-        $content           =   esc_html($_POST['content']);
-      
-        $post_author_id = get_post_field( 'post_author', $propertyid );
-
-   
-
-
-        if($post_author_id!=$userID){
-            $answer=array(
-                'succes'    =>  false,
-                'message'   =>  esc_html__('You are not the property owner!','wprentals')
-            );
-            print json_encode($answer);
-        }else{
-         
-            update_comment_meta($commentId,'owner_reply',$content);
-            $author_email   = get_comment_author_email( $commentId );
-            $arguments=array(
-                'reply_content'     =>  $content,
-                'property_name'     =>  get_the_title($propertyid),
-                'author_email'      =>  $author_email
-            );
-
-
-       
-          
-
-
-        
-            wpestate_send_booking_email('review_reply',$author_email,$arguments);
-
-
-            $answer=array(
-                'succes'        =>  true,
-                'message'       =>  esc_html__('We posted your reply','wprentals'),
-                'arguments'=>$arguments
-            
-
-            );
-            print json_encode($answer);
-        }
-
-        die();
-    }
-endif;
-
-
-
 
 /*
 *
@@ -615,19 +540,20 @@ if( !function_exists('wpestate_message_reply') ):
         update_post_meta($post_id, 'message_from_user', $userID);
 
         // decide who is receiver
+        $arguments['content']=$content;
         if($userID == $mes_to ){
             $receiver           =   get_userdata($mess_from);
             $receiver_email     =   $receiver->user_email;
-            wpestate_send_booking_email('inbox',$receiver_email,$content);
+            wpestate_send_booking_email('inbox',$receiver_email,$arguments);
         }else{
 
             $receiver           =   get_userdata($mes_to);
             $receiver_email     =   $receiver->user_email;
-            wpestate_send_booking_email('inbox',$receiver_email,$content);
+            wpestate_send_booking_email('inbox',$receiver_email,$arguments);
         }
 
 
-        print intval($post_id);
+        //print intval($post_id);
         die();
     }
 endif;
@@ -784,8 +710,6 @@ if( !function_exists('wpestate_create_pay_user_invoice_form') ):
 
         $wpestate_currency      =   esc_html( get_post_meta($invoice_id, 'invoice_currency',true) );
         $default_price          =   get_post_meta($invoice_id, 'default_price', true);
-        $price_per_half_day     =   get_post_meta($invoice_id, 'default_price_hfday', true);
-        $default_price_per_hr   =   get_post_meta($invoice_id, 'default_price_hour', true);
         $wpestate_where_currency=   esc_html( wprentals_get_option('wp_estate_where_currency_symbol', '') );
         $booking_from_date      =   esc_html(get_post_meta($bookid, 'booking_from_date', true));
         $property_id            =   esc_html(get_post_meta($bookid, 'booking_id', true));
@@ -821,8 +745,6 @@ if( !function_exists('wpestate_create_pay_user_invoice_form') ):
         $depozit                    =   wpestate_calculate_deposit($wp_estate_book_down,$wp_estate_book_down_fixed_fee,$total_price_comp);
         $balance                    =   $invoice_price-$depozit;
         $price_show                 =   wpestate_show_price_booking_for_invoice($default_price,$wpestate_currency,$wpestate_where_currency,0,1);
-        //$half_day_price_show        =   wpestate_show_price_booking_for_invoice($price_per_half_day,$wpestate_currency,$wpestate_where_currency,0,1);
-        //$hour_price_show            =   wpestate_show_price_booking_for_invoice($default_price_per_hr,$wpestate_currency,$wpestate_where_currency,0,1);
         $price_per_weekeend_show    =   wpestate_show_price_booking_for_invoice($price_per_weekeend,$wpestate_currency,$wpestate_where_currency,0,1);
         $total_price_show           =   wpestate_show_price_booking_for_invoice($invoice_price,$wpestate_currency,$wpestate_where_currency,0,1);
         $depozit_show               =   wpestate_show_price_booking_for_invoice($depozit,$wpestate_currency,$wpestate_where_currency,0,1);
@@ -1444,7 +1366,7 @@ if( !function_exists('wpestate_add_booking_invoice') ):
         
      
         
-        $billing_for    =   esc_html__( 'Reservation fee','wprentals');
+        $billing_for    =   WP_ESTATE_INVOICE_TYPE_RESERVATION_FEE;
         $type           =   esc_html__( 'One Time','wprentals');
         $pack_id        =   $bookid; // booking id
 
@@ -1646,6 +1568,17 @@ if( !function_exists('wpestate_add_booking_invoice') ):
             $description=esc_html__( 'A booking was confirmed','wprentals');
             wpestate_add_to_inbox($receiver_id,$username,$receiver_id,$subject,$description);
 
+            ob_start();
+            wpestate_generate_trip_details($listing_id,$invoice_id,$bookid,'email');
+            $message= ob_get_contents();
+            ob_end_clean();
+
+            $wpestate_send_your_trip_show_email=wprentals_get_option('wpestate_send_your_trip_show_email','');
+            if(class_exists('WpestateEmail') && $wpestate_send_your_trip_show_email=='yes'){
+                $WpestateEmail = WpestateEmail::get_instance();
+                $sending_Email = $WpestateEmail->wpestate_send_email_contact($receiver_email,esc_html__('Your Trip Details','wprentals'),$message);
+            }
+            
         }
 
 
@@ -1671,7 +1604,7 @@ if( !function_exists('wpestate_add_booking_invoice_no_deposit') ):
 
         $pack_id        =   $bookid; // booking id
 
-        $billing_for    =   'Reservation fee';
+        $billing_for    =   WP_ESTATE_INVOICE_TYPE_RESERVATION_FEE;
         $type           =   esc_html__( 'One Time','wprentals');
 
         $date           =   time();
@@ -1781,7 +1714,7 @@ if( !function_exists('wpestate_direct_confirmation') ):
         }
 
         $price          =   floatval($_POST['price']);
-        $billing_for    =   esc_html__( 'Reservation fee','wprentals');
+        $billing_for    =   WP_ESTATE_INVOICE_TYPE_RESERVATION_FEE;
         $type           =   esc_html__( 'One Time','wprentals');
         $pack_id        =   $bookid; // booking id
         $date           =   time();
@@ -1892,7 +1825,11 @@ if( !function_exists('wpestate_booking_insert_invoice') ):
 
 
 
-        update_post_meta($post_id, 'invoice_type', $billing_for);
+        $invoice_type_key = wpestate_get_invoice_type_key($billing_for);
+        if ($invoice_type_key === null) {
+            $invoice_type_key = intval($billing_for);
+        }
+        update_post_meta($post_id, 'invoice_type', $invoice_type_key);
         update_post_meta($post_id, 'biling_type', $type);
         update_post_meta($post_id, 'item_id', $pack_id);
 
@@ -2177,7 +2114,7 @@ if( !function_exists('wpestate_create_invoice_form') ):
                             }
 
 
-                            $options_array=array(
+                            $options_array_explanations=array(
                                 0   =>  esc_html__('Single Fee','wprentals'),
                                 1   =>  ucfirst( wpestate_show_labels('per_night',$rental_type,$booking_type) ),
                                 2   =>  esc_html__('Per Guest','wprentals'),
@@ -2194,7 +2131,7 @@ if( !function_exists('wpestate_create_invoice_form') ):
                                     <div class="invoice_row invoice_content">
                                         <span class="inv_legend">   '.$extra_pay_options[$value][0].'</span>
                                         <span class="inv_data invoice_default_extra" data-value="'.esc_attr($extra_option_value).'" >  '.$extra_option_value_show.'</span>
-                                        <span class="inv_data inv_data_exp">'.$extra_option_value_show_single.' '.$options_array_explanations[$extra_pay_options[$value][2]].'</span>
+                                        <span class="inv_data inv_data_exp"> '.$options_array_explanations[$extra_pay_options[$value][2]].'</span>
                                     </div>';
                                 }
                             }
@@ -2403,6 +2340,7 @@ if( !function_exists('wpestate_mess_front_end') ):
         $message_user       =   '';
         $userID             =   $current_user->ID;
         $user_login         =   $current_user->user_login;
+        $replyto_email      =   $current_user->user_email;
         $subject            =   esc_html__( 'Message from ','wprentals').$user_login;
         $message_from_user  =   esc_html($_POST['message']);
         $message_phone_no   =   '';
@@ -2457,7 +2395,7 @@ if( !function_exists('wpestate_mess_front_end') ):
         }
 
         if( isset( $_POST['contact_u_email']) ){
-            $contact_u_email =   sanitize_text_field ( $_POST['contact_u_email']  );
+            $contact_u_email =   $replyto_email = sanitize_text_field ( $_POST['contact_u_email']  );
         }
 
 
@@ -2479,7 +2417,7 @@ if( !function_exists('wpestate_mess_front_end') ):
             }
         }
 
-        wpestate_send_booking_email('inbox',$owner_email,$message_user);
+        wpestate_send_booking_email('inbox',$owner_email,array('content'=>$message_user,'replyto'=>$replyto_email) );
 
         // add into inbox
         wpestate_add_to_inbox($userID,$userID,$owner_login,$subject,$message_user,1);
@@ -2535,7 +2473,7 @@ if( !function_exists('wpestate_message_client_dashboard') ):
             die();
         }
 
-
+        $message_user='';
         if($propertyID!=0 && get_post_type($propertyID) === 'estate_property' ){
             $message_user .='<strong>'. esc_html__(' Sent for property: ','wprentals').'</strong>'.get_the_title($propertyID).', '.esc_html__('with the link:','wprentals').' '.esc_url ( get_permalink($propertyID) ).'<br>';
         }
@@ -2545,7 +2483,7 @@ if( !function_exists('wpestate_message_client_dashboard') ):
 
 
 
-        wpestate_send_booking_email('inbox',$client_email,$message_user);
+        wpestate_send_booking_email('inbox',$client_email,array('content'=>$message_user));
 
         // add into inbox
         //$userID,$from,$to,$subject,$description,$first_content=''
@@ -2604,24 +2542,12 @@ if( !function_exists('wpestate_ajax_show_booking_costs') ):
         $booking_from_date  =   wp_kses ( $_POST['fromdate'],$allowed_html);
         $booking_to_date    =   wp_kses ( $_POST['todate'],$allowed_html);
 
-        $booking_time       =   !empty($_POST['booking_time']) ? esc_html($_POST['booking_time']) : 'Morning';
         $invoice_id         =   0;
         $price_per_day      =   floatval(get_post_meta($property_id, 'property_price', true));
-        $morning_price      =   floatval(get_post_meta($property_id, 'morning_price', true));
-        $afternoon_price    =   floatval(get_post_meta($property_id, 'afternoon_price', true));
 
 
-        //Getting Half day & Hour price value from database --> Code starts here
-        $price_per_h_day    =   floatval(get_post_meta($property_id, 'property_price_hfday', true));
-        $price_per_hr       =   floatval(get_post_meta($property_id, 'property_price_hr', true));
-        //Getting Half day & Hour price value from database --> Code ends here
 
         $booking_array = wpestate_booking_price($wpestate_guest_no,$invoice_id, $property_id, $booking_from_date, $booking_to_date,$property_id);
-        //Adding Half day and hour price values to the booking array
-        //Code starts here
-        $booking_array['default_price_hfday'] = $price_per_h_day;
-        $booking_array['default_price_hour'] = $price_per_hr;
-        //Adding Half day and hour price values to the booking array - Code ends here
 
         $deposit_show       =   '';
         $balance_show       =   '';
@@ -2629,31 +2555,13 @@ if( !function_exists('wpestate_ajax_show_booking_costs') ):
         $wpestate_where_currency     =   esc_html( wprentals_get_option('wp_estate_where_currency_symbol', '') );//where_currency_symbol
 
         $price_show                         =   wpestate_show_price_booking($booking_array['default_price'],$wpestate_currency,$wpestate_where_currency,1);
-
-        //Half day & Hourly booking price - Code starts here
-        $price_hfday_show                   =   wpestate_show_price_booking($booking_array['default_price_hfday'], $wpestate_currency, $wpestate_where_currency, 1);
-        $price_hour_show                    =   wpestate_show_price_booking($booking_array['default_price_hour'], $wpestate_currency, $wpestate_where_currency, 1);
-        //Half day & Hourly booking price - Code ends here
-
         $total_price_show                   =   wpestate_show_price_booking($booking_array['total_price'],$wpestate_currency,$wpestate_where_currency,1);
-
-        //Show Half day & Hourly total price after calculation - Code starts here
-        $half_total_price_show              =   wpestate_show_price_booking($booking_array['half_total_price'], $wpestate_currency, $wpestate_where_currency, 1);
-        $hour_total_price_show              =   wpestate_show_price_booking($booking_array['hour_total_price'], $wpestate_currency, $wpestate_where_currency, 1);
-        //Show Half day & Hourly total price after calculation - Code ends here
         $deposit_show                       =   wpestate_show_price_booking($booking_array['deposit'],$wpestate_currency,$wpestate_where_currency,1);
         $balance_show                       =   wpestate_show_price_booking($booking_array['balance'],$wpestate_currency,$wpestate_where_currency,1);
         $city_fee_show                      =   wpestate_show_price_booking($booking_array['city_fee'],$wpestate_currency,$wpestate_where_currency,1);
         $cleaning_fee_show                  =   wpestate_show_price_booking($booking_array['cleaning_fee'],$wpestate_currency,$wpestate_where_currency,1);
         $total_extra_price_per_guest_show   =   wpestate_show_price_booking($booking_array['total_extra_price_per_guest'],$wpestate_currency,$wpestate_where_currency,1);
         $inter_price_show                   =   wpestate_show_price_booking($booking_array['inter_price'],$wpestate_currency,$wpestate_where_currency,1);
-
-        //Showing a total calculated price of all persons Half day & Hourly - Code starts here
-        $half_inter_price_show             =   wpestate_show_price_booking($booking_array['half_inter_price'], $wpestate_currency, $wpestate_where_currency, 1);
-
-        $hour_inter_price_show             =   wpestate_show_price_booking($booking_array['hour_inter_price'], $wpestate_currency, $wpestate_where_currency, 1);
-        //Showing a total calculated price of all persons Half day & Hourly - Code ends here
-
         $extra_price_per_guest              =   wpestate_show_price_booking($booking_array['extra_price_per_guest'],$wpestate_currency,$wpestate_where_currency,1);
         $security_fee_show                  =   wpestate_show_price_booking($booking_array['security_deposit'],$wpestate_currency,$wpestate_where_currency,1);
         $early_bird_discount_show           =   wpestate_show_price_booking($booking_array['early_bird_discount'],$wpestate_currency,$wpestate_where_currency,1);
@@ -2670,14 +2578,7 @@ if( !function_exists('wpestate_ajax_show_booking_costs') ):
                         print trim($extra_price_per_guest).' x ';
                     }
 
-            if ($booking_type == 2) {
-
-                print $booking_array['curent_guest_no'] . ' ' . esc_html__('guests', 'wprentals');
-            } else {
-
                     print esc_html($booking_array['count_days']).' '.wpestate_show_labels('nights',$rental_type,$booking_type).' x '.$booking_array['curent_guest_no'].' '.esc_html__( 'guests','wprentals');
-            }
-
 
                     if( $booking_array['custom_period_quest'] == 1 ){
                        echo ' - ';esc_html_e( ' period with custom price per guest','wprentals');
@@ -2911,8 +2812,13 @@ if( !function_exists('wpestate_ajax_register_form_booking') ):
             $allowed_html=array();
             check_ajax_referer( 'register_ajax_nonce','security-register');
 
+            if (!wpestate_can_register_users()) {
+                print esc_html__( 'User registration is currently disabled.', 'wprentals' );
+                exit();
+            }
+
             $user_email  =   trim(  wp_kses ( $_POST['user_email_register'],$allowed_html) ) ;
-            $user_name   =   trim(  wp_kses ( $_POST['user_login_register'],$allowed_html) ) ;
+            $user_name   =   empty(trim(sanitize_text_field($_POST['user_login_register']))) ? $user_email : trim(sanitize_text_field($_POST['user_login_register']));
             $group       =   trim(  wp_kses ( $_POST['group_register'],$allowed_html) ) ;
             if (preg_match("/^[0-9A-Za-z_]+$/", $user_name) == 0) {
                 print esc_html__( 'Invalid username( *do not use special characters or spaces ) ','wprentals');
@@ -2950,10 +2856,25 @@ if( !function_exists('wpestate_ajax_register_form_booking') ):
                 if ( is_wp_error($user_id) ){
 
                 }else{
+                    $publish_only          =   esc_html ( wprentals_get_option('wp_estate_publish_only') );
+                    $separate_users_status =   esc_html ( wprentals_get_option('wp_estate_separate_users') );
+
+                    $force_renter = ( 'no' === $separate_users_status && trim($publish_only) != '' );
+
+                    $role = 'renter';
+                    if( !$force_renter ){
+                        $role = $group;
+                    }
+
+                    wprentals_register_user_role( $user_id, $role );
+                    if( $role == 'renter' ){
+                        update_user_meta($user_id, 'user_type', 1);
+                    }
+
                     print esc_html__( 'An email with the generated password was sent!','wprentals');
-                    wpestate_update_profile_booking($user_id, $group);
+                    wpestate_update_profile_booking($user_id, $role);
                     wpestate_wp_new_user_notification( $user_id, $random_password ) ;
-                    if('renter' ==  $group ){
+                    if( !$force_renter && 'renter' ==  $role ){
                         wpestate_register_as_user($user_name,$user_id);
                     }
 
@@ -3189,16 +3110,18 @@ if( !function_exists('wpestate_show_invoice_dashboard') ):
         }
 
 
-        $invoice_saved      =   esc_html(get_post_meta($invoice_id, 'invoice_type', true));
+        $invoice_type_value = get_post_meta($invoice_id, 'invoice_type', true);
+        $invoice_type_key   = wpestate_get_invoice_type_key($invoice_type_value);
+        $invoice_type_label = wpestate_get_invoice_type_label($invoice_type_value);
         wpestate_super_invoice_details($invoice_id);
 
-        if($invoice_saved=='Listing'){
-            $item_id        =   esc_html(get_post_meta($invoice_id, 'item_id', true));
-            $item_price     =   esc_html(get_post_meta($invoice_id, 'item_price', true));
-            $purchase_date  =   esc_html(get_post_meta($invoice_id, 'purchase_date', true));
+        if ($invoice_type_key === WP_ESTATE_INVOICE_TYPE_LISTING) {
+            $item_id       = esc_html(get_post_meta($invoice_id, 'item_id', true));
+            $item_price    = esc_html(get_post_meta($invoice_id, 'item_price', true));
+            $purchase_date = esc_html(get_post_meta($invoice_id, 'purchase_date', true));
             print  '<div class="create_invoice_form">
                         <h3>'.esc_html__( 'Invoice INV','wprentals').$invoice_id.'</h3>
-                        <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Type','wprentals').': </strong>'.$invoice_saved.'</div>
+                        <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Type','wprentals').': </strong>'.esc_html($invoice_type_label).'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Listing Id','wprentals').': </strong>'.wpestate_show_product_type($item_id).'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Price','wprentals').': </strong>'.$item_price.'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Date','wprentals').': </strong>';
@@ -3211,13 +3134,13 @@ if( !function_exists('wpestate_show_invoice_dashboard') ):
                    </div>';
         }
 
-        if($invoice_saved=='Upgrade to Featured'){
-            $item_id        =   esc_html(get_post_meta($invoice_id, 'item_id', true));
-            $item_price     =   esc_html(get_post_meta($invoice_id, 'item_price', true));
-            $purchase_date  =   esc_html(get_post_meta($invoice_id, 'purchase_date', true));
+        if ($invoice_type_key === WP_ESTATE_INVOICE_TYPE_UPGRADE_TO_FEATURED) {
+            $item_id       = esc_html(get_post_meta($invoice_id, 'item_id', true));
+            $item_price    = esc_html(get_post_meta($invoice_id, 'item_price', true));
+            $purchase_date = esc_html(get_post_meta($invoice_id, 'purchase_date', true));
             print  '<div class="create_invoice_form">
                         <h3>'.esc_html__( 'Invoice INV','wprentals').$invoice_id.'</h3>
-                        <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Type','wprentals').': </strong>'.$invoice_saved.'</div>
+                        <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Type','wprentals').': </strong>'.esc_html($invoice_type_label).'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Listing Id','wprentals').': </strong>'.wpestate_show_product_type($item_id).'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Price','wprentals').': </strong>'.$item_price.'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Date','wprentals').': </strong>';
@@ -3231,13 +3154,13 @@ if( !function_exists('wpestate_show_invoice_dashboard') ):
 
         }
 
-        if($invoice_saved=='Publish Listing with Featured'){
-            $item_id        =   esc_html(get_post_meta($invoice_id, 'item_id', true));
-            $item_price     =   esc_html(get_post_meta($invoice_id, 'item_price', true));
-            $purchase_date  =   esc_html(get_post_meta($invoice_id, 'purchase_date', true));
+        if ($invoice_type_key === WP_ESTATE_INVOICE_TYPE_PUBLISH_WITH_FEATURED) {
+            $item_id       = esc_html(get_post_meta($invoice_id, 'item_id', true));
+            $item_price    = esc_html(get_post_meta($invoice_id, 'item_price', true));
+            $purchase_date = esc_html(get_post_meta($invoice_id, 'purchase_date', true));
             print  '<div class="create_invoice_form">
                         <h3>'.esc_html__( 'Invoice INV','wprentals').$invoice_id.'</h3>
-                        <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Type','wprentals').': </strong>'.$invoice_saved.'</div>
+                        <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Type','wprentals').': </strong>'.esc_html($invoice_type_label).'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Listing Id','wprentals').': </strong>'.wpestate_show_product_type($item_id).'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Price','wprentals').': </strong>'.$item_price.'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Date','wprentals').': </strong>';
@@ -3250,14 +3173,14 @@ if( !function_exists('wpestate_show_invoice_dashboard') ):
                    </div>';
         }
 
-        if($invoice_saved=='Package'){
-            $invoice_period_saved      =  esc_html(get_post_meta($invoice_id, 'biling_type', true));
-            $item_id        =   esc_html(get_post_meta($invoice_id, 'item_id', true));
-            $item_price     =   esc_html(get_post_meta($invoice_id, 'item_price', true));
-            $purchase_date  =   esc_html(get_post_meta($invoice_id, 'purchase_date', true));
+        if ($invoice_type_key === WP_ESTATE_INVOICE_TYPE_PACKAGE) {
+            $invoice_period_saved = esc_html(get_post_meta($invoice_id, 'biling_type', true));
+            $item_id              = esc_html(get_post_meta($invoice_id, 'item_id', true));
+            $item_price           = esc_html(get_post_meta($invoice_id, 'item_price', true));
+            $purchase_date        = esc_html(get_post_meta($invoice_id, 'purchase_date', true));
             print  '<div class="create_invoice_form">
                         <h3>'.esc_html__( 'Invoice INV','wprentals').$invoice_id.'</h3>
-                        <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Type','wprentals').': </strong>'.$invoice_saved.'</div>
+                        <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Type','wprentals').': </strong>'.esc_html($invoice_type_label).'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Package','wprentals').': </strong>'.wpestate_show_product_type($item_id).'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Price','wprentals').': </strong>'.$item_price.'</div>
                         <div class="dashboard_invoice_details"><strong>'.esc_html__( 'Period','wprentals').': </strong>'.$invoice_period_saved.'</div>
@@ -3270,7 +3193,7 @@ if( !function_exists('wpestate_show_invoice_dashboard') ):
                     }
             print  '</div>
                    </div>';
-            }
+        }
         die();
 
     }
@@ -3336,85 +3259,3 @@ endif;
 
 
 
-add_action('wp_ajax_wpestate_post_review', 'wpestate_post_review' );
-
-
-if (!function_exists('wpestate_post_review')):
-    function wpestate_post_review(){
-        check_ajax_referer( 'wprentals_reservation_actions_nonce', 'security' );
-        $current_user = wp_get_current_user();
-        $allowed_html=array();
-
-        $bookid     =   intval($_POST['bookid']);
-        $userID                         =   $current_user->ID;
-
-        if ( !is_user_logged_in() ) {
-            exit('ko');
-        }
-        if($userID === 0 ){
-            exit('out pls');
-        }
-
-        $the_post= get_post( $bookid);
-        if( $current_user->ID != $the_post->post_author ) {
-            exit('you don\'t have the right to see this');
-        }
-
-
-
-
-
-        $userID         =   $current_user->ID;
-        $user_login     =   $current_user->user_login;
-        $user_email     =   $current_user->user_email;
-        $listing_id     =   intval($_POST['listing_id']);
-
-        $stars          =   html_entity_decode($_POST['stars']);
-        $content        =   wp_kses($_POST['content'],$allowed_html);
-        $time           =   time();
-        $time = current_time('mysql');
-        $data = array(
-            'comment_post_ID' => $listing_id,
-            'comment_author' => $user_login,
-            'comment_author_email' => $user_email,
-            'comment_author_url' => '',
-            'comment_content' => $content,
-            'comment_type' => 'comment',
-            'comment_parent' => 0,
-            'user_id' => $userID,
-            'comment_author_IP' => '127.0.0.1',
-            'comment_agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.10) Gecko/2009042316 Firefox/3.0.10 (.NET CLR 3.5.30729)',
-            'comment_date' => $time,
-            'comment_approved' => 1,
-        );
-
-        $comment_id =    wp_insert_comment($data);
-        add_comment_meta( $comment_id, 'review_stars',$stars  );
-        update_post_meta($listing_id,'review_by_'.$userID,'has');
-
-        wpestate_calculate_property_rating( $listing_id );
-
-        $author_id = get_post_field('post_author', $listing_id);
-
-        // Get the user data for the author
-        $user_data = get_userdata($author_id);
-        $owner_email = $user_data->user_email;
-   
-
-        $total_stars_raw = get_comment_meta( $comment_id , 'review_stars', true );
-        $total_stars = wpestate_get_star_total_rating($total_stars_raw);
-
-        $content= array(
-            'stars'     =>  $total_stars,
-            'user'      =>  $user_login,
-            'content'   =>  $content,
-            'listing_id'=>  $listing_id,
-            
-        );
-        wpestate_send_booking_email('new_review',$owner_email,$content);
-
-
-die();
-
-    }
-endif;

@@ -7,7 +7,7 @@ if ( isset($show_remove_fav) && $show_remove_fav==1 ) {
 
     <div class="info-container">
         <a  data-original-title="<?php esc_attr_e('Edit property','wprentals');?>"   class="dashboad-tooltip" href="<?php  print esc_url($edit_link);?>"><i class="fa fa-edit editprop"></i></a>
-        <a  data-original-title="<?php esc_attr_e('Delete property','wprentals');?>" class="dashboad-tooltip" onclick="return confirm(' <?php echo esc_html__( 'Are you sure you wish to delete ','wprentals').get_the_title(); ?>?')" href="<?php print esc_url ( add_query_arg( 'delete_id', $post_id, wpestate_get_template_link('user_dashboard.php') ) );?>"><i class="fas fa-trash-alt deleteprop"></i></a>
+        <a  data-original-title="<?php esc_attr_e('Delete property','wprentals');?>" class="dashboad-tooltip" onclick="return confirm(' <?php echo esc_html__( 'Are you sure you wish to delete ','wprentals').get_sanitized_truncated_title(0, 0);  ?>?')" href="<?php print esc_url ( add_query_arg( 'delete_id', $post_id, wpestate_get_template_link('user_dashboard.php') ) );?>"><i class="fas fa-trash-alt deleteprop"></i></a>
         <?php
         if( $post_status == 'expired' ){
             print'<span data-original-title="'.esc_attr__( 'Resend for approval','wprentals').'" class="dashboad-tooltip resend_pending" data-listingid="'.esc_attr($post_id).'"><i class="fas fa-arrow-up"></i></span>';
@@ -28,6 +28,8 @@ if ( isset($show_remove_fav) && $show_remove_fav==1 ) {
         }else if($post_status=='disabled') {
             print ' <span  data-original-title="'.esc_attr__( 'Enable Listing','wprentals').'" class="dashboad-tooltip disable_listing" data-postid="'.esc_attr($post_id).'" ><i class="far fa-eye"></i></span>';
         }
+
+        print ' <span  data-original-title="'.esc_attr__( 'Duplicate Listing','wprentals').'" class="dashboad-tooltip duplicate_listing" data-postid="'.esc_attr($post_id).'" ><i class="fas fa-clone"></i></span>';
 
         if($paid_submission_status=='membership'){
             if ( intval(get_post_meta($post_id, 'prop_featured', true))!=1){

@@ -37,7 +37,7 @@ $schema_data=   'itemprop="itemListElement" itemscope itemtype="http://schema.or
 
             
             <div class="category_tagline">
-                <span class="span_widemeta"> <?php print esc_html('published on ','wprentals').' '. get_the_date();?></span>  
+                <span class="span_widemeta"> <?php print esc_html__('published on ','wprentals').' '. get_the_date();?></span>  
               
             </div>
         </div>

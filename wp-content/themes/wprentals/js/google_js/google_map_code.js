@@ -61,8 +61,18 @@ function wprentals_initialize_map() {
  
  
     //fit bounds
+    
+    var $mapData = jQuery('#wpestate_full_map_control_data');
+
+    if ($mapData.attr('data-term_lat') !== undefined &&
+        $mapData.attr('data-term_long') !== undefined &&
+        $mapData.attr('data-term_zoom') !== undefined) {
+            // do nothing
+        }else{
     wprentals_map_general_fit_to_bounds();
     
+        }
+
     //spider
     wprentals_map_general_spiderfy();
     
@@ -92,7 +102,6 @@ function wpestate_ondenamd_map_moved_leaflet(){
 
 function wpestate_ondenamd_map_moved(){
     "use strict";
-
     if(  map_geo_first_load===1 && is_fit_bounds_zoom===0 && external_action_ondemand==0){
         map_is_moved=1;
         map_is_pan=1;
@@ -178,7 +187,7 @@ function wpestate_get_coordinates(container,newpage,NE,SW){
 
 function wpestate_reload_pins_onmap(newpage){
     "use strict";
-   
+
     if(wprentals_map_type===1){
         var curentbounds = map.getBounds();
 

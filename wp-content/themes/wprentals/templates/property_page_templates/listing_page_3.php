@@ -35,7 +35,7 @@ if(isset($_GET['guest_no_prop'])){
 }
 $guest_list= wpestate_get_guest_dropdown('noany');
 ?>
--->
+
 <div  class="row content-fixed-listing listing_type_3">
     <div class=" <?php 
     if ( $wpestate_options['content_class']=='col-md-12' || $wpestate_options['content_class']=='none'){
@@ -49,11 +49,13 @@ $guest_list= wpestate_get_guest_dropdown('noany');
         <?php include(locate_template('templates/ajax_container.php')); ?>
         <?php
         while (have_posts()) : the_post();
-            $image_id       =   get_post_thumbnail_id();
-            $image_url      =   wp_get_attachment_image_src($image_id, 'wpestate_property_full_map');
-            $full_img       =   wp_get_attachment_image_src($image_id, 'full');
-            $image_url      =   $image_url[0];
-            $full_img       =   $full_img [0];     
+            $image_id   = get_post_thumbnail_id();
+            $image_url  = wp_get_attachment_image_src($image_id, 'wpestate_property_full_map');
+            $full_img   = wp_get_attachment_image_src($image_id, 'full');
+
+            // wp_get_attachment_image_src can return false if no image is available
+            $image_url  = is_array($image_url) ? $image_url[0] : '';
+            $full_img   = is_array($full_img) ? $full_img[0] : '';   
         ?>
         
         <div class="single-content listing-content">

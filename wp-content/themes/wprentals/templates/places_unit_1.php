@@ -4,7 +4,7 @@ $place_id                     = intval($place_id);
 $category_attach_id           = '';
 $category_tax                 = '';
 $category_featured_image      = '';
-$category_name                = '';
+// $category_name                = '';
 $category_featured_image_url  = '';
 $term_meta                    = get_option( "taxonomy_$place_id");
 $category_tagline             = '';
@@ -16,7 +16,11 @@ if(isset($term_meta['category_featured_image'])){
 if(isset($term_meta['category_attach_id'])){
     $category_attach_id=$term_meta['category_attach_id'];
     $category_featured_image= wp_get_attachment_image_src( $category_attach_id, 'wpestate_property_featured');
-    $category_featured_image_url=$category_featured_image[0];
+    $category_featured_image_url='';
+    if(isset($category_featured_image[0])){
+        $category_featured_image_url=$category_featured_image[0];
+    }
+ 
 }
 
 if(isset($term_meta['category_tax'])){

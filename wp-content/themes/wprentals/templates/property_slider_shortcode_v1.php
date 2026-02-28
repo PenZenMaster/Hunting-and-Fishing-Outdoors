@@ -2,7 +2,7 @@
 if(isset($args['prop_id'])){
     $prop_id=intval($args['prop_id']);
 }
-$title              =   get_the_title($prop_id);
+$title              =   get_sanitized_truncated_title($prop_id, 0);
 
 $booking_type       =   $wprentals_is_per_hour=  wprentals_return_booking_type($prop_id);
 $rental_type        =   wprentals_get_option('wp_estate_item_rental_type');
@@ -14,7 +14,10 @@ if(isset($preview[0])){
     $thumb_prop =  esc_url($preview[0]);
 
 }else{
-    $thumb_prop = get_stylesheet_directory_uri() . '/img/defaultimage_prop.jpg';
+    $thumb_prop = wprentals_get_option('wp_estate_default_property_image', 'url');
+    if ( empty($thumb_prop) ) {
+        $thumb_prop = get_stylesheet_directory_uri().'/img/defaultimage_prop.jpg';
+    }
 }
 $price                      =   intval( get_post_meta($prop_id, 'property_price', true) );      
 $wpestate_currency          =   esc_html( wprentals_get_option('wp_estate_currency_label_main', '') );
@@ -84,7 +87,7 @@ $bedrooms                   =   floatval( get_post_meta($prop_id, 'property_bedr
             <?php if(intval($bedrooms)==99999999999): ?>
                 <div class="wpestate_properties_slider_v1_text_details_bedrooms wpestate_properties_slider_v1_single_details">
                 <?php 
-                    include (locate_template('templates/svg_icons/slider_bedrooms.html'));
+                    include (locate_template('img/svg_icons/slider_bedrooms.html'));
                     print intval($bedrooms);
                 ?>
                 </div>
@@ -93,7 +96,7 @@ $bedrooms                   =   floatval( get_post_meta($prop_id, 'property_bedr
             <?php if(intval($bedrooms)>0): ?>
                 <div class="wpestate_properties_slider_v1_text_details_guests wpestate_properties_slider_v1_single_details">
                 <?php 
-                    include (locate_template('templates/svg_icons/slider_guets.html'));
+                    include (locate_template('img/svg_icons/slider_guets.html'));
                     print intval($guests);
                 ?>
                 </div>
@@ -103,7 +106,7 @@ $bedrooms                   =   floatval( get_post_meta($prop_id, 'property_bedr
             <?php if( $property_categ!=='' ): ?>
                 <div class="wpestate_properties_slider_v1_text_details_categ wpestate_properties_slider_v1_single_details">
                 <?php 
-                    include (locate_template('templates/svg_icons/slider_property_categ.html'));
+                    include (locate_template('img/svg_icons/slider_property_categ.html'));
                     print trim($property_categ);
                 ?>
                 </div>
@@ -112,7 +115,7 @@ $bedrooms                   =   floatval( get_post_meta($prop_id, 'property_bedr
             <?php if( $property_action!==''): ?>
                 <div class="wpestate_properties_slider_v1_text_details_action_categ wpestate_properties_slider_v1_single_details">
                 <?php 
-                    include (locate_template('templates/svg_icons/slider_property_action.html'));
+                    include (locate_template('img/svg_icons/slider_property_action.html'));
                     print trim($property_action);
                 ?>
                 </div>

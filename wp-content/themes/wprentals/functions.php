@@ -2,8 +2,20 @@
 require_once get_theme_file_path('/libs/css_js_include.php');
 require_once get_theme_file_path('/libs/css_js_include_helper.php');
 require_once get_theme_file_path('/libs/plugins.php');
+require_once get_theme_file_path('/libs/invoce-functions/invoice-constants.php');
+require_once get_theme_file_path('/libs/invoce-functions/invoice-helpers.php');
+require_once get_theme_file_path('/libs/invoce-functions/invoice-migrations.php');
 require_once get_theme_file_path('/libs/help_functions.php');
-require_once get_theme_file_path('/libs/pin_management.php');
+require_once get_theme_file_path('/libs/register_utils.php');
+
+
+require_once get_theme_file_path('/libs/reviews/reviews-functions.php');
+require_once get_theme_file_path('/libs/reviews/reviews-ajax.php');
+
+require_once get_theme_file_path('/libs/marker-functions/pin_management.php');
+require_once get_theme_file_path('/libs/marker-functions/marker-functions.php');
+require_once get_theme_file_path('/libs/taxonomy_functions/taxonomy_transients_functions.php');
+
 require_once get_theme_file_path('/libs/ajax_functions.php');
 require_once get_theme_file_path('/libs/ajax_functions_edit.php');
 require_once get_theme_file_path('/libs/ajax_functions_booking.php');
@@ -19,7 +31,6 @@ require_once get_theme_file_path('/libs/reviews.php');
 require_once get_theme_file_path('/libs/megamenu.php');
 require_once get_theme_file_path('/libs/search_functions.php');
 require_once get_theme_file_path('/word_remove.php');
-require_once get_theme_file_path('/libs/dashboard_widgets.php');
 require_once get_theme_file_path('/world_manage.php');
 require_once get_theme_file_path('/libs/search_functions2.php');
 require_once get_theme_file_path('/libs/search_functions3.php');
@@ -29,21 +40,31 @@ require_once get_theme_file_path('/libs/multiple_sidebars.php');
 require_once get_theme_file_path('/libs/stats.php');
 require_once get_theme_file_path('/libs/global_functions.php');
 require_once get_theme_file_path('/libs/footer_filter_functions.php');
+require_once get_theme_file_path('/libs/listing-page-functions/features-ammenties-functions.php');
 
+
+require_once get_theme_file_path('/libs/listings-functions/price-functions.php');
 require_once get_theme_file_path('/dashboard/dashboard-functions.php');
 
+
+require_once get_theme_file_path('/libs/dashboard-functions/dashboard-links-functions.php');
 require_once get_theme_file_path('/classes/rentalsSearch.php');
 require_once get_theme_file_path('/classes/search_settings.php');
 require_once get_theme_file_path('/libs/search_functions_elementor.php');
 require_once get_theme_file_path('/libs/filters/filters.php');
 require_once get_theme_file_path('/libs/unitcard-functions.php');
 
-load_theme_textdomain('wprentals', get_template_directory() . '/languages');
+require_once get_theme_file_path('/libs/blog-functions/blog-functions.php');
+
+//require_once get_theme_file_path('/libs/debug-functions.php'); fffffff
+
+add_action('init', function()   {
+    load_theme_textdomain('wprentals', get_template_directory() . '/languages');
+});
 
 define('ULTIMATE_NO_EDIT_PAGE_NOTICE', true);
 define('ULTIMATE_NO_PLUGIN_PAGE_NOTICE', true);
-define('CLUBLINK', 'rentalsclub.org');
-define('CLUBLINKSSL', 'https');
+
 # Disable check updates -
 define('BSF_6892199_CHECK_UPDATES',false);
 
@@ -87,10 +108,6 @@ function wpestate_admin_notice() {
     if(class_exists('WpestateFunk') ){
         $WpestateFunk = WpestateFunk::get_instance();
         $WpestateFunk->show_license_form();
-    }
-
-    if ($current_user->has_cap('create_users') ) {
-        add_action('admin_notices', 'wpestate_admin_display_verifications');
     }
 
 
@@ -333,28 +350,54 @@ endif; // end   wp_estate_init
 ///////////////////////////////////////////////////////////////////////////////////////////
 /////// If admin create the menu
 ///////////////////////////////////////////////////////////////////////////////////////////
-if (is_admin()) {
-    add_action('admin_menu', 'wpestate_manage_admin_menu');
-}
 
-if (!function_exists('wpestate_manage_admin_menu')):
+
+
+
+add_action('admin_menu', 'wpestate_manage_admin_menu', 1);
+
+if (!function_exists('wpestate_manage_admin_menu')) :
     function wpestate_manage_admin_menu() {
+        // Define the parent slug for Redux Framework menu
+        $redux_parent_slug = 'wprentals_admin'; // Default slug for Redux menu, adjust if necessary
 
-        $theme = wp_get_theme();
-        $label_import ="Import Demo";
-        $link =  'themes.php?page=one-click-demo-import';
-        if(!class_exists('OCDI_Plugin')){
-            $label_import ="Import Demo - Activate One Click Demo Import plugin";
-            $link=get_admin_url().'/plugins.php';   
+        // Check if Redux Framework is active and accessible
+        if (!class_exists('ReduxFramework')) {
+            return; // Exit if Redux is not active
         }
-        add_submenu_page( $theme->get( 'Name' ),$label_import, $label_import, 'administrator',$link, '' );
-        add_submenu_page( 'libs/theme-admin.php',$label_import, $label_import, 'administrator', $link, '' );
-      
+
+        // Define the submenu label and link
+        $label_import = esc_html__("Import Demo","wprentals"); ;
+        $link = 'themes.php?page=one-click-demo-import';
+
+        // Check if the One Click Demo Import plugin is active
+        if (!class_exists('OCDI_Plugin')) {
+            $label_import = esc_html__( "Import Demo - Activate Plugin","wprentals"); 
+            $link = admin_url('plugins.php'); // Redirect to plugins page if plugin isn't active
+        }
+
+        // Add the submenu under Redux Framework menu
+        add_submenu_page(
+            $redux_parent_slug, // Parent menu slug (Redux Framework menu)
+            $label_import,      // Page title
+            $label_import,      // Menu title
+            'manage_options',   // Capability
+            $link,              // Menu slug or link
+            '',                 // Callback (not used for external links)
+            1                   // Position (low value ensures it appears first)
+        );
+
+        // Include required admin files
         require_once get_theme_file_path('/libs/property-admin.php');
-        require_once get_theme_file_path('/libs/pin-admin.php');
+        require_once get_theme_file_path('/libs/marker-functions/pin-admin.php');
         require_once get_theme_file_path('/libs/theme-admin.php');
-    }
-endif; // end   wpestate_manage_admin_menu
+        
+
+
+
+    }    
+        
+endif;
 
 
 
@@ -368,6 +411,10 @@ function wpestate_purge_cache(){
                 wp_nonce_ays( '' );
             }
 
+
+            if (function_exists('wprentals_clear_all_cache')){
+	            wprentals_clear_all_cache();
+            }
             wpestate_delete_cache();
             wp_redirect( wp_get_referer() );
             die();
@@ -397,6 +444,16 @@ if (!function_exists('wpestate_page_details')):
 
     function wpestate_page_details($post_id) {
         $return_array = array();
+
+        $original_post_id = wp_is_post_revision($post_id);
+        if (false !== $original_post_id) {
+            $post_id = $original_post_id;
+        }
+
+        $autosave = wp_is_post_autosave($post_id);
+        if (false !== $autosave && isset($autosave->post_parent) && $autosave->post_parent) {
+            $post_id = $autosave->post_parent;
+        }
 
 
         if ($post_id != '' && !is_home() && !is_tax() && !is_search()) {
@@ -711,20 +768,29 @@ if ( !function_exists('wpestate_check_user_level')):
         $publish_only                   =   esc_html ( wprentals_get_option('wp_estate_publish_only') );
         global $post;
         $page_template='';
+
+
+        if ( current_user_can('administrator') ) {
+            return true;
+        }
+
+
         if(isset($post->ID)){
            $page_template = get_post_meta( $post->ID, '_wp_page_template', true );
         }
 
-        if (trim($publish_only) != '' ){
-            $user_array=explode(',',$publish_only);
+     
 
-            if ( in_array ($user_login,$user_array)){
-                return true;
-            }else{
-                return false;
-            }
+	    if('no' === $separate_users_status && trim($publish_only) != ''){
+		    $user_array = array_map('trim', explode(',', $publish_only));
 
-        }
+		    if(in_array($user_login, $user_array)){
+			    return true;
+		    }else{
+			    return false;
+		    }
+	    }
+
         $dashboard_pages=array(
             'user_dashboard_main.php',
             'user_dashboard.php' ,
@@ -740,15 +806,11 @@ if ( !function_exists('wpestate_check_user_level')):
         if($separate_users_status=='no'){
             return true;
         }else{
-            $user_level = intval( get_user_meta($userID,'user_type',true));
-
-            if($user_level==0){ // user can book and rent
+            if( wprentals_core_user_has_role($userID, 'owner')){ // user can book and rent
                 return true;
-            }else{
+            }else if( in_array($page_template, $dashboard_pages)   ){
                 // user can only book
-                if( in_array($page_template, $dashboard_pages)   )    {
                     return false;
-                }
             }
         }
 
@@ -850,56 +912,59 @@ add_action( 'transition_post_status', 'wpestate_correct_post_data',10,3 );
 
 if( !function_exists('wpestate_correct_post_data') ):
 
-function wpestate_correct_post_data( $strNewStatus,$strOldStatus,$post) {
-  
-    /* Only pay attention to posts (i.e. ignore links, attachments, etc. ) */
-    if( $post->post_type !== 'estate_property' )
-        return;
-
-    if( $strOldStatus === 'new' ) {
-        update_post_meta( $post->ID, 'original_author', $post->post_author );
-    }
-
-    /* If this post is being published, try to restore the original author */
-    if( $strNewStatus === 'publish' ) {
-
-
-            $originalAuthor_id =$post->post_author;
-            $user = get_user_by('id',$originalAuthor_id);
-            if(!$user){
+    /**
+     * Handles post status transitions for 'estate_property' post type.
+     * - Stores original author when the post is first created.
+     * - Sends an approval email when a property is published (if the author has 'owner' or 'renter' role).
+     *
+     * @param string $strNewStatus The new post status.
+     * @param string $strOldStatus The old post status.
+     * @param WP_Post $post The post object.
+     */
+    function wpestate_correct_post_data( $strNewStatus, $strOldStatus, $post ) {
+      
+        // Only process 'estate_property' post type
+        if ( $post->post_type !== 'estate_property' ) {
+            return;
+        }
+    
+        // Store original author when the post is first created
+        if ( $strOldStatus === 'new' ) {
+            update_post_meta( $post->ID, 'original_author', $post->post_author );
+        }
+    
+        // If the post is published, process author notifications
+        if ( $strNewStatus === 'publish' ) {
+    
+            $originalAuthor_id = $post->post_author;
+            $user = get_user_by('id', $originalAuthor_id);
+    
+            if ( !$user ) {
                 return;
             }
-            $user_email=$user->user_email;
-
-            if( $user->roles[0]=='subscriber'){
-                $arguments=array(
-                    'post_id'           =>  $post->ID,
-                    'property_url'      =>  esc_url ( get_permalink($post->ID) ),
-                    'property_title'    =>  get_the_title($post->ID),
-                    'listing_author'    =>  $post->post_author,
-                );
-
-                if($strOldStatus=='pending'){
-
-                    if( $user->roles[0]=='subscriber'){
-                        $arguments=array(
-                            'post_id'           =>  $post->ID,
-                            'property_url'      =>  esc_url ( get_permalink($post->ID) ),
-                            'property_title'    =>  get_the_title($post->ID),
-                            'listing_author'    =>  get_the_author_meta( 'display_name', $post->post_author),
-                        );
-
-                        wpestate_select_email_type($user_email,'approved_listing',$arguments);
-
-
-                    }
-
+    
+            $user_email = $user->user_email;
+            $user_roles = $user->roles;
+    
+            // Check if author role is 'owner' or 'renter'
+            if ( in_array('owner', $user_roles) || in_array('renter', $user_roles) ) {
+    
+                // If transitioning from 'pending' to 'publish', send an approval email
+                if ( $strOldStatus == 'pending' ) {
+                    $arguments = array(
+                        'post_id'           => $post->ID,
+                        'property_url'      => esc_url( get_permalink($post->ID) ),
+                        'property_title'    => get_the_title($post->ID),
+                        'listing_author'    => get_the_author_meta('display_name', $post->post_author),
+                    );
+    
+                    wpestate_select_email_type($user_email, 'approved_listing', $arguments);
                 }
             }
+        }
     }
-}
-endif; // end   wpestate_correct_post_data
-
+    endif; // end wpestate_correct_post_data
+    
 
 
 function wpestate_double_tax_cover($property_area,$property_city,$post_id){
@@ -1190,9 +1255,9 @@ function wprentals_body_class_blocks( $classes ) {
         $classes[]='using-mobile-header-sticky';
     }
 
-    
-    return $classes;
-
+    if ( wprentals_get_option('wp_estate_property_list_type_footer', 'no') == 'yes' ) {
+        $classes[] = 'wpresidence_half_map_body_class_with_footer';
+    }
 
     return $classes;
 }

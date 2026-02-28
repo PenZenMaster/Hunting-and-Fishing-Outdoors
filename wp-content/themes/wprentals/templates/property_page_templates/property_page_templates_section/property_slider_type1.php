@@ -4,23 +4,13 @@ $video_id       =   '';
 $video_thumb    =   '';
 $video_alone    =   0;
 $full_img       =   '';
-$arguments      = array(
-                    'numberposts' => -1,
-                    'post_type' => 'attachment',
-                    'post_mime_type' => 'image',
-                    'post_parent' => $post->ID,
-                    'post_status' => null,
-                    'exclude' => get_post_thumbnail_id(),
-                    'orderby'         => 'menu_order',
-                    'order'           => 'ASC'
-                );
-
-$post_attachments   = get_posts($arguments);
+$post_attachments   =   wpestate_generate_property_slider_image_ids($post->ID,false);
 $video_id           = esc_html( get_post_meta($post->ID, 'embed_video_id', true) );
 $video_type         = esc_html( get_post_meta($post->ID, 'embed_video_type', true) );
 
 
 $total_pictures=count ($post_attachments)+1;
+
 
  echo wpestate_return_property_status($post->ID);
 if ($post_attachments || has_post_thumbnail() || get_post_meta($post->ID, 'embed_video_id', true)) {  ?>
@@ -99,8 +89,13 @@ if ($post_attachments || has_post_thumbnail() || get_post_meta($post->ID, 'embed
 
             $slides .=  '</div>';
         }
+        $post_attachments = array_diff($post_attachments, [$post_thumbnail_id]);
 
-        foreach ($post_attachments as $attachment) {
+
+        foreach ($post_attachments as $attachment_id) {
+            if (!wp_attachment_is_image($attachment_id)) {
+                continue; // Skip this attachment if it's not an image
+            }
             $counter++;
             $active='';
             if($counter==1 && $has_video!=1){
@@ -109,14 +104,14 @@ if ($post_attachments || has_post_thumbnail() || get_post_meta($post->ID, 'embed
                 $active=" ";
             }
 
-            $preview            = wp_get_attachment_image_src($attachment->ID, 'wpestate_slider_thumb');
+            $preview            = wp_get_attachment_image_src($attachment_id, 'wpestate_slider_thumb');
             if ($slider_size=='full'){
-                $full_img           = wp_get_attachment_image_src($attachment->ID, 'wpestate_property_featured');
+                $full_img           = wp_get_attachment_image_src($attachment_id, 'wpestate_property_featured');
             }else{
-                $full_img           = wp_get_attachment_image_src($attachment->ID, 'wpestate_blog_unit2');
+                $full_img           = wp_get_attachment_image_src($attachment_id, 'wpestate_blog_unit2');
             }
-            $full_prty          = wp_get_attachment_image_src($attachment->ID, 'full');
-            $attachment_meta    = wp_get_attachment($attachment->ID);
+            $full_prty          = wp_get_attachment_image_src($attachment_id, 'full');
+            $attachment_meta    = wp_get_attachment($attachment_id);
 
             $indicators.= ' <li data-target="#carousel-listing" data-slide-to="'.esc_attr($counter-1).'" class="'. $active.'">
                                 <div class="img_listings_overlay img_listings_overlay_last" ></div>

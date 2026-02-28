@@ -34,33 +34,23 @@ $rental_type        =   wprentals_get_option('wp_estate_item_rental_type','');
 $booking_type       =   wprentals_return_booking_type($post->ID);
 ?>
 
-<?php if($listing_page_type!=5){ ?>
+<?php if( isset($listing_page_type) && $listing_page_type!=5){ ?>
 
     <div  itemprop="price"  class="listing_main_image_price">
         <?php
         $price_per_guest_from_one       =   floatval( get_post_meta($post->ID, 'price_per_guest_from_one', true) );
         $price                          =   floatval( get_post_meta($post->ID, 'property_price', true) );
-$price_hfday = floatval(get_post_meta($post->ID, 'property_price_hfday', true));
-$price_hr = floatval(get_post_meta($post->ID, 'property_price_hr', true));
-$book_type = wprentals_return_booking_type($post->ID);
-$after_noon_price = 0;
-if($book_type == 2) {
-    $price = floatval(get_post_meta($post->ID, 'morning_price', true));
-    $after_noon_price = floatval(get_post_meta($post->ID, 'afternoon_price', true));
+        wpestate_show_price($post->ID,$wpestate_currency,$wpestate_where_currency,0); 
+        print '<span class="pernight_label">';
+        if($price!=0){
+            if( $price_per_guest_from_one == 1){
+                echo ' '.esc_html__( 'per guest','wprentals');
+            }else{
+                echo ' '.wpestate_show_labels('per_night',$rental_type,$booking_type);
             }
-//echo $price_hfday;
-//echo $price_hr;
-//echo $price;
+        }
+        print '</span>';
         ?>
-    <div class="vdf_selected_day">
-        <div class="vdf_selected_day_main">
-            <div class="vdf_day vdf_day_choose" id="vdf_bk_day01">
-                <p class="morning_price">$ <?php echo number_format_i18n($price); ?> Per guest</p>
-                <p class="afternoon_price hide">$ <?php echo number_format_i18n($after_noon_price); ?> Per guest</p>
-            </div>
-
-        </div>
-    </div>
     </div>
 <?php } ?>
 

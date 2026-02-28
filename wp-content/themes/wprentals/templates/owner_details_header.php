@@ -17,7 +17,10 @@ while (have_posts()) : the_post();
     }
   
     if ($preview_img==''){
-        $preview_img    =   get_stylesheet_directory_uri().'/img/default_user.png';
+        $preview_img = wprentals_get_option('wp_estate_default_user_image', 'url');
+        if ( empty($preview_img) ) {
+            $preview_img = get_stylesheet_directory_uri().'/img/default_user.png';
+        }
     }
     $agent_skype        =   esc_html( get_post_meta($post->ID, 'agent_skype', true) );
     $agent_phone        =   esc_html( get_post_meta($post->ID, 'agent_phone', true) );
@@ -38,7 +41,7 @@ while (have_posts()) : the_post();
     $agent_instagram    =   esc_html( get_post_meta($post->ID, 'agent_instagram', true) );
     $agent_youtube      =   esc_html( get_post_meta($post->ID, 'agent_youtube', true) );
     
-    $name               =   get_the_title();
+    $name               =   get_sanitized_truncated_title(0, 0);
     $content            =   apply_filters( 'the_content', get_the_content() );
     $content            =   str_replace( ']]>', ']]&gt;', $content );
 endwhile; // end of the loop.   
@@ -177,15 +180,18 @@ wp_reset_postdata();
                     <div id="contact_me_long_owner" class=" owner_read_more" data-postid="<?php print intval($agent_id);?>">
                         <?php esc_html_e('Contact Owner','wprentals');?>
                     </div>
-                   <?php if( wprentals_get_option('wp_estate_replace_booking_form','') == 'no'){ ?>  <?php } ?>
+           
                    
             </div>   
             
         </div> 
     </div> 
 
-    <div class="owner-page-wrapper-reviews">
-        <div class="owner-page-wrapper-inside">
-            <?php include(locate_template('templates/agent_reviews.php') );   ?>
-        </div>     
-    </div>
+
+    <?php if(!isset($is_elementor)) : ?>
+        <div class="owner-page-wrapper-reviews">
+            <div class="owner-page-wrapper-inside">
+                <?php include(locate_template('templates/agent_reviews.php') );   ?>
+            </div>     
+        </div>
+    <?php endif; ?>

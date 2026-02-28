@@ -2,7 +2,7 @@
   $item_id  =   get_the_ID();
   $preview  =   wp_get_attachment_image_src(get_post_thumbnail_id($item_id), 'wpestate_slider_thumb');
   $link     =   get_permalink($item_id);
-  $title    =   get_the_title($item_id);
+  $title    =   get_sanitized_truncated_title($item_id, 0);
 
  ?>
 <div class="dashboard_widget_unit">

@@ -41,21 +41,34 @@ if(isset($post->ID)){
     <div class=" <?php print esc_attr($wpestate_options['content_class']);?>  ">
 
 
-        <?php if( !is_tax() ){?>
-            <?php while (have_posts()) : the_post(); ?>
-            <?php if (esc_html( get_post_meta($post->ID, 'page_show_title', true) ) == 'yes') { ?>
-                <?php
-                    if (esc_html( get_post_meta($post->ID, 'page_show_title', true) ) == 'yes') {
+        <?php if( !is_tax() ){
+          
+           
+ 
+                if (esc_html( get_post_meta($post->ID, 'page_show_title', true) ) == 'yes') {
                         if( $page_template=='advanced_search_results.php' ){?>
-                            <h1 class="entry-title title_list_prop"><?php the_title(); print ': '.esc_html($prop_selection->found_posts).' '.esc_html__( 'results','wprentals');?></h1>
+
+                            <div class="wprentals_classic_search_title_wrapper">
+                                <h1 class="entry-title title_list_prop"><?php the_title(); print ': '.esc_html($prop_selection->found_posts).' '.esc_html__( 'results','wprentals');?></h1>
+                                <?php   include(locate_template('templates/properties_list_templates/filters_templates/property_list_filters_search.php')); ?>
+                            </div>
+                            
                         <?php }else{ ?>
                             <h1 class="entry-title title_list_prop"><?php the_title();?></h1>
                         <?php }
                     }
                 ?>
-            <?php } ?>
+
+
+            
+
+
+
+
+
+
             <div class="single-content"><?php the_content();?></div>
-            <?php endwhile;   ?>
+       
         <?php }else{ ?>
 
             <?php
@@ -85,15 +98,12 @@ if(isset($post->ID)){
             </h1>
         <?php } ?>
 
-        <?php
-        if ( $property_list_type_status == 2 ){
-            include(locate_template('templates/advanced_search_map_list.php') );
-        }
-        ?>
-
+     
+        
         <!--Filters starts here-->
         <?php  include(locate_template('templates/property_list_filters.php')); ?>
         <!--Filters Ends here-->
+
 
         <?php
         include(locate_template('templates/compare_list.php') );

@@ -240,7 +240,8 @@ function wpestate_add_meta_post_to_search($meta_array){
                 case 'LIKE':
                     
                     $wild = '%';
-                    $find = $value['value'];
+                  
+                    $find = stripslashes( $value['value'] );
                     $like = $wild . $wpdb->esc_like( $find ) . $wild;
                     $potential_ids[$key]=wpestate_get_ids_by_query(
                     $wpdb->prepare("
@@ -357,13 +358,17 @@ if( !function_exists('wpestate_custom_ondemand_pin_load_new') ):
         }
         unset($_REQUEST['all_fields']);
         
-        $compute            =   wpestate_argumets_builder($_REQUEST,1);   
-        
-    
-        
-        
-        $prop_selection     =   $compute[0];
-        $args               =   $compute[1];
+        $compute            =   wpestate_argumets_builder($_REQUEST,1);
+
+        $args       =   $compute[1];
+        $order_val  =   isset($_POST['order']) ? intval($_POST['order']) : 0;
+        if ($order_val) {
+            $order_array    =   wpestate_create_query_order_by_array($order_val);
+            $args           =   array_merge($args, $order_array['order_array']);
+            $prop_selection =   new WP_Query($args);
+        } else {
+            $prop_selection =   $compute[0];
+        }
         $compare_submit     =   wpestate_get_template_link('compare_listings.php');
         $markers            =   array();
         $return_string      =   '';
@@ -393,10 +398,16 @@ if( !function_exists('wpestate_custom_ondemand_pin_load_new') ):
             $templates = ob_get_contents();
         ob_end_clean(); 
         
-        $return_string .=   '<div class="half_map_results">'.$prop_selection->found_posts.' '.esc_html__( ' Results found!','wprentals').'</div>';
         $return_string .=   $templates;
-        
-        echo json_encode(array('added'=>true,'arguments'=>json_encode($args), 'markers'=>json_encode($markers),'response'=>$return_string ));
+        $results_text = $prop_selection->found_posts . ' ' . esc_html__( ' Results found!','wprentals');
+
+        echo json_encode(array(
+            'added'    => true,
+            'arguments'=> json_encode($args),
+            'markers'  => json_encode($markers),
+            'results'  => $results_text,
+            'response' => $return_string
+        ));
         die();
 
        wp_suspend_cache_addition(false);     

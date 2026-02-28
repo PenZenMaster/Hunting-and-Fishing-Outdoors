@@ -38,14 +38,15 @@ endif;
 
 add_action( 'event_wp_estate_create_auto', 'wprentals_event_wp_estate_create_auto_function' );
 
-
 if( !function_exists('wprentals_event_wp_estate_create_auto_function') ): 
 function wprentals_event_wp_estate_create_auto_function(){
-    $show_adv_search_general            =   wprentals_get_option('wp_estate_wpestate_autocomplete','');
+     $show_adv_search_general            =   wprentals_get_option('wp_estate_wpestate_autocomplete','');
+     $availableTags          =   '';
+     $availableTags_array  =   array();
+     
+     
     if($show_adv_search_general=='no'){
-        $availableTags          =   '';
-        $availableTags_array  =   array();
-        
+       
         $show_empty_city_status= esc_html ( wprentals_get_option('wp_estate_show_empty_city','') );
         
         if ( $show_empty_city_status=='no' ){
@@ -59,59 +60,72 @@ function wprentals_event_wp_estate_create_auto_function(){
                 'hide_empty' => 0,
             ); 
         }
-   
 
-        $terms = get_terms( 'property_city', $args );
+
+
+        $terms = wpestate_get_cached_terms('property_city', $args);
+
         foreach ( $terms as $term ) {
-            $availableTags.= ' { label: "'.$term->name.'", category: "tax" },';
+            $availableTags.= ' { label: "'.$term->name.'", category: "tax",category_tax:"'.esc_html__('City','wprentals').'",labelcategory:"city" },';
             $temp_array=array(
-                'label'=>$term->name,
-                'category'=>'tax'    
+                'category_tax'  =>  esc_html__('City','wprentals'),
+                'labelcategory' =>  'city',
+                'label'         =>  $term->name,
+                'category'      =>  'tax'    
                 );
             $availableTags_array[]=$temp_array;
         }
 
-        $terms = get_terms( 'property_area', $args );
+   
+        $terms = wpestate_get_cached_terms('property_area', $args);
         foreach ( $terms as $term ) {
-            $availableTags.= ' { label: "'.$term->name.'", category: "tax" },';
+            $availableTags.= ' { label: "'.$term->name.'", category: "tax",category_tax:"'.esc_html__('Area','wprentals').'",labelcategory:"area"  },';
             $temp_array=array(
-                  'label'=>$term->name,
-                  'category'=>'tax'    
-                  );
+                'category_tax'  =>  esc_html__('Area','wprentals'),
+                'labelcategory' =>  'area',
+                'label'         =>  $term->name,
+                'category'      =>  'tax'    
+                );
             $availableTags_array[]=$temp_array;
         }
 
         $country    = wpestate_get_meta_values('property_country');
         foreach ( $country as $term ) {
-            $availableTags.= ' { label: "'.$term.'", category: "meta" },';
+            $availableTags.= ' { label: "'.$term.'", category: "meta",category_tax:"'.esc_html__('Country','wprentals').'",labelcategory:"country"  },';
             $temp_array=array(
-                  'label'=>$term,
-                  'category'=>'meta'    
-                  );
+                'category_tax'  =>  esc_html__('Country','wprentals'),
+                'labelcategory' =>  'country',
+                'label'=>$term,
+                'category'=>'meta'    
+                );
             $availableTags_array[]=$temp_array;
         }
 
         $state      = wpestate_get_meta_values('property_state');
         foreach ( $state as $term ) {
-            $availableTags.= ' { label: "'.$term.'", category: "meta" },';
+            $availableTags.= ' { label: "'.$term.'", category: "meta" ,category_tax:"'.esc_html__('State','wprentals').'",labelcategory:"state"  },';
             $temp_array=array(
-                  'label'=>$term,
-                  'category'=>'meta'    
-                  );
+                'category_tax'  =>  esc_html__('State','wprentals'),
+                'labelcategory' =>  'state',
+                'label'=>$term,
+                'category'=>'meta'    
+                );
             $availableTags_array[]=$temp_array;
         }
 
         $conty      = wpestate_get_meta_values('property_county');
         foreach ( $conty as $term ) {
-            $availableTags.= ' { label: "'.$term.'", category: "meta" },';
-           $temp_array=array(
-                  'label'=>$term,
-                  'category'=>'meta'    
-                  );
+            $availableTags.= ' { label: "'.$term.'", category: "meta",category_tax:"'.esc_html__('County','wprentals').'",labelcategory:"county"  },';
+            $temp_array=array(
+                'category_tax'  =>  esc_html__('County','wprentals'),
+                'labelcategory' =>  'county',
+                'label'=>$term,
+                'category'=>'meta'    
+                );
             $availableTags_array[]=$temp_array;
         }
     }
-    
+   
     update_option('wpestate_autocomplete_data',$availableTags);
     
     update_option('wpestate_autocomplete_data_select',$availableTags_array);
@@ -149,7 +163,9 @@ function wpestate_get_meta_values( $key = '', $type = 'estate_property', $status
 
 
 //wp_clear_scheduled_hook('event_wp_estate_sync_ical');
-if( !function_exists('wprentals_setup_event_wp_estate_sync_ical') ): 
+// To run the sync immediately during troubleshooting, trigger the scheduled
+// action manually (for example via WP-CLI: `wp cron event run event_wp_estate_sync_ical`).
+if( !function_exists('wprentals_setup_event_wp_estate_sync_ical') ):
     function wprentals_setup_event_wp_estate_sync_ical() {
             if ( ! wp_next_scheduled( 'event_wp_estate_sync_ical' ) ) {
                     wp_schedule_event( time(), 'hourlythree', 'event_wp_estate_sync_ical');
@@ -161,8 +177,9 @@ add_action( 'event_wp_estate_sync_ical', 'wpestate_sync_ical' );
 
 
 
-if( !function_exists('wpestate_sync_ical') ): 
+if( !function_exists('wpestate_sync_ical') ):
 function wpestate_sync_ical(){
+    error_log('WP Rentals iCal: starting scheduled sync');
     $args = array(
             'post_type'         =>  'estate_property',
             'post_status'       =>  'published',
@@ -181,14 +198,23 @@ function wpestate_sync_ical(){
      
         $prop_selection =   new WP_Query($args);
 
-        
-      
-        
-        if ($prop_selection->have_posts()){  
-            while ($prop_selection->have_posts()): $prop_selection->the_post(); 
-                $post_id=get_the_id();
-                print '</br>SYNC FOR '.$post_id.' '.get_the_title() ;
-                  wpestate_import_calendar_feed_listing_global($post_id);
+
+
+
+        if ($prop_selection->have_posts()){
+            while ($prop_selection->have_posts()): $prop_selection->the_post();
+                $post_id = get_the_id();
+
+                // Only process properties that still have at least one active feed.
+                $property_icalendar_import_multi = get_post_meta($post_id, 'property_icalendar_import_multi', true);
+                if ( empty($property_icalendar_import_multi) || ! is_array($property_icalendar_import_multi) ) {
+                    error_log(sprintf('WP Rentals iCal: skipping property %d because no feeds remain', $post_id));
+                    continue;
+                }
+
+                print '</br>SYNC FOR ' . $post_id . ' ' . get_the_title();
+                error_log(sprintf('WP Rentals iCal: syncing property %d (%s)', $post_id, get_the_title()));
+                wpestate_import_calendar_feed_listing_global($post_id);
             endwhile;
         }
 }
@@ -361,19 +387,21 @@ function wpestate_enable_load_exchange(){
 }
 add_action( 'wpestate_load_exchange_action', 'estate_parse_curency' );
 
-
-
-
 function estate_parse_curency(){
     $base               =   esc_html( wprentals_get_option('wp_estate_currency_symbol') );
-    $custom_fields      =   wprentals_get_option('wpestate_currency');    
+    $custom_fields      =   wprentals_get_option('wpestate_currency');
+    $quotes             =   array_map(function($v){return round($v, 6);}, wpestate_currencyconverterapi_load_data($base));
+
+    if ( empty($quotes) || !is_array($quotes) ) {
+        // If the API call fails or the base currency is not found, return early
+        return;
+    }
     
     $i=0;
     if( !empty($custom_fields)){    
         while($i< count($custom_fields) ){
             $symbol=$custom_fields[$i][0];
-            $custom_fields[$i][2]=  wpestate_currencyconverterapi_load_data($base, $symbol);
-            
+            $custom_fields[$i][2]=  $quotes[$base.$symbol];
             $i++;
         }
     }
@@ -396,27 +424,49 @@ function estate_parse_curency(){
     $redux_currency['add_curr_label']=$cur_label;
     $redux_currency['add_curr_value']=$cur_value;  
     $redux_currency['add_curr_order']=$cur_positin;
-    
-    
 
-    Redux::setOption('wprentals_admin','wpestate_currency', $redux_currency);
+    Redux::set_option('wprentals_admin','wpestate_currency', $redux_currency);
 }
 
 if( !function_exists('wpestate_currencyconverterapi_load_data') ): 
-    function wpestate_currencyconverterapi_load_data($base, $symbol){
-    global $wp_filesystem;
-    if (empty($wp_filesystem)) {
-        require_once (ABSPATH . '/wp-admin/includes/file.php');
-        WP_Filesystem();
+    /*
+    * Load currency conversion data from the API
+    * Save data into transient to reduce API calls
+    */
+    function wpestate_currencyconverterapi_load_data($source = 'USD') {
+
+        $quotes = get_transient( 'wprentals_currencyremotedata' );
+
+        if ( $quotes !== false && (( isset( $quotes['source'] ) && $quotes['source'] != $source ) || !isset( $quotes['source'] ) ) ) {
+            // Force reset if source has changed
+            $quotes = false;
+        }
+
+        if ( $quotes === false ) {
+
+            $apikey= trim( wprentals_get_option('wp_estate_currencyconverterapi_api',''));
+
+            $link='https://api.currencylayer.com/live?access_key='.$apikey . '&source='.$source;
+            
+            $data = wp_remote_get($link);
+
+            if ( is_wp_error( $data ) ) {
+                return array();
+            }
+            
+            $data = json_decode($data['body'], true);
+            if ( !isset($data['quotes']) || !is_array($data['quotes']) ) {
+                return array();
+            }
+
+            $quotes = $data;
+
+            // Cache the quotes for 1 day
+            set_transient( 'wprentals_currencyremotedata', $quotes, DAY_IN_SECONDS );
+        }
+        
+        return( $quotes['quotes'] );
     }
-    
-    $apikey= trim( wprentals_get_option('wp_estate_currencyconverterapi_api',''));
-    
-    $link='https://free.currencyconverterapi.com/api/v5/convert?q='.$base.'_'.$symbol.'&compact=y&apiKey='.$apikey;
-    $data = (array)json_decode($wp_filesystem->get_contents($link));
- 
-    return( $data[$base.'_'.$symbol]->val);
-}
 endif;
 
 
@@ -567,10 +617,11 @@ endif;
 
 
 
-    // get the all listing
-    // checked the repeating event is enable or not
-    // and checked the current date + 1 day and checked this date is available in any event
-    // if yes then send the notification and add the send notification
+/*
+*
+* Check for booking that needs a review 
+*
+*/
 
 
 if( !function_exists('wpestate_setup_leave_review_reminder') ): 
@@ -611,11 +662,13 @@ if( !function_exists('wpestate_setup_leave_review_reminder_function') ):
                                     'compare'   => '='
                                 ),
                                 
-                                array(
+                               /* disabled so we can send email also when is confirmed but not full paid
+                               array(
                                     'key'       => 'booking_status_full',
                                     'value'     => 'confirmed',
                                     'compare'   => '='
                                 ),
+                                */
                                 array(
                                     'key'       => 'booking_to_date_unix',
                                     'value'     => array( $now-($days*24*60*60), $now),
@@ -627,19 +680,7 @@ if( !function_exists('wpestate_setup_leave_review_reminder_function') ):
                                     'key' => 'review_reminder_set', 
                                     'compare' => 'NOT EXISTS' 
                                 ),
-                                // array(
-                                //     'relation'=>'OR',
-                                //     array(
-                                //         'key' => 'review_reminder_set', 
-                                //         'compare' => 'NOT EXISTS' 
-                                //     ),
-                                //     array(
-                                //         'key'       => 'review_reminder_set',
-                                //         'type'      =>  'numeric',
-                                //         'meta_value_num'     => 1,
-                                //         'compare'   => '!='
-                                //     ),
-                                // ),
+                           
                               
                           
                 )

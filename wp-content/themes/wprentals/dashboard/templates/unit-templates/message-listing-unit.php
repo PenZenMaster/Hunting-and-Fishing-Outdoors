@@ -16,7 +16,7 @@ if($message_from_user!=0){
     $message_from_user_name=__('Not Registered - DO NOT REPLY','wprentals');
 }
 
-$message_title          =   get_the_title($post->ID);
+$message_title          =   get_sanitized_truncated_title($post->ID, 0); 
 $message_content        =   get_the_content();
 $original_mess          =   $post->ID;
 $unread_replies         =   0;
@@ -49,7 +49,7 @@ $list_of_relies= '<div class="mess_content-list-replies">';
             }
 
         $list_of_relies.= '<div class="mess_content-list-replies_unit" '.intval($post->ID).' data-mess-reply_user_id="'.esc_attr($mes_to).'" data-mess-reply_user_froom="'.esc_attr($mess_from).'" >';
-        $list_of_relies.= '<h4><strong>'.esc_html__( 'From: ','wprentals').'</strong> '.esc_html($user->user_login).' - ' .get_the_title($post->ID).'</h4>';
+        $list_of_relies.= '<h4><strong>'.esc_html__( 'From: ','wprentals').'</strong> '.esc_html($user->user_login).' - ' .get_sanitized_truncated_title($post->ID, 0) .'</h4>';
         $list_of_relies.= nl2br(get_the_content()).'</div>';
     endwhile;
 

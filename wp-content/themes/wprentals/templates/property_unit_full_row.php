@@ -54,7 +54,10 @@ $link                       =   wprentals_card_link_autocomplete($post->ID,$link
             $thumb_prop             =   get_the_post_thumbnail($post->ID, 'wpestate_property_places',$extra);
             $thumb_prop             =   wp_get_attachment_image_src( get_post_thumbnail_id(), 'wpestate_property_featured');
 
-            $wpestate_property_featured_img=get_stylesheet_directory_uri().'/img/defaultimage_prop1.jpg';
+            $wpestate_property_featured_img = wprentals_get_option('wp_estate_default_property_image', 'url');
+            if ( empty($wpestate_property_featured_img) ) {
+                $wpestate_property_featured_img = get_stylesheet_directory_uri().'/img/defaultimage_prop1.jpg';
+            }
             if(isset( $thumb_prop[0]) ){
                 $wpestate_property_featured_img=$thumb_prop[0];
             }
@@ -118,11 +121,7 @@ $link                       =   wprentals_card_link_autocomplete($post->ID,$link
                 print wpestate_display_property_rating( $post->ID );
             }
             print '<a class="featured_listing_title" href="'.esc_url($link).'">';
-            $title=get_the_title();
-            echo mb_substr( html_entity_decode($title), 0, 40);
-            if(strlen($title)>40){
-                echo '...';
-            }
+            echo get_sanitized_truncated_title(0, 40);
 
 
             print   '</a><div class="category_tagline">';

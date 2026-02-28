@@ -111,7 +111,7 @@ if($wp_estate_enable_user_phone == 'yes' ){
                       <div class="loginalert" id="login_message_area" ></div>
 
                       <div class="loginrow password_holder">
-                          <input type="text" class="form-control dofocus" name="log" id="login_user" autofocus placeholder="<?php echo esc_html__( 'Username','wprentals');?>" size="20" />
+                          <input type="text" class="form-control dofocus" name="log" id="login_user" autofocus placeholder="<?php echo esc_html__( 'Username or Email','wprentals');?>" size="20" />
                       </div>
 
                       <div class="loginrow password_holder">
@@ -125,7 +125,7 @@ if($wp_estate_enable_user_phone == 'yes' ){
                       <button id="wp-login-but" class="wpb_button  wpb_btn-info  wpb_regularsize   wpestate_vc_button  vc_button" data-mixval="<?php esc_attr($wpestate_propid); ?>"><?php echo esc_html__( 'Login','wprentals');?></button>
                       <div class="navigation_links">
                           <a href="#" id="reveal_register"><?php echo esc_html__( 'Don\'t have an account?','wprentals');?></a> |
-                          <a href="#" id="forgot_password_mod"><?php echo esc_html__( 'Forgot Password','wprentals');?></a>
+                          <a href="#" id="forgot_password_mod"><?php echo esc_html__( 'Forgot password','wprentals');?></a>
                       </div>
 
 

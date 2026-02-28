@@ -1,5 +1,5 @@
 <?php
-// Index
+// Index 2222
 // Wp Estate Pack 
 get_header();
 $wpestate_options       =   wpestate_page_details($post->ID);
@@ -32,7 +32,7 @@ if($wpestate_options['content_class'] == "col-md-12"){
             $wpestate_blog_selection = new WP_Query($args);
 
             while ($wpestate_blog_selection->have_posts()): $wpestate_blog_selection->the_post();
-                include(locate_template('templates/blog_unit.php'));
+                include(locate_template('templates/blog-unit/blog_unit.php'));
             endwhile;
             wp_reset_query();
         ?>

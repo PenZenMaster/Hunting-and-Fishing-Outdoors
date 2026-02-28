@@ -26,7 +26,7 @@ $wpestate_row_number_col=4;
                 if (have_posts()){
                     print ' <h1 class="entry-title-search">'. esc_html__(  'Search Results for: ','wprentals');print '"' . get_search_query() . '"'.'</h1>';
                     while (have_posts()) : the_post(); 
-                         include(locate_template('templates/blog_unit.php'));              
+                         include(locate_template('templates/blog-unit/blog_unit.php'));              
                     endwhile;
                 }else{
                 ?>

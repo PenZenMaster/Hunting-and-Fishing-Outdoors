@@ -48,7 +48,7 @@ if( isset($_POST['wpestate_prop_title']) ){
 
     while ($prop_selection->have_posts()): $prop_selection->the_post();
             $right_array[]=$post->ID;
-           // print get_the_title($post->ID).',';
+       
     endwhile;
     wp_reset_postdata();
     $title_search= array(

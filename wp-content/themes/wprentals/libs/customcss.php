@@ -67,7 +67,7 @@ $wp_estate_calendar_internal_color = esc_html ( wprentals_get_option('wp_estate_
 
 $wp_estate_logo_max_height                            =   esc_html ( wprentals_get_option('wp_estate_logo_max_height','') );
 if($wp_estate_logo_max_height!=''){
-    print '.logo img{
+    print '.logo img, .mobile-logo img{
         max-height: '.$wp_estate_logo_max_height.'px;
     }';
 
@@ -89,7 +89,7 @@ if($wp_estate_logo_max_width!=''){
 if ($main_color != '') {
 print'
 
-
+.icon-fav-on svg,
 .listing_detail svg image, 
 .listing_detail svg path,
 .wpestate_elementor_tabs li:hover svg path,
@@ -109,10 +109,6 @@ print'
     background-image:none;
 }
 
-.property_header2 .property_categs .check_avalability:hover,
-.listing_type_1 .check_avalability{
-    background-color:transparent!important;
-}
 
 form.woocommerce-checkout,
 .woocommerce-error, .woocommerce-info, .woocommerce-message{
@@ -162,7 +158,15 @@ form.woocommerce-checkout,
 .listing-hover,
 .menu_label,
 .wpestream_cart_counter_header_mobile,
-.wpestate_bell_note_unread{
+.wpestate_bell_note_unread,
+.wpestate-price-component-popoup-done, 
+.wpestate-price-component-popoup-reset, 
+.wpestate-beds-baths-popoup-done, 
+.wpestate-beds-baths-popoup-reset,
+.wp_estate_baths_component_item:hover, 
+.wp_estate_beds_component_item:hover, 
+.wp_estate_component_item_selected,
+.mobile_header .wpestream_cart_counter_header{
     background-color: ' . $main_color . ';
 }
 
@@ -193,7 +197,6 @@ form.woocommerce-checkout,
 .woocommerce input.button.alt,
 .wpestream_cart_counter_header,
 .user_loged .wpestream_cart_counter_header,
-.img_listings_overlay:hover,
 .panel-title-arrow,
 .owner_area_wrapper_sidebar,
 .listing_type_1 .listing_main_image_price,
@@ -278,7 +281,6 @@ form.woocommerce-checkout,
 
 .showcoupon,
 .search_wr_type3 .col-md-6.property_price label,
-.property_header2 .property_categs .check_avalability:hover,
 .pack-name,.user_dashboard_links a:hover i,
 .property_ratings_agent i,
 .prop_pricex,
@@ -399,7 +401,30 @@ i.checkon,
  .icon-fav-on,
  .filter_menu li:hover,
  .listing_type_5 .listing_main_image_price,
- .property_unit_v4 .price_unit{
+ .property_unit_v4 .price_unit,
+ .bootstrap-select.show-tick .dropdown-menu .selected .glyphicon-ok:before,
+ .signuplink:hover,
+.signuplink:hover:before,
+#topbarregister:before,
+#topbarlogin:before,
+.rooms_icon:after,
+.map_icon:after,
+.calendar_icon:after,
+#guest_no_drop:after,
+#guest_no_shortcode:after,
+#guest_no_mobile:after,
+#booking_guest_no_wrapper:after,
+#guest_no_widget:after,
+#guest_no:after,
+.types_icon:after,
+.actions_icon:after,
+.bedrooms_icon:after,
+.baths_icon:after,
+i.fas.fa-chevron-up,
+.wpestate-price-component-popoup-done:hover, 
+.wpestate-price-component-popoup-reset:hover, 
+.wpestate-beds-baths-popoup-done:hover, 
+.wpestate-beds-baths-popoup-reset:hover{
     color: ' . $main_color . ';
 }
 
@@ -408,6 +433,17 @@ i.checkon,
     border: 1px solid '. $main_color .'!important;
 }
 
+.wp_estate_baths_component_item:hover, 
+.wp_estate_beds_component_item:hover, 
+.wp_estate_component_item_selected,
+.wpestate-price-component-popoup-done:hover, 
+.wpestate-price-component-popoup-reset:hover, 
+.wpestate-beds-baths-popoup-done:hover, 
+.wpestate-beds-baths-popoup-reset:hover,
+.wpestate-price-component-popoup-done, 
+.wpestate-price-component-popoup-reset, 
+.wpestate-beds-baths-popoup-done, 
+.wpestate-beds-baths-popoup-reset,
 .property_flex:hover .blog_unit_back,
 .property_flex:hover .property_listing,
 .listing_type_1 .check_avalability,
@@ -449,29 +485,11 @@ blockquote{
    border-bottom: 2px solid '. $main_color .';
 }
 
-.signuplink:hover,
-.signuplink:hover:before,
-#topbarregister:before,
-#topbarlogin:before,
-.rooms_icon:after,
-.map_icon:after,
-.calendar_icon:after,
-#guest_no_drop:after,
-#guest_no_shortcode:after,
-#guest_no_mobile:after,
-#booking_guest_no_wrapper:after,
-#guest_no_widget:after,
-#guest_no:after,
-.types_icon:after,
-.actions_icon:after,
-.bedrooms_icon:after,
-.baths_icon:after,
-i.fas.fa-chevron-up{
-    color:'.$main_color.';
-}
+
 
 .property_unit_v1 .property_unit_action .icon-fav-on svg {
-    fill: '.$main_color.'; opacity:0.9;
+    fill: '.$main_color.'; 
+    opacity:0.9;
 }';
 
 }
@@ -533,7 +551,8 @@ print '
 #infoguest,
 #infosize,
 .featured_article_secondline,
-.featured_article_right{
+.featured_article_right,
+.blog_unit_back .category_tagline{
     color: ' . $breadcrumbs_font_color . ';
 }
 
@@ -558,7 +577,6 @@ print'
     textarea,
     .slider-content,
     .listing-details,
-    .form-control,
     #user_menu_open i,
     #grid_view,
     #list_view,
@@ -598,27 +616,480 @@ print'
     #inforoom,
     #infoguest,
     .price_custom_explained, .date_duration, .date_interval,
-    .total_inv_span,
     .invoice_content,
     #total_amm,
     .inv_legend,
+    .wprentals_dashboard_page label,
     .user_dashboard_listed,
-    .pay_notice_booking{
+    .property_menu_wrapper_hidden .property_menu_item:hover{
         color: '.$font_color.';
     }
+
+    .user_dashboard_listed,
+    .dashboad-tooltip,
+    .user_dashboard_panel .form-control,
+    .user_dashboard_panel select,
+    .property_header2 .prop_social a,
+    .category_icon_wrapper,
+    .category_icon_wrapper a,
+    .subheading,
+    .caret:after,
+    .label_radius,
+    label,
+    .ui-menu li.ui-menu-item,
+    #colophon .loginwd_sidebar .form-control,
+    #primary .loginwd_sidebar .form-control,
+    .form-control,
+    .adv-search-2 .form-control,
+    .adv-search-4 .form-control,
+    #adv-search-1 .form-control,
+    #adv-search-3 .form-control,
+    .header_wrapper .user_menu,
+    #user_menu_trigger i,
+    #user_menu_open a,
+    #user_menu_open i,
+    .listing_filter_select,
+    .show-tick .dropdown-menu,
+    .filter_menu,
+    #booking_form_request .filter_menu,
+    #primary .filter_menu,
+    .pagination > li > a,
+    .pagination > li > span,
+    .listing_content,
+    .meta-info,
+    .meta-info a,
+    .panel_pictures:hover,
+    .not_present,
+    .adv3-holder .adv_extended_close_adv,
+    #adv-search-mobile .form-control,
+    .show_cost_form,
+    .adv3-holder .dropdown.form-control,
+    .ratings-star,
+    .review-date,
+    .widget-container .wp-block-search__input,
+    .invoices-wrapper .form-control,
+    #advanced_search_shortcode .form-control,
+    .agent_contanct_form .form-control,
+    #commentform .form-control,
+    #advanced_search_map_list .form-control,
+    #booking_form_request .form-control,
+    .search_form_but i,
+    #openmap,
+    #geolocation-button,
+    #gmap-full,
+    #gmap-next,
+    #gmap-prev,
+    #gmapstreet,
+    #gmapzoomplus,
+    #gmapzoomminus,
+    .adv_extended_close_button,
+    #adv_extended_close_mobile,
+    .user_dashboard_panel_guide,
+    .user_dashboard_panel_guide a,
+    .upload_explain,
+    .select_submit_price,
+    #period_checkin_change_over,
+    #period_checkin_checkout_change_over,
+    .custom_details_wrapper select,
+    .full_form_image,
+    #owner_reservation_modal .form-control,
+    #owner_price_modal .form-control,
+    #contact_owner_modal .form-control,
+    #end_date_owner_book_hour,
+    #start_date_owner_book_hour,
+    .price_explaning,
+    .next_submit_page,
+    .next_submit_page_first_step,
+    .wpcf7-form-control-wrap input[type="text"],
+    .wpcf7-form-control-wrap input[type="password"],
+    .wpcf7-form-control-wrap input[type="email"],
+    .wpcf7-form-control-wrap input[type="url"],
+    .wpcf7-form-control-wrap input[type="number"],
+    .wpcf7-form-control-wrap textarea,
+    .woocommerce form .form-row input.input-text,
+    .woocommerce form .form-row textarea,
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered,
+    .wpestate_pricev2_component_adv_search_wrapper input,
+    .wp_estate_baths_component_item,
+    .wp_estate_beds_component_item,
+    .bootstrap-select .dropdown-toggle:focus,
+    .show-tick .bootstrap-select .dropdown-toggle:focus,
+    .show-tick.form-control .btn-default,
+    .dropdown.bootstrap-select>.dropdown-toggle.bs-placeholder, 
+    .dropdown.bootstrap-select>.dropdown-toggle.bs-placeholder:active, 
+    .dropdown.bootstrap-select>.dropdown-toggle.bs-placeholder:focus, 
+    .dropdown.bootstrap-select>.dropdown-toggle.bs-placeholder:hover,
+    .show-tick .dropdown-menu li a,
+    .wprentals-autocomplete.ui-menu .ui-menu-item,
+    .wpestate-autocomplete-item,
+    .user_dashboard_panel .form-control,
+    .user_dashboard_panel select,
+    .pack-name span,
+    .user_tab_menu a,
+    .user_dashboard_links a,
+    .normal_list_no,
+    .normal_list_no span,
+    .user_dashboard_listed,
+    .pack-date-wrapper,
+    .property_menu_wrapper_hidden .property_menu_item,
+    .wpestate_guest_no_buttons_description_labels,
+    .dashboard_chapter_label,
+    .dashboard_chapter_label label{
+        color: ' . $font_color . 'A6;
+    }
+
+    #geolocation-button,
+    #gmap-full,
+    #gmap-next,
+    #gmap-prev,
+    #gmapstreet,
+    #gmapzoomplus,
+    #gmapzoomminus,
+    #infocloser,
+    .google_poish,
+    #google_poi_clear,
+    .google_poi{
+        border: 1px solid ' . $font_color . 'A6;
+    }
+
+    
+    ::-webkit-input-placeholder,
+    :-moz-placeholder,
+    ::-moz-placeholder,
+    :-ms-input-placeholder,
+    .shortcode-login ::-webkit-input-placeholder,
+    #forgot-pass-div ::-webkit-input-placeholder,
+    #forgot-pass-div_mod ::-webkit-input-placeholder,
+    #ajax_register_div ::-webkit-input-placeholder,
+    #ajax_login_div ::-webkit-input-placeholder,
+    #forgot-pass-div_shortcode ::-webkit-input-placeholder,
+    #register-div ::-webkit-input-placeholder,
+    #login-div ::-webkit-input-placeholder,
+    .shortcode-login :-moz-placeholder,
+    #forgot-pass-div :-moz-placeholder,
+    #forgot-pass-div_mod :-moz-placeholder,
+    #ajax_register_div :-moz-placeholder,
+    #ajax_login_div :-moz-placeholder,
+    #forgot-pass-div_shortcode :-moz-placeholder,
+    #register-div :-moz-placeholder,
+    #login-div :-moz-placeholder,
+    .shortcode-login ::-moz-placeholder,
+    #forgot-pass-div ::-moz-placeholder,
+    #forgot-pass-div_mod ::-moz-placeholder,
+    #ajax_register_div ::-moz-placeholder,
+    #ajax_login_div ::-moz-placeholder,
+    #forgot-pass-div_shortcode ::-moz-placeholder,
+    #register-div ::-moz-placeholder,
+    #login-div ::-moz-placeholder,
+    .shortcode-login :-ms-input-placeholder,
+    #forgot-pass-div :-ms-input-placeholder,
+    #forgot-pass-div_mod :-ms-input-placeholder,
+    #ajax_register_div :-ms-input-placeholder,
+    #ajax_login_div :-ms-input-placeholder,
+    #forgot-pass-div_shortcode :-ms-input-placeholder,
+    #register-div :-ms-input-placeholder,
+    #login-div :-ms-input-placeholder{
+        color: ' . $font_color . 'A6!important;
+    }
+
+
     
     .property_menu_item_title,
     .owner_contact_details .property_menu_item,
     .owner_contact_details .property_menu_item a{
         color: #FFF!important;
     }
-
-    .form-control::-webkit-input-placeholder{
-        color: '.$font_color.';}';
-
-print '.caret,  .caret_sidebar, .advanced_search_shortcode .caret_filter{ border-bottom: 6px solid ' . $font_color . ';}';
+    
+    .caret, 
+    .caret_sidebar, 
+    .advanced_search_shortcode .caret_filter { 
+        border-bottom: 6px solid '. $font_color.';
+    }
+';
 
 } // end $font_color a0a5a8
+
+
+$main_grid_content_width                    =   esc_html ( wprentals_get_option('wp_estate_main_grid_content_width','') );
+$main_content_width                         =   esc_html ( wprentals_get_option('wp_estate_main_content_width','') );
+  
+if ($main_grid_content_width!='' && $main_grid_content_width!='1200'){
+
+    print'
+
+    @media (min-width: 992px){
+        .entry-prop,
+        .property_categs,
+        .header_wrapper_inside,
+        .top_bar,
+        .wpestate_property_disclaimer,
+        #footer-widget-area,
+        .content-fixed-listing,
+        .listing_main_image_location,
+        .listing_main_image_price {
+            width: '.intval($main_grid_content_width).'px;
+        }
+
+        .wpestate_property_disclaimer,
+        .sub_footer_content,
+        #footer-widget-area{
+            max-width: '.intval($main_grid_content_width).'px;
+        }
+
+        .owner-page-wrapper-inside,
+        #estate-carousel_slick .slider-content-wrapper,
+        .similar_listings,
+        .carousel_type2_control_wrapper,
+        .wide .theme_slider_type2 .slider-content-wrapper,
+        .sub_footer_content,
+        #gmap-controls-wrapper,
+        .content_wrapper,
+        #search_wrapper,
+        .property_menu_wrapper_hidden .property_menu_wrapper_insider {
+            width: '.intval($main_grid_content_width-30).'px;
+        }
+
+        .listing_main_image_price{
+            margin-left:-'.intval($main_grid_content_width/2).'px;
+        }
+
+        #estate-carousel_slick .slider-content-wrapper,
+        .entry-prop,
+        .listing_main_image_location,
+        .carousel_type2_control_wrapper,
+        .wide .theme_slider_type2 .slider-content-wrapper,
+        #gmap-controls-wrapper{
+            margin-left:-'.intval(($main_grid_content_width/2) - 20).'px;
+        }
+
+        .elementor-widget-container .entry-prop,
+        #footer-widget-area.wide_footer, .sub_footer_content.wide_footer{
+            width: 100%;
+    }
+}
+
+        @media only screen and (max-width: '.$main_grid_content_width.'px) and (min-width: 992px){
+            
+
+            #estate-carousel_slick .slider-content-wrapper,
+            .similar_listings,
+            .sub_footer_content{
+                width: calc(100% - 40px);
+                max-width: calc(100% - 40px);
+            }
+
+            .wpestate_property_disclaimer,
+            #footer-widget-area,
+            .entry-prop,
+            .property_categs,
+            .header_wrapper_inside,
+            .top_bar,
+            .wpestate_property_disclaimer,
+            #footer-widget-area,
+            .content-fixed-listing,
+            .listing_main_image_location,
+            .carousel_type2_control_wrapper,
+            .wide .theme_slider_type2 .slider-content-wrapper,
+            #gmap-controls-wrapper,
+            .content_wrapper,
+            .property_menu_wrapper_hidden .property_menu_wrapper_insider {
+                width: calc(100% - 20px);
+                max-width: calc(100% - 20px);
+            }
+
+            .owner-page-wrapper-inside,
+            #search_wrapper{
+                width: calc(100% - 60px);
+                max-width: calc(100% - 60px);
+            }
+
+            .property_header_wrapper.col-md-8 {
+                width: fit-content;
+            }
+
+            .wide .content_wrapper {
+                margin: 0px;
+                padding:0px 20px;
+            }
+
+            #estate-carousel_slick .slider-content-wrapper,
+            .entry-prop,
+            .listing_main_image_price,
+            .listing_main_image_location,
+            .carousel_type2_control_wrapper,
+            .wide .theme_slider_type2 .slider-content-wrapper,
+            #gmap-controls-wrapper{
+                margin-left: calc(-50%);
+            }
+
+            .theme_slider_type1 .theme-slider-price .price-slider,
+            #estate-carousel_slick .slider-content{
+                padding-left: 90px;
+            }
+
+            .theme_slider_type2 .carousel-control-theme-prev, 
+            .theme_slider_type2 .carousel-control-theme-next,
+            .theme_slider_type2 .slider-content{
+                padding-left: 30px;
+            }
+
+        }
+       
+
+    ';
+
+}
+
+if($main_content_width!=''){
+    print '
+    @media (min-width: 992px){
+    .property_header_wrapper.col-md-8,
+    .content-fixed-listing  > .col-md-8,
+    .owner-page-wrapper-inside > .col-md-8{
+        width:'.intval($main_content_width).'%;
+    }
+
+    .booking_form_request.is_shortcode1,
+    .listing_type_3 .booking_form_request,
+    .listing_type_2 .booking_form_request{
+        width: 100%;
+    }
+
+    .booking_form_request,
+    .listing_type_1 .booking_form_request{
+        max-width:100%;
+    }
+
+    .booking_form_request,
+    #primary{
+        width:'.intval(100-$main_content_width).'%;
+    }
+}
+';
+    
+}
+
+$elements_border_radius                         =   esc_html ( wprentals_get_option('wp_estate_elements_border_radius','') );
+ 
+if(!empty($elements_border_radius)){
+    print'
+    .property_listing,
+    .blog-unit-2,
+    #colophon .listing-unit-img-wrapper img,
+    #colophon .listing-unit-img-wrapper .carousel-inner,
+    .listing-unit-img-wrapper,
+    .listing_type_1 .booking_form_request, 
+    .listing_type_3 .listing_main_image_price, 
+    .listing_type_1 .listing_main_image_price,
+    .property_page_container,
+    .twitter_wrapper, .loginwd_sidebar, .advanced_search_sidebar,
+    .panel-wrapper,
+    #carousel-listing,
+    #colophon .loginwd_sidebar .form-control, 
+    #primary .loginwd_sidebar .form-control, 
+    .form-control,
+    #agent_submit_contact, 
+    .advanced_search_submit_button, 
+    .return_woo_button, 
+    .wpestate_header_view_checkout, 
+    .wpestate_header_view_cart, 
+    #submit_booking_front_instant, 
+    #submit_booking_front, 
+    #submit_booking_front_link, 
+    #advanced_submit_widget, 
+    #advanced_submit_2_mobile, 
+    #advanced_submit_2, 
+    #advanced_submit_3,
+    #add_favorites,
+    #contact_host,
+    .daterangepicker,
+    .wpestate-multiselect-custom-style,
+    .property_unit_v4 .property_listing img,
+    #book_dates, .more_list, 
+    #wp-forgot-but, 
+    #wp-login-but, 
+    #wp-login-but_sh,
+     #wp-submit-register_sh, 
+     #wp-submit-register, 
+     .comment-form #submit,
+     #submit_message_to_client_dashboard, 
+     #submit_mess_front,
+     .modal-content,
+     #search_wrapper_color,
+     .show-tick .dropdown-menu, .filter_menu,
+     .single-blog,
+     .blog_unit_back,
+     .post .post-carusel,
+     .agent_unit,
+     .blog_featured, .places_wrapper,
+     .type_1_class .listing-unit-img-wrapper.shortcodefull,
+     .wpestate_testimonial_slider .item,
+     .wpestate_testimonial_slider,
+     #facebooklogin_mb, 
+     #facebooklogin_wd_reg, 
+     #facebooklogin, 
+     #facebooklogin_reg, 
+     #facebooklogin_sh, 
+     #facebooklogin_sh_reg, 
+     #facebooklogin_wd, 
+     #facebooklogin_mb,
+     #googlelogin_mb, 
+     #googlelogin_wd_reg, 
+     #googlelogin_reg, 
+     #googlelogin_sh_reg, 
+     #googlelogin_wd, 
+     #googlelogin_sh, 
+     #googlelogin_mb, 
+     #googlelogin,
+     #twitterlogin_mb, 
+     #twitterlogin_wd_reg, 
+     #twitterlogin_sh_reg, 
+     #twitterlogin_reg, 
+     #twitterlogin_sh, 
+     #twitterlogin_wd, 
+     #twitterlogin_mb,
+     #twitterlogin,
+     .featured_property,
+     .featured_agent_type2 .feature_agent_image_unit_wrapper,
+     .testimonial-text,
+     .iconcol img,
+     .contact_info_details,
+     .testimonial-container.testimonial_type_2,
+     .listing_type_2 .booking_form_request,
+     .listing_type_3 .booking_form_request,
+     .adv-1-wrapper,
+     .adv_handler,
+     #advanced_submit_4,
+    .wpestate-price-component-popoup-done,
+    .wpestate-price-component-popoup-reset,
+    .wpestate-beds-baths-popoup-done,
+    .wpestate-beds-baths-popoup-reset,
+    .imagebody,
+    #primary .listing-unit-img-wrapper, 
+    #primary .listing-unit-img-wrapper .carousel-inner, 
+    #primary .listing-unit-img-wrapper img,
+    .vc_button.wpestate_vc_button,
+    .ui-widget-content.ui-autocomplete,
+    .listing_type_5 .booking_form_request,
+    .elementor img.property_owner_detail_image{
+        border-radius:'.intval($elements_border_radius).'px;
+    }
+
+    .feature_agent_image_unit_wrapper_color{
+            background-color: transparent;
+    }
+
+
+    .agent_unit img,
+    .modal-header{
+        border-top-left-radius:'.intval($elements_border_radius).'px ;
+        border-top-right-radius: '.intval($elements_border_radius).'px ;
+    }';
+
+}
+
 
 if ($link_color != '') {
 
@@ -638,12 +1109,12 @@ a,
 }
 
 .single-estate_property .owner_read_more{
-    color: #fff!important;
+    color: #fff;
     opacity: 0.7;
 }
 .owner_read_more:hover,
 .property_menu_item a:hover{
-        color: #fff!important;
+        color: #fff;
         opacity:1;
     }
 ';
@@ -681,151 +1152,227 @@ print 'h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a ,
  #loginmodal h2.modal-title_big,
  .close_guest_control,
  .modal-body h3,
- .invoice_data_legend,
  .wpestate_dashboard_table_list_header,
- .listing_type_5 .entry-prop{
+ .listing_type_5 .entry-prop,
+ .property_unit_v4 .property-rating,
+ .pay_notice_booking,
+ .header_legend,
+ .invoice_data_legend,
+ .total_inv_span,
+ .booking_details_title,
+ .total_invoice_for_payment .inv_legend,
+.invoice_create_print_invoice .inv_legend,
+.invoice_total_generate_invoice .inv_legend,
+.invoice_unit .total_inv_span .inv_legend,
+.half_map_results{
     color: '.$headings_color.';
-  }
-  
-.backtop{
-    background-color: '.$headings_color.';
 }
 
 .entry-title-agent{
     color:#ffffff;
 }
 
-    ';
+';
+
 } // end $headings_color
 
 if ($footer_back_color != '') {
-print '#colophon {background-color: '.$footer_back_color.';}';
+    print '#colophon { 
+               background-color: ' . $footer_back_color . '; 
+           }';
 } // end
 
-
 if ($footer_font_color != '') {
-print '#colophon, #colophon a, #colophon li a,.widget-title-footer,
-    #colophon .latest_listings .price_unit{color: '.$footer_font_color.';}';
+    print '#colophon, 
+           #colophon a, 
+           #colophon li a, 
+           .widget-title-footer, 
+           #colophon .latest_listings .price_unit { 
+               color: ' . $footer_font_color . '; 
+           }';
 }
 
 if ($footer_copy_color != '') {
-print '.sub_footer, .subfooter_menu a, .subfooter_menu li a {color: '.$footer_copy_color.'!important;}';
+    print '.sub_footer, 
+           .subfooter_menu a, 
+           .subfooter_menu li a { 
+               color: ' . $footer_copy_color . ' !important; 
+           }';
 }
 
-if($footer_copy_back_color!=''){
-    print '.sub_footer{background-color:'.$footer_copy_back_color.';}';
+if ($footer_copy_back_color != '') {
+    print '.sub_footer { 
+               background-color: ' . $footer_copy_back_color . '; 
+           }';
 }
 
 if ($sidebar_widget_color != '') {
-print '.twitter_wrapper,.booking_form_request, .loginwd_sidebar .widget-title-sidebar, .advanced_search_sidebar .widget-title-sidebar,.advanced_search_sidebar,.loginwd_sidebar {background-color: '.$sidebar_widget_color.';}';
+    print '.twitter_wrapper, 
+           .booking_form_request, 
+           .loginwd_sidebar .widget-title-sidebar, 
+           .advanced_search_sidebar .widget-title-sidebar, 
+           .advanced_search_sidebar, 
+           .loginwd_sidebar { 
+               background-color: ' . $sidebar_widget_color . '; 
+           }';
 }
 
-if($sidebar_heading_color!=''){
-    print '.widget-title-sidebar,.agent_listings_title_similar{color: '.$sidebar_heading_color.';}';
+
+if ($sidebar_heading_color != '') {
+    print '.widget-title-sidebar, 
+           .agent_listings_title_similar,
+           .loginwd_sidebar .widget-title-sidebar,
+           .advanced_search_sidebar .widget-title-sidebar { 
+               color: ' . $sidebar_heading_color . ';
+           }';
 }
 
-if($sidebar_heading_boxed_color!=''){
-    print '.wpestate_recent_tweets h3,.loginwd_sidebar .widget-title-sidebar, .advanced_search_sidebar .widget-title-sidebar{color: '.$sidebar_heading_boxed_color.';}';
+if ($sidebar_heading_boxed_color != '') {
+    print '.wpestate_recent_tweets h3, 
+           .loginwd_sidebar .widget-title-sidebar, 
+           .advanced_search_sidebar .widget-title-sidebar { 
+               color: ' . $sidebar_heading_boxed_color . ';
+           }';
 }
 
 if ($sidebar2_font_color != '') {
-print '#primary,#primary a,#primary label {color: '.$sidebar2_font_color.';}';
+    print '#primary, 
+           #primary a, 
+           #primary label { 
+               color: ' . $sidebar2_font_color . ';
+           }';
 }
 
 if ($menu_font_color != '') {
-    print '.menu_username, #access .with-megamenu .sub-menu li:hover>a,.signuplink,#access ul.menu >li>a,#access a,#access ul ul a,#access .menu li:hover>a,#access .menu li:hover>a:active, #access .menu li:hover>a:focus{color:'.$menu_font_color.';}';
+    print '.menu_username, 
+           #access .with-megamenu .sub-menu li:hover > a, 
+           .signuplink, 
+           #access ul.menu > li > a, 
+           #shopping-cart,
+           #access a, 
+           #access ul ul a, 
+           #access .menu li:hover > a, 
+           #access .menu li:hover > a:active, 
+           #access .menu li:hover > a:focus {
+               color:' . $menu_font_color . ';
+           }
+           
+           #shopping-cart_icon path{
+               fill:' . $menu_font_color . ';
+           }
+
+           ';
+
+
 }
-
-
-
 
 if ($menu_hover_font_color != '') {
-    print '.transparent_header #access .sub-menu .menu li:hover>a:active,
-    .transparent_header #access .sub-menu .menu li:hover>a:focus,
-    .filter_menu li:hover,#access .sub-menu li:hover>a, 
-    #access .sub-menu li:hover>a:active, 
-    #access .sub-menu li:hover>a:focus,
-    #access ul ul li.wpestate_megamenu_col_1 .megamenu-title:hover a, 
-    #access ul ul li.wpestate_megamenu_col_2 .megamenu-title:hover a, 
-    #access ul ul li.wpestate_megamenu_col_3 .megamenu-title:hover a, 
-    #access ul ul li.wpestate_megamenu_col_4 .megamenu-title:hover a, 
-    #access ul ul li.wpestate_megamenu_col_5 .megamenu-title:hover a, 
-    #access ul ul li.wpestate_megamenu_col_6 .megamenu-title:hover a,
-    #access .with-megamenu  .sub-menu li:hover>a, 
-    #access .with-megamenu  .sub-menu li:hover>a:active, 
-    #access .with-megamenu  .sub-menu li:hover>a:focus {
-        color: '.$menu_hover_font_color.'!important;}';
-    
-    print '#access ul ul li.wpestate_megamenu_col_1 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_2 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_3 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_4 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_5 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_6 a.menu-item-link{color:'.$menu_font_color.'!important;}';
+    print '.transparent_header #access .sub-menu .menu li:hover > a:active,
+           .transparent_header #access .sub-menu .menu li:hover > a:focus,
+           .filter_menu li:hover,
+           #access .sub-menu li:hover > a, 
+           #access .sub-menu li:hover > a:active, 
+           #access .sub-menu li:hover > a:focus,
+           #access ul ul li.wpestate_megamenu_col_1 .megamenu-title:hover a, 
+           #access ul ul li.wpestate_megamenu_col_2 .megamenu-title:hover a, 
+           #access ul ul li.wpestate_megamenu_col_3 .megamenu-title:hover a, 
+           #access ul ul li.wpestate_megamenu_col_4 .megamenu-title:hover a, 
+           #access ul ul li.wpestate_megamenu_col_5 .megamenu-title:hover a, 
+           #access ul ul li.wpestate_megamenu_col_6 .megamenu-title:hover a,
+           #access .with-megamenu .sub-menu li:hover > a, 
+           #access .with-megamenu .sub-menu li:hover > a:active, 
+           #access .with-megamenu .sub-menu li:hover > a:focus {
+               color: ' . $menu_hover_font_color . ' !important;
+           }';
+
+    print '#access ul ul li.wpestate_megamenu_col_1 a.menu-item-link, 
+           #access ul ul li.wpestate_megamenu_col_2 a.menu-item-link, 
+           #access ul ul li.wpestate_megamenu_col_3 a.menu-item-link, 
+           #access ul ul li.wpestate_megamenu_col_4 a.menu-item-link, 
+           #access ul ul li.wpestate_megamenu_col_5 a.menu-item-link, 
+           #access ul ul li.wpestate_megamenu_col_6 a.menu-item-link {
+               color: ' . $menu_font_color . ' !important;
+           }';
 } // end $menu_hover_font_color
 
-if($top_bar_back!=''){
-    print '.top_bar_wrapper{background-color:'.$top_bar_back.';}';
+if ($top_bar_back != '') {
+    print '.top_bar_wrapper { 
+               background-color: ' . $top_bar_back . '; 
+           }';
 }
 
-if($top_bar_font!=''){
-    print '.top_bar,.top_bar a{color:'.$top_bar_font.';}';
+if ($top_bar_font != '') {
+    print '.top_bar, 
+           .top_bar a { 
+               color: ' . $top_bar_font . '; 
+           }';
 }
 
 if ($box_content_back_color != '') {
     print '.featured_article_title,
-    .testimonial-text,
-    .adv1-holder,
-    .advanced_search_shortcode,
-    .featured_secondline ,
-    .property_listing ,
-    .agent_unit,
-    .blog_unit_back,
-    .dasboard-prop-listing,
-    .message_header,
-    .invoice_unit{
-        background-color:'.$box_content_back_color.';}
+           .testimonial-text,
+           .adv1-holder,
+           .advanced_search_shortcode,
+           .featured_secondline,
+           .property_listing,
+           .agent_unit,
+           .blog_unit_back,
+           .dasboard-prop-listing,
+           .message_header,
+           .invoice_unit { 
+               background-color: ' . $box_content_back_color . '; 
+           }
 
-
-    .testimonial-text:after{
-        border-top-color: '.$box_content_back_color.';
-    }'
-       ;
-
-
-
+           .testimonial-text:after { 
+               border-top-color: ' . $box_content_back_color . '; 
+           }';
 }
 
 if ($box_content_border_color != '') {
     print '
-    .featured_article, .loginwd_sidebar, .advanced_search_sidebar, .advanced_search_shortcode,  #access ul ul, .testimonial-text, .submit_container,
-    .featured_property, .property_listing ,.agent_unit,.blog_unit_back ,property_listing,.booking_form_request{
-        border-color:'.$box_content_border_color.';
+    .featured_article, 
+    .loginwd_sidebar, 
+    .advanced_search_sidebar, 
+    .advanced_search_shortcode,  
+    #access ul ul, 
+    .testimonial-text, 
+    .submit_container,
+    .featured_property, 
+    .property_listing,
+    .agent_unit,
+    .blog_unit_back,
+    .property_listing,
+    .booking_form_request {
+        border-color: ' . $box_content_border_color . ';
     }
 
-
-    .adv1-holder,.notice_area,  .listing_filters    {
-        border-bottom: 1px solid '.$box_content_border_color.';
+    .adv1-holder, 
+    .notice_area,  
+    .listing_filters {
+        border-bottom: 1px solid ' . $box_content_border_color . ';
     }
 
-
-    .testimonial-text:before{
-        border-top-color: '.$box_content_border_color.';
-    }
-    ';
+    .testimonial-text:before {
+        border-top-color: ' . $box_content_border_color . ';
+    }';
 }
 
-if($hover_button_color !=''){
-    print '.social_icons_owner i,
-           .owner-image-container,
-           .owner_listing_image{
-               border-color:'.$hover_button_color.';
-         }';
-
+if ($hover_button_color != '') {
+    print '
+    .social_icons_owner i,
+    .owner-image-container,
+    .owner_listing_image {
+        border-color: ' . $hover_button_color . ';
+    }';
 
     print '
     .comment-form #submit:hover,
     .vc_button.wpb_btn-info:active,
     .vc_button.wpb_btn-info.active,
     .vc_button.wpb_btn-info.disabled,
-    .vc_button.wpb_btn-info[disabled],{
-        background-color:'.$hover_button_color.'!important;
-        border:1px solid '.$hover_button_color.';
+    .vc_button.wpb_btn-info[disabled] {
+        background-color: ' . $hover_button_color . '!important;
+        border: 1px solid ' . $hover_button_color . ';
     }
 
     #wp-login-but_sh:hover,
@@ -841,8 +1388,9 @@ if($hover_button_color !=''){
     #submit_booking_front_link:hover,
     #advanced_submit_widget:hover,
     #advanced_submit_2_mobile:hover,
-    #advanced_submit_2:hover{
-        background: linear-gradient(90deg, ' .$hover_button_color. ' 50%, ' .$hover_button_color. ' 100%);
+    #advanced_submit_2:hover,
+    .check_avalability:hover {
+        background: linear-gradient(90deg, ' . $hover_button_color . ' 50%, ' . $hover_button_color . ' 100%);
     }
 
     #form_submit_1:hover,
@@ -857,8 +1405,8 @@ if($hover_button_color !=''){
     .search_dashborad_header .wpestate_vc_button:hover,
     .vc_button.wpb_btn-info:hover,
     .slider_control_right:hover, 
-    .slider_control_left:hover{
-        background-color:'.$hover_button_color.';
+    .slider_control_left:hover {
+        background-color: ' . $hover_button_color . ';
     }
 
     #aaiu-uploader:hover,
@@ -882,11 +1430,11 @@ if($hover_button_color !=''){
     #wp-submit-register_wd:hover,
     #advanced_submit_shorcode:hover,
     #submit_mess_front:hover,
-    .modal-content #wp-forgot-but_mod:hover{
-        background-color:'.$hover_button_color.'!important;
+    .modal-content #wp-forgot-but_mod:hover {
+        background-color: ' . $hover_button_color . '!important;
     }';
 }
-//new options
+
 
 
 $top_menu_hover_font_color      =   esc_html ( wprentals_get_option('wp_estate_top_menu_hover_font_color','') );
@@ -961,18 +1509,28 @@ $sticky_menu_font_color                =  esc_html ( wprentals_get_option('wp_es
            .customnav .signuplink,
            .customnav .menu_username{
             color: ' . $sticky_menu_font_color  . ';
+        }
+            
+        .customnav #shopping-cart_icon path{
+             fill: ' . $sticky_menu_font_color  . ';
         }';
     }
 
-$menu_items_color               =   esc_html(wprentals_get_option('wp_estate_menu_items_color', '') );
-    if ($menu_items_color   != '') {
-    print '#access .menu li ul li a,#access ul ul a,#access ul ul li.wpestate_megamenu_col_1 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_2 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_3 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_4 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_5 a.menu-item-link, #access ul ul li.wpestate_megamenu_col_6 a.menu-item-link{
-            color: ' . $menu_items_color  . '!important;
+    $menu_items_color = esc_html(wprentals_get_option('wp_estate_menu_items_color', ''));
+    if ($menu_items_color != '') {
+        print '
+        #access .menu li ul li a,
+        #access ul ul a,
+        #access ul ul li.wpestate_megamenu_col_1 a.menu-item-link,
+        #access ul ul li.wpestate_megamenu_col_2 a.menu-item-link,
+        #access ul ul li.wpestate_megamenu_col_3 a.menu-item-link,
+        #access ul ul li.wpestate_megamenu_col_4 a.menu-item-link,
+        #access ul ul li.wpestate_megamenu_col_5 a.menu-item-link,
+        #access ul ul li.wpestate_megamenu_col_6 a.menu-item-link {
+            color: ' . $menu_items_color . '!important;
         }';
     }
-
-
-
+    
 
 $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_menu_hover_font_color', '') );
     if ($menu_hover_font_color != '') {
@@ -986,16 +1544,18 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
         }';
     }
 
-    $wp_estate_top_menu_font_size     = wprentals_get_option('wp_estate_top_menu_font_size','');
-    if ($wp_estate_top_menu_font_size   != '') {
-    print '#access ul.menu >li>a,
-          .menu_username,
-          #topbarregister,
-          #submit_action,
-          #topbarlogin{
-             font-size:' . $wp_estate_top_menu_font_size . 'px;
+    $wp_estate_top_menu_font_size = wprentals_get_option('wp_estate_top_menu_font_size', '');
+    if ($wp_estate_top_menu_font_size != '') {
+        print '
+        #access ul.menu > li > a,
+        .menu_username,
+        #topbarregister,
+        #submit_action,
+        #topbarlogin {
+            font-size: ' . $wp_estate_top_menu_font_size . 'px;
         }';
     }
+    
 
     $wp_estate_menu_item_font_size     = wprentals_get_option('wp_estate_menu_item_font_size','');
     if ($wp_estate_menu_item_font_size   != '') {
@@ -1011,6 +1571,7 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
                  font-size:' . $wp_estate_menu_item_font_size . 'px;
             }';
         }
+
     $menu_item_back_color         =  esc_html ( wprentals_get_option('wp_estate_menu_item_back_color','') );
     if ($menu_item_back_color != '') {
         print '
@@ -1037,9 +1598,9 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
         .customnav #access ul.menu >li>a:hover,
         #access ul.menu >li>a:hover,
         .hover_type_3 #access .menu > li:hover>a,
-//        .hover_type_4 #access .menu > li:hover>a,
+        .hover_type_4 #access .menu > li:hover>a,
         .hover_type_6 #access .menu > li:hover>a {
-            color: ' . $top_menu_hover_back_font_color . ';
+            color: ' . $top_menu_hover_font_color . ';
         }
         .hover_type_5 #access .menu > li:hover>a {
             border-bottom: 3px solid ' . $top_menu_hover_back_font_color . ';
@@ -1073,12 +1634,11 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
             border-top: 3px solid ' . $transparent_menu_hover_font_color . ';
         }';
 }
- $header_height                              =   esc_html ( wprentals_get_option('wp_estate_header_height','') );
-    $sticky_header_height                       =   esc_html ( wprentals_get_option('wp_estate_sticky_header_height','') );
+$header_height                              =   esc_html ( wprentals_get_option('wp_estate_header_height','') );
+$sticky_header_height                       =   esc_html ( wprentals_get_option('wp_estate_sticky_header_height','') );
 
     if($header_height!=''){
-        print'  .header_wrapper.header_type2 .header_wrapper_inside,
-                .header_wrapper .header_type1 .header_wrapper_inside {
+        print'  .header_wrapper_inside{
                     height:'.($header_height).'px;
             }
 
@@ -1099,7 +1659,7 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
             .social_share_wrapper,
             .hover_type_4 #access ul li:hover > ul,
             #access ul li:hover > ul{
-                top:' .$header_height. 'px;
+                top:' . $header_height . 'px;
             }
             .admin-bar  #google_map_prop_list_sidebar,
             .admin-bar  #google_map_prop_list_wrapper,
@@ -1137,8 +1697,6 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
                 top:' . ($header_height) . 'px;
             }
 
-
-
             #access ul li.with-megamenu>ul.sub-menu,
             #access ul li.with-megamenu:hover>ul.sub-menu,
             .header_wrapper.header_type1.header_align_right #user_menu_open,
@@ -1156,14 +1714,20 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
     if($sticky_header_height!=''){
         print'.header_wrapper.customnav,
             .header_wrapper.header_type2.customnav .header_wrapper_inside,
-            .header_wrapper.customnav.header_type2 .header_wrapper_inside,
-            .header_wrapper.customnav.header_type2 .header_wrapper_inside,
-            .header_wrapper.customnav.header_type2,
-            .header_wrapper.customnav.header_type1,
             .header_wrapper.customnav.header_type2 .user_loged,
             .header_wrapper.customnav.header_type1 .user_loged{
                 height:'.$sticky_header_height.'px;
-                }
+            }
+
+            .header_wrapper.customnav.header_type2 .header_wrapper_inside,
+            .header_wrapper.customnav.header_type1,
+            .header_wrapper.customnav.header_type2,
+            .header_wrapper.customnav,
+            .header_wrapper.header_type1.customnav .header_wrapper_inside{
+                height:'.$sticky_header_height.'px;
+                min-height: '.$sticky_header_height.'px;
+            }
+
             .customnav .menu > li,
             .hover_type_3 .customnav .menu > li,
             .hover_type_5 .customnav .menu > li,
@@ -1216,7 +1780,6 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
                 top:' .( $sticky_header_height+32) . 'px;
             }
 
-
             .header_type2 .hover_type_6 .customnav #access ul li:hover > ul,
             .header_type2 .hover_type_5 .customnav #access ul li:hover > ul,
             .header_type2 .hover_type_6 .customnav #access ul ul ul,
@@ -1253,6 +1816,7 @@ $menu_hover_font_color          =   esc_html(wprentals_get_option('wp_estate_men
 
 
 /////// Custom css
+
 $adv_back_color              =  esc_html ( wprentals_get_option('wp_estate_adv_back_color','') );
 
   if($adv_back_color!=''){
@@ -1388,14 +1952,6 @@ if(  wprentals_get_option('wp_estate_use_custom_icon_area','')=='yes' ){
 
 }
 
-// $use_custom_icon_font_size            =  esc_html ( wprentals_get_option('wp_estate_use_custom_icon_font_size','') );
-// if($use_custom_icon_font_size!=''){
-//     print'.no_link_details.custom_prop_header,.no_link_details.custom_prop_header a{
-//         font-size:'.$use_custom_icon_font_size.'px;
-//     }';
-// }
-
-
 if($widget_title_footer_font_color!=''){
     print '.widget-title-footer,
     #colophon .listing_title_unit{
@@ -1403,68 +1959,91 @@ if($widget_title_footer_font_color!=''){
 
 }
 
-$mobile_header_background_color       =  esc_html ( wprentals_get_option('wp_estate_mobile_header_background_color','') );
-if($mobile_header_background_color   !=''){
-    print'.mobile_header {background-color: '.$mobile_header_background_color.';}';
+// Mobile Header Background Color
+$mobile_header_background_color = esc_html(wprentals_get_option('wp_estate_mobile_header_background_color', ''));
+if ($mobile_header_background_color != '') {
+    print '.mobile_header { 
+                background-color: ' . $mobile_header_background_color . ';
+            }';
 }
 
-$mobile_header_icon_color          =  esc_html ( wprentals_get_option('wp_estate_mobile_header_icon_color','') );
-if($mobile_header_icon_color  !=''){
-    print'.mobilemenu-close-user, .mobilemenu-close, .mobile_header i  {color: '.$mobile_header_icon_color.';}';
-
+// Mobile Header Icon Color
+$mobile_header_icon_color = esc_html(wprentals_get_option('wp_estate_mobile_header_icon_color', ''));
+if ($mobile_header_icon_color != '') {
+    print '.mobilemenu-close-user, 
+                .mobilemenu-close, 
+                .mobile_header i { 
+                    color: ' . $mobile_header_icon_color . ';
+                }';
 }
 
-$mobile_menu_font_color          =  esc_html ( wprentals_get_option('wp_estate_mobile_menu_font_color','') );
-if($mobile_menu_font_color  !=''){
-    print'.mobilex-menu li a, 
+// Mobile Menu Font Color
+$mobile_menu_font_color = esc_html(wprentals_get_option('wp_estate_mobile_menu_font_color', ''));
+if ($mobile_menu_font_color != '') {
+    print '
+        .mobilex-menu li a, 
         .user_mobile_menu_list li a, 
         #register-div-title-mobile, 
         #forgot-div-title_mobile, 
-        #login-div-title-mobile,
-        .mobilex-menu li a,
+        #login-div-title-mobile, 
+        .mobilex-menu li a, 
         #widget_login_sw_mobile, 
         #forgot_pass_widget_mobile, 
-        #widget_register_mobile,
+        #widget_register_mobile, 
         #user_terms_register_wd_label_mobile, 
-        #user_terms_register_wd_label_mobile a,
-        #reg_passmail_mobile{
-            color:'.$mobile_menu_font_color .' ;}';
+        #user_terms_register_wd_label_mobile a, 
+        #reg_passmail_mobile,
+        #register-div-mobile .radiolabel { 
+            color: ' . $mobile_menu_font_color . ' ;
+        }';
 }
 
-$mobile_menu_hover_font_color    =esc_html( wprentals_get_option('wp_estate_mobile_menu_hover_font_color',''));
-
-if($mobile_menu_hover_font_color  !=''){
-    print'.mobilex-menu li a:hover,
+// Mobile Menu Hover Font Color
+$mobile_menu_hover_font_color = esc_html(wprentals_get_option('wp_estate_mobile_menu_hover_font_color', ''));
+if ($mobile_menu_hover_font_color != '') {
+    print '
+        .mobilex-menu li a:hover, 
         .user_mobile_menu_list li a:hover, 
-        .mobilex-menu li a:hover  {
-            color:'.$mobile_menu_hover_font_color. ';}';
+        .mobilex-menu li a:hover { 
+            color: ' . $mobile_menu_hover_font_color . ';
+        }';
 }
 
-$mobile_item_hover_back_color         =  esc_html ( wprentals_get_option('wp_estate_mobile_item_hover_back_color','') );
-if($mobile_item_hover_back_color  !=''){
-    print' .mobile_user_menu li:hover,        
+// Mobile Item Hover Background Color
+$mobile_item_hover_back_color = esc_html(wprentals_get_option('wp_estate_mobile_item_hover_back_color', ''));
+if ($mobile_item_hover_back_color != '') {
+    print '
+        .mobile_user_menu li:hover, 
         .user_mobile_menu_list li:hover, 
-        .mobilex-menu li:hover,
-        .wpestream_cart_counter_header_mobile{
-            background-color:'.$mobile_item_hover_back_color .';}';
+        .mobilex-menu li:hover, 
+        .wpestream_cart_counter_header_mobile { 
+            background-color: ' . $mobile_item_hover_back_color . '; 
+        }';
 }
 
- $mobile_menu_backgound_color = esc_html(wprentals_get_option('wp_estate_mobile_menu_backgound_color', ''));
- if( $mobile_menu_backgound_color !=''){
-    print' .mobilex-menu, 
-        .snap-drawer,
-        .user_mobile_menu_list{ 
-            background-color: '.$mobile_menu_backgound_color.' ;}';
+// Mobile Menu Background Color
+$mobile_menu_backgound_color = esc_html(wprentals_get_option('wp_estate_mobile_menu_backgound_color', ''));
+if ($mobile_menu_backgound_color != '') {
+    print '
+        .mobilex-menu, 
+        .snap-drawer, 
+        .user_mobile_menu_list { 
+            background-color: ' . $mobile_menu_backgound_color . ' ;
+        }';
     
-     print'.snap-drawer{ 
-            border:1px solid '.$mobile_menu_backgound_color.' ;}';
-    
- }
+    print '
+        .snap-drawer { 
+            border: 1px solid ' . $mobile_menu_backgound_color . ' ;
+        }';
+}
 
+// Mobile Menu Border Color
 $mobile_menu_border_color = esc_html(wprentals_get_option('wp_estate_mobile_menu_border_color', ''));
-  if($mobile_menu_border_color !=''){
-      print' .mobilex-menu li {border-bottom-color: '.$mobile_menu_border_color.';}';
-  }
+if ($mobile_menu_border_color != '') {
+    print '.mobilex-menu li { 
+                border-bottom-color: ' . $mobile_menu_border_color . ' ;
+            }';
+}
 
 
   if($wp_estate_calendar_back_color!=''){
@@ -1777,6 +2356,7 @@ if(!function_exists('wpestate_custom_fonts_elements')):
         }
         if ($h4_fontweight != '') {
             $style.=  'h4,h4 a, 
+                    .blog-title-link,
                     .panel-title,
                     .listing_title_unit,
                     .places_wrapper .featured_listing_title, 
@@ -1819,7 +2399,11 @@ if(!function_exists('wpestate_custom_fonts_elements')):
                        #infobox_title,
                        .prop_pricex,
                        .widget-title-sidebar,
-                       .profile_wellcome{
+                       .profile_wellcome,
+                       .property_unit_v4 .listing_title_unit,
+                       .property_unit_v4 .property-rating,
+                       .wprentals_dashboard_page label,
+                       .dashboard_chapter_label{
                             font-family:' . $h6_fontfamily .';}';
         }
         
@@ -1834,7 +2418,9 @@ if(!function_exists('wpestate_custom_fonts_elements')):
                      .trip_details_container h3, 
                      .trip_details_container h4, 
                      .trip_details_container h5, 
-                     .trip_details_container h6{
+                     .trip_details_container h6,
+                     .property_unit_v4 .listing_title_unit,
+                    .property_unit_v4 .property-rating{
                             font-size:' . $h6_fontsize .';}';
         }
         
@@ -1842,14 +2428,15 @@ if(!function_exists('wpestate_custom_fonts_elements')):
            $style.=  'h6,h6 a,
                      .listing_main_image_location,
                      #infobox_title,
-                     .prop_pricex,
                      .widget-title-sidebar,
                      .profile_wellcome,
                      .widget-title-footer,
                      .trip_details_container h3, 
                      .trip_details_container h4, 
                      .trip_details_container h5, 
-                     .trip_details_container h6{
+                     .trip_details_container h6,
+                     .property_unit_v4 .listing_title_unit,
+                    .property_unit_v4 .property-rating{
                             line-height:' . $h6_lineheight .';}';
         }
         
@@ -1867,7 +2454,10 @@ if(!function_exists('wpestate_custom_fonts_elements')):
                      .trip_details_container h3, 
                      .trip_details_container h4, 
                      .trip_details_container h5, 
-                     .trip_details_container h6{
+                     .trip_details_container h6,
+                     .property_unit_v4 .listing_title_unit,
+                     .dashboard_chapter_label,
+                     .dashboard_chapter_label label{
                             font-weight:' . $h6_fontweight .';}';        
         }
 
@@ -1878,185 +2468,197 @@ if(!function_exists('wpestate_custom_fonts_elements')):
         $p_fontsize   = esc_html( wprentals_get_option('paragraph_typo','font-size') );
         $p_lineheight = esc_html( wprentals_get_option('paragraph_typo','line-height') );
         $p_fontweight = esc_html( wprentals_get_option('paragraph_typo','font-weight') );
-
         if ($p_fontfamily != '') {
-            $style.=  '
-                    .wprentals_dashboard_page,
-                    .single-content p, body, p, 
-                    .cost_row_extra,
-                    .prop_detailsx,
-                    .wpestate_marker,
-                    .wprentals_dashboard_page,
-                    label,
-                    .dashboard_chapter_label,
-                    .property_dashboard_location_wrapper .listing_title,
-                    .property_dashboard_location_wrapper .user_dashboard_listed,
-                    .user_dashboard_panel_guide a{
-                         font-family:' . $p_fontfamily .';}';
+            $style .= '
+                .wprentals_dashboard_page,
+                .single-content p, body, p, 
+                .cost_row_extra,
+                .prop_detailsx,
+                .wpestate_marker,
+                .wprentals_dashboard_page,
+                label,
+                .dashboard_chapter_label,
+                .property_dashboard_location_wrapper .listing_title,
+                .property_dashboard_location_wrapper .user_dashboard_listed,
+                .user_dashboard_panel_guide a {
+                    font-family: ' . $p_fontfamily . ';
+                }';
         }
+        
         if ($p_fontsize != '') {
-            $style.=  ' .single-content p, 
-                        body, p, 
-                        .cost_row_extra,
-                        .widget-area-sidebar input[type=text], 
-                        .widget-area-sidebar input[type=password], 
-                        .widget-area-sidebar input[type=email], 
-                        .widget-area-sidebar input[type=url], 
-                        .widget-area-sidebar input[type=number], 
-                        .widget-area-sidebar textarea, 
-                        .panel-wrapper,
-                        .wprentals_dashboard_page,
-                        .user_tab_menu a, 
-                        .user_dashboard_links a,
-                        .blog-unit-content,
-                        .widget li a, 
-                        .widget-area-sidebar li a,
-                        label,
-                        .dashboard_chapter_label,
-                        .property_dashboard_location_wrapper .listing_title,
-                        .property_dashboard_location_wrapper .user_dashboard_listed,
-                        .user_dashboard_panel_guide a,
-                        .back_to_home,
-                        #validate_phone, #send_sms_pin, 
-                        .mess_send_reply_review_button, 
-                        #view_profile, .mess_send_reply_button, 
-                        #change_pass, #update_profile, 
-                        #book_dates, #aaiu-uploader, 
-                        #set_price_dates, 
-                        #book_dates, 
-                        #edit_prop_ammenities, 
-                        #edit_prop_locations, 
-                        #google_capture, 
-                        #edit_prop_details, 
-                        #edit_prop_image, 
-                        #edit_prop_price, 
-                        #edit_prop_1, 
-                        #edit_calendar, 
-                        #form_submit_1, 
-                        #delete_profile, 
-                        #user-id-uploader,
-                        .property_dashboard_reviews, 
-                        .property_dashboard_price .price_label, 
-                        .property_dashboard_price, 
-                        .property_dashboard_status, 
-                        .property_dashboard_types,
-                        .next_submit_page,
-                        .dashboard_chapter_label label,
-                        .wpestate_dashboard_table_list_header,
-                        #colophon .loginwd_sidebar .form-control, 
-                        #primary .loginwd_sidebar .form-control, 
-                        .form-control,
-                        .user_dashboard_panel select,
-                        .delete_extra_detail, 
-                        #add_extra_detail, 
-                        .delete_extra_option, 
-                        #add_extra_feed, 
-                        #add_extra_option,
-                        #colophon .category_tagline, 
-                        #colophon .category_tagline a, 
-                        #colophon li a, #colophon ul, 
-                        .subfooter_menu li, 
-                        #colophon .subfooter_menu a, 
-                        .sub_footer,
-                        .category_details_wrapper a, 
-                        .no_link_details,
-                        #agent_submit_contact, 
-                        .advanced_search_submit_button, 
-                        .return_woo_button, 
-                        .wpestate_header_view_checkout, 
-                        .wpestate_header_view_cart, 
-                        #submit_booking_front_instant, 
-                        #submit_booking_front, 
-                        #submit_booking_front_link, 
-                        #advanced_submit_widget, 
-                        #advanced_submit_2_mobile, 
-                        #advanced_submit_2, 
-                        #advanced_submit_3,
-                        #add_favorites,
-                        #contact_host,
-                        .prop_social_share,
-                        .item_head,
-                        .testimonial_type_2 .testimonial-text,
-                        .testimonial_type_2 .testimonial-clas-line,
-                        .other_rules label, .cancelation_policy label,
-                        .widget-area-sidebar,
-                        .show_cost_form,
-                        .owner_read_more,
-                        .listing_filters_head .filter_menu_trigger, 
-                        .listing_filters .filter_menu_trigger,
-                        .category_tagline, .category_tagline a,
-                        .filter_menu li,
-                        .contact_detail,
-                        .modal-content #wp-forgot-but_mod, .mess_send_reply_button, 
-                        #change_pass, #update_profile, #book_dates, 
-                        #aaiu-uploader, #set_price_dates, 
-                        #book_dates, #edit_prop_ammenities, 
-                        #edit_prop_locations, #google_capture, 
-                        #edit_prop_details, 
-                        #edit_prop_image, 
-                        #edit_prop_price, 
-                        #edit_prop_1, 
-                        #edit_calendar,
-                        #form_submit_1, 
-                        #submit_mess_front, 
-                        .modal-content #wp-login-but, 
-                        #wp-login-but_sh, #delete_profile, 
-                        #user-id-uploader, 
-                        #wp-submit-register_sh, #wp-forgot-but,
-                        #ajax_register_div #user_terms_register_sh_label,
-                        #booking_form_request_mess_modal, 
-                        #booking_form_request_mess, 
-                        .alert-message, 
-                        .alert_error, 
-                        .login-alert,
-                        .wpestate_guest_no_buttons_title_labels,
-                        .wpestate_guest_no_buttons_description_labels,
-                        .invoice_data_legend,
-                        .price_custom_explained, .date_duration, .date_interval,
-                        .total_inv_span,
-                        .invoice_content,
-                        .inv_legend,
-                        .inv_data,
-                        .woo_pay,
-                        .reply_to_review, 
-                        .trip_details, 
-                        .proceed-payment_full,
-                        .waiting_payment, 
-                        .full_invoice_reminder, 
-                        .you_already_review,
-                        .post_review_later, 
-                        .confirmed_booking, 
-                        .contact_owner_reservation, 
-                        .proceed-payment_full, 
-                        #post_review, 
-                        .proceed-payment, 
-                        .tag-post-review, 
-                        .action1_booking, 
-                        .generate_invoice,
-                        .booking_canceled_by_owner, 
-                        .cancel_user_booking, 
-                        .cancel_own_booking, 
-                        .delete_invoice, 
-                        .delete_booking,
-                        .waiting_payment_status_pending, 
-                        .waiting_payment_user_status, 
-                        .waiting_payment_status, 
-                        .tag-published, 
-                        .tag-paid,
-                        .search_dashborad_header .wpb_btn-info.wpb_btn-small.wpestate_vc_button.vc_button,
-                        .pay_notice_booking,
-                        #confirm_zero_instant_booking, 
-                        #send_direct_bill_booking, 
-                        #direct_pay_booking, 
-                        #send_direct_bill, 
-                        #direct_pay, 
-                        #stripe_cancel, 
-                        #paypal_booking, 
-                        #pick_pack,
-                        .message_listing,
-                        .review-content{
-                            font-size:' . $p_fontsize .';}';
+            $style .= '
+                .single-content p, 
+                body, p, 
+                .cost_row_extra,
+                .widget-area-sidebar input[type=text], 
+                .widget-area-sidebar input[type=password], 
+                .widget-area-sidebar input[type=email], 
+                .widget-area-sidebar input[type=url], 
+                .widget-area-sidebar input[type=number], 
+                .widget-area-sidebar textarea, 
+                .panel-wrapper,
+                .wprentals_dashboard_page,
+                .user_tab_menu a, 
+                .user_dashboard_links a,
+                .blog-unit-content,
+                .widget li a, 
+                .widget-area-sidebar li a,
+                label,
+                .dashboard_chapter_label,
+                .property_dashboard_location_wrapper .listing_title,
+                .property_dashboard_location_wrapper .user_dashboard_listed,
+                .user_dashboard_panel_guide a,
+                .back_to_home,
+                #validate_phone, #send_sms_pin, 
+                .mess_send_reply_review_button, 
+                #view_profile, .mess_send_reply_button, 
+                #change_pass, #update_profile, 
+                #book_dates, #aaiu-uploader, 
+                #set_price_dates, 
+                #book_dates, 
+                #edit_prop_ammenities, 
+                #edit_prop_locations, 
+                #google_capture, 
+                #edit_prop_details, 
+                #edit_prop_image, 
+                #edit_prop_price, 
+                #edit_prop_1, 
+                #edit_calendar, 
+                #form_submit_1, 
+                #delete_profile, 
+                #user-id-uploader,
+                .property_dashboard_reviews, 
+                .property_dashboard_price .price_label, 
+                .property_dashboard_price, 
+                .property_dashboard_status, 
+                .property_dashboard_types,
+                .next_submit_page,
+                .dashboard_chapter_label label,
+                .wpestate_dashboard_table_list_header,
+                #colophon .loginwd_sidebar .form-control, 
+                #primary .loginwd_sidebar .form-control, 
+                .form-control,
+                .user_dashboard_panel select,
+                .delete_extra_detail, 
+                #add_extra_detail, 
+                .delete_extra_option, 
+                #add_extra_feed, 
+                #add_extra_option,
+                #colophon .category_tagline, 
+                #colophon .category_tagline a, 
+                #colophon li a, #colophon ul, 
+                .subfooter_menu li, 
+                #colophon .subfooter_menu a, 
+                .sub_footer,
+                .category_details_wrapper a, 
+                .no_link_details,
+                #agent_submit_contact, 
+                .advanced_search_submit_button, 
+                .return_woo_button, 
+                .wpestate_header_view_checkout, 
+                .wpestate_header_view_cart, 
+                #submit_booking_front_instant, 
+                #submit_booking_front, 
+                #submit_booking_front_link, 
+                #advanced_submit_widget, 
+                #advanced_submit_2_mobile, 
+                #advanced_submit_2, 
+                #advanced_submit_3,
+                #add_favorites,
+                #contact_host,
+                .prop_social_share,
+                .item_head,
+                .testimonial_type_2 .testimonial-text,
+                .testimonial_type_2 .testimonial-clas-line,
+                .other_rules label, 
+                .cancelation_policy label,
+                .widget-area-sidebar,
+                .show_cost_form,
+                .owner_read_more,
+                .listing_filters_head .filter_menu_trigger, 
+                .listing_filters .filter_menu_trigger,
+                .category_tagline, .category_tagline a,
+                .filter_menu li,
+                .contact_detail,
+                .modal-content #wp-forgot-but_mod, 
+                .mess_send_reply_button, 
+                #change_pass, #update_profile, #book_dates, 
+                #aaiu-uploader, #set_price_dates, 
+                #book_dates, #edit_prop_ammenities, 
+                #edit_prop_locations, #google_capture, 
+                #edit_prop_details, 
+                #edit_prop_image, 
+                #edit_prop_price, 
+                #edit_prop_1, 
+                #edit_calendar,
+                #form_submit_1, 
+                #submit_mess_front, 
+                .modal-content #wp-login-but, 
+                #wp-login-but_sh, 
+                #delete_profile, 
+                #user-id-uploader, 
+                #wp-submit-register_sh, 
+                #wp-forgot-but,
+                #ajax_register_div #user_terms_register_sh_label,
+                #booking_form_request_mess_modal, 
+                #booking_form_request_mess, 
+                .alert-message, 
+                .alert_error, 
+                .login-alert,
+                .wpestate_guest_no_buttons_title_labels,
+                .wpestate_guest_no_buttons_description_labels,
+                .invoice_data_legend,
+                .price_custom_explained, 
+                .date_duration, 
+                .date_interval,
+                .total_inv_span,
+                .invoice_content,
+                .inv_legend,
+                .inv_data,
+                .woo_pay,
+                .reply_to_review, 
+                .trip_details, 
+                .proceed-payment_full,
+                .waiting_payment, 
+                .full_invoice_reminder, 
+                .you_already_review,
+                .post_review_later, 
+                .confirmed_booking, 
+                .contact_owner_reservation, 
+                .proceed-payment_full, 
+                #post_review, 
+                .proceed-payment, 
+                .tag-post-review, 
+                .action1_booking, 
+                .generate_invoice,
+                .booking_canceled_by_owner, 
+                .cancel_user_booking, 
+                .cancel_own_booking, 
+                .delete_invoice, 
+                .delete_booking,
+                .waiting_payment_status_pending, 
+                .waiting_payment_user_status, 
+                .waiting_payment_status, 
+                .tag-published, 
+                .tag-paid,
+                .search_dashborad_header .wpb_btn-info.wpb_btn-small.wpestate_vc_button.vc_button,
+                .pay_notice_booking,
+                #confirm_zero_instant_booking, 
+                #send_direct_bill_booking, 
+                #direct_pay_booking, 
+                #send_direct_bill, 
+                #direct_pay, 
+                #stripe_cancel, 
+                #paypal_booking, 
+                #pick_pack,
+                .message_listing,
+                .review-content,
+                .wpestate-multiselect-custom-style, 
+                .filter_menu_trigger{
+                    font-size: ' . $p_fontsize . ';
+                }';
         }
+        
         
         if ($p_lineheight != '') {
             $style.=  '.single-content p, body, p, .cost_row_extra,
@@ -2104,6 +2706,47 @@ if(!function_exists('wpestate_custom_fonts_elements')):
         $menu_lineheight =  esc_html( wprentals_get_option('menu_typo','line-height') );
         $menu_fontweight =  esc_html( wprentals_get_option('menu_typo','font-weight') );
 
+        if ($menu_fontweight != '') {
+            $style.= '
+                #access ul ul a,
+                .menu_username,
+                .submit_listing,
+                .header_phone,
+                #access a,
+                #user_menu_u,
+                .signuplink,
+                .wpestate_top_property_navigation,
+                li.wpestate_megamenu_col_2 .megamenu-title, 
+                #access ul ul li.wpestate_megamenu_col_3 .megamenu-title, 
+                #access ul ul li.wpestate_megamenu_col_4 .megamenu-title, 
+                #access ul ul li.wpestate_megamenu_col_5 .megamenu-title, 
+                #access ul ul li.wpestate_megamenu_col_6 .megamenu-title, 
+                #access ul ul li.wpestate_megamenu_col_1 .megamenu-title a, 
+                #access ul ul li.wpestate_megamenu_col_2 .megamenu-title a, 
+                #access ul ul li.wpestate_megamenu_col_3 .megamenu-title a, 
+                #access ul ul li.wpestate_megamenu_col_4 .megamenu-title a, 
+                #access ul ul li.wpestate_megamenu_col_5 .megamenu-title a, 
+                #access ul ul li.wpestate_megamenu_col_6 .megamenu-title a,
+                #access ul ul li.wpestate_megamenu_col_1 a.menu-item-link, 
+                #access ul ul li.wpestate_megamenu_col_2 a.menu-item-link, 
+                #access ul ul li.wpestate_megamenu_col_3 a.menu-item-link, 
+                #access ul ul li.wpestate_megamenu_col_4 a.menu-item-link, 
+                #access ul ul li.wpestate_megamenu_col_5 a.menu-item-link, 
+                #access ul ul li.wpestate_megamenu_col_6 a.menu-item-link,
+                #access ul ul li.wpestate_megamenu_col_1, 
+                #access ul ul li.wpestate_megamenu_col_2, 
+                #access ul ul li.wpestate_megamenu_col_3, 
+                #access ul ul li.wpestate_megamenu_col_4,
+                #access ul ul li.wpestate_megamenu_col_5, 
+                #access ul ul li.wpestate_megamenu_col_6, 
+                #access ul ul li.wpestate_megamenu_col_1 a, 
+                #access ul ul li.wpestate_megamenu_col_2 a, 
+                #access ul ul li.wpestate_megamenu_col_3 a, 
+                #access ul ul li.wpestate_megamenu_col_4 a, 
+                #access ul ul li.wpestate_megamenu_col_5 a, 
+                #access ul ul li.wpestate_megamenu_col_6 a{
+                    font-weight:' . $menu_fontweight .';
+                }';
 
         if ($menu_fontfamily != '') {
              $style.= '#access ul ul a,
@@ -2142,7 +2785,7 @@ if(!function_exists('wpestate_custom_fonts_elements')):
                 #access ul ul li.wpestate_megamenu_col_4 a, 
                 #access ul ul li.wpestate_megamenu_col_5 a, 
                 #access ul ul li.wpestate_megamenu_col_6 a{
-                        font-family:' . $menu_fontfamily .';}!important';
+                        font-family:' . $menu_fontfamily .';}';
         }
         
         if ($menu_fontsize != '') {
@@ -2185,46 +2828,7 @@ if(!function_exists('wpestate_custom_fonts_elements')):
                         font-size:' . $menu_fontsize .';}';
         }
 
-        if ($menu_fontweight != '') {
-            $style.= '
-                #access ul ul a,
-                .menu_username,
-                .submit_listing,
-                .header_phone,
-                #access a,
-                #user_menu_u,
-                .wpestate_top_property_navigation,
-                li.wpestate_megamenu_col_2 .megamenu-title, 
-                #access ul ul li.wpestate_megamenu_col_3 .megamenu-title, 
-                #access ul ul li.wpestate_megamenu_col_4 .megamenu-title, 
-                #access ul ul li.wpestate_megamenu_col_5 .megamenu-title, 
-                #access ul ul li.wpestate_megamenu_col_6 .megamenu-title, 
-                #access ul ul li.wpestate_megamenu_col_1 .megamenu-title a, 
-                #access ul ul li.wpestate_megamenu_col_2 .megamenu-title a, 
-                #access ul ul li.wpestate_megamenu_col_3 .megamenu-title a, 
-                #access ul ul li.wpestate_megamenu_col_4 .megamenu-title a, 
-                #access ul ul li.wpestate_megamenu_col_5 .megamenu-title a, 
-                #access ul ul li.wpestate_megamenu_col_6 .megamenu-title a,
-                #access ul ul li.wpestate_megamenu_col_1 a.menu-item-link, 
-                #access ul ul li.wpestate_megamenu_col_2 a.menu-item-link, 
-                #access ul ul li.wpestate_megamenu_col_3 a.menu-item-link, 
-                #access ul ul li.wpestate_megamenu_col_4 a.menu-item-link, 
-                #access ul ul li.wpestate_megamenu_col_5 a.menu-item-link, 
-                #access ul ul li.wpestate_megamenu_col_6 a.menu-item-link,
-                #access ul ul li.wpestate_megamenu_col_1, 
-                #access ul ul li.wpestate_megamenu_col_2, 
-                #access ul ul li.wpestate_megamenu_col_3, 
-                #access ul ul li.wpestate_megamenu_col_4,
-                #access ul ul li.wpestate_megamenu_col_5, 
-                #access ul ul li.wpestate_megamenu_col_6, 
-                #access ul ul li.wpestate_megamenu_col_1 a, 
-                #access ul ul li.wpestate_megamenu_col_2 a, 
-                #access ul ul li.wpestate_megamenu_col_3 a, 
-                #access ul ul li.wpestate_megamenu_col_4 a, 
-                #access ul ul li.wpestate_megamenu_col_5 a, 
-                #access ul ul li.wpestate_megamenu_col_6 a{
-                    font-weight:' . $menu_fontweight .';
-                }';
+ 
         }
 
         if($style!=''){

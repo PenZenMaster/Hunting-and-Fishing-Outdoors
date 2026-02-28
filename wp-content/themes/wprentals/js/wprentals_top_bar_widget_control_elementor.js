@@ -20,8 +20,18 @@ function wpestate_ajax_top_bar_widget_elementor_control(){
         ajaxurl             =  control_vars.admin_url + 'admin-ajax.php';
 
 
-        jQuery('#wpestate_display_item_list_top_bar_content_wrapper').empty();
-        jQuery('#listing_loader').show();
+        //jQuery('#wpestate_display_item_list_top_bar_content_wrapper').empty();
+        //jQuery('#listing_loader').show();
+
+        
+    var contentContainer = jQuery('#wpestate_display_item_list_top_bar_content_wrapper');
+    var listingContainer = contentContainer.children('.items_shortcode_wrapper');
+
+    if (!listingContainer.length) {
+        listingContainer = contentContainer;
+    }
+
+    wpestate_createSkeletons(listingContainer);
 
         jQuery.ajax({
             type: 'POST',
@@ -38,10 +48,24 @@ function wpestate_ajax_top_bar_widget_elementor_control(){
             success: function (data) {
 
         
-                jQuery('#wpestate_display_item_list_top_bar_content_wrapper').append('something');
-                jQuery('#wpestate_display_item_list_top_bar_content_wrapper').html(data.to_display);
-                jQuery('#listing_loader').hide();   
-                wpestate_restart_js_after_ajax();     
+               // jQuery('#wpestate_display_item_list_top_bar_content_wrapper').append('something');
+               // jQuery('#wpestate_display_item_list_top_bar_content_wrapper').html(data.to_display);
+              //  jQuery('#listing_loader').hide();   
+                
+                  var htmlResponse = data.to_display || '';
+                  var parsedResponse = jQuery('<div>').html(htmlResponse);
+                  var responseWrapper = parsedResponse.children('.items_shortcode_wrapper');
+
+                  if (!responseWrapper.length) {
+                      responseWrapper = parsedResponse.find('.items_shortcode_wrapper');
+                  }
+
+                  if (responseWrapper.length) {
+                      htmlResponse = responseWrapper.html();
+                  }
+
+                  wpestate_replaceSkeletons(listingContainer, htmlResponse);
+              wpestate_restart_js_after_ajax();     
 
             },
             error: function (errorThrown) {

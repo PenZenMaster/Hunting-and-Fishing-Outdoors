@@ -529,9 +529,7 @@ function wpestate_createMarker(pin_price,infobox_width, size, i, id, lat, lng, p
 
 
         infoBox.setContent('<div class="info_details '+infobox_class+' "><span id="infocloser" onClick=\'javascript:infoBox.close();\' ></span>'+status_html+'<a href="' + this.link + '"><div class="infogradient"></div><div class="infoimage" style="background-image:url(' + info_image + ')"  ></div></a><a href="' + this.link + '" id="infobox_title"> ' + title + '</a><div class="prop_detailsx">' + category_name + " " + in_type + " " + action_name + '</div><div class="infodetails">' + infoguest + inforooms + '</div><div class="prop_pricex">' + this.price + '</div></div>');
-
         infoBox.open(map, this);
-
         map.setCenter(this.position);
 
 
@@ -1784,6 +1782,7 @@ var marker_zindex;
 
 function wpestate_hover_action_pin(listing_id) {
     "use strict";
+    wpestate_hover_action_flag=1;
 
     for (var i = 0; i < gmarkers.length; i++) {
 
@@ -1791,7 +1790,7 @@ function wpestate_hover_action_pin(listing_id) {
 
             if(wprentals_map_type===1){
                 google.maps.event.trigger(gmarkers[i], 'click');
-
+                map_geo_first_load=0;
                 if(mapfunctions_vars.useprice !== 'yes'){
                     gmarkers[i].setIcon( wprentals_custompinhover() );
                 }else{
@@ -1826,6 +1825,9 @@ function wpestate_hover_action_pin(listing_id) {
 
 function wpestate_return_hover_action_pin(listing_id) {
     "use strict";
+    wpestate_hover_action_flag=0;
+    map_geo_first_load=1 ;
+    external_action_ondemand=0;
     for (var i = 0; i < gmarkers.length; i++) {
         if (parseInt(gmarkers[i].idul, 10) === parseInt(listing_id, 10)) {
 

@@ -26,17 +26,8 @@ global $early_bird_days;
 global $property_taxes;
 global $submission_page_fields;
 global $local_booking_type;
-global $booking_value;
 global $booking_start_hour;
 global $booking_end_hour;
-global $booking_start_hour_noon;
-global $booking_end_hour_noon;
-global $booking_start_hour_mrng;
-global $booking_end_hour_mrng;
-global $property_price_hr;
-global $property_price_hfday;
-global $morning_price;
-global $afternoon_price;
 
 $week_days=array(
     '0'=>esc_html__('All','wprentals'),
@@ -344,35 +335,34 @@ endif;
     ?>
 
 
-        <div class="col-md-12 wqs_Booking_Type">
+    <div class="col-md-12">
            <div class="col-md-3 dashboard_chapter_label">
                 <label  class="label_adjust" for="property_price">
                     <?php esc_html_e('Booking Type ','wprentals');?>
                  </label>
             </div>
             <div class="col-md-3">
-                <label class="label_adjust" for="property_price"><?php esc_html_e('Booking unit', 'wprentals'); ?>
-                </label>
-                <!-- <input type="text" name="vdf_bk_type" value="Default Booking" disabled> -->
+                <label  class="label_adjust" for="property_price">
                     <?php
-                $booking_type_text = get_post_meta($edit_id, 'is_half_day', true);
-                $booking_type_name = get_post_meta($edit_id, 'is_half_day_name', true);
-
+                    esc_html_e('Booking Type','wprentals');
                     ?>
-                <input type="hidden" name="vdf_bk_type" id="vdf_bk_type" class="vdf_bk_type"
-                    data-bkng-type="<?php echo $booking_type_text; ?>" bk-tp="<?php echo $booking_type_name; ?>">
+                </label>
+
                 <select id="local_booking_type" name="local_booking_type" class="select-submit2 select_submit_price">
-                    <option value="1" data-opt="Per day/night"
-                        <?php if ($booking_type_name == 'Per day/night') {print ' selected="selected" ';}?>>Per
-                        Day/Night</option>
-                    <option value="2" data-opt="Per hour"
-                        <?php if ($booking_type_name == 'Per hour') {print ' selected="selected" ';}?>>Per Hour</option>
-                    <option value="2" data-opt="Half day"
-                        <?php if ($booking_type_name == 'Half day') {print ' selected="selected" ';}?>>Half Day</option>
-                        <?php /*
-                    <option value="3" data-opt="Custom date"
-                    <?php if ($booking_type_name == 'Custom date') {print ' selected="selected" ';}?>>Custom Date</option>
-                     */ ?>
+                   <?php
+                    $booking = array(
+                    1 => __("Per Day/Night","wprentals"),
+                    2 => __("Per Hour","wprentals"),
+
+                    );
+
+                    foreach($booking as $key=>$value){
+                        print '   <option value="'.esc_attr($key).'"';
+                        if( $key==$local_booking_type){
+                            print ' selected="selected" ';
+                        }
+                        print '>'.esc_html($value).'</option>';
+                    }
                    ?>
 
                 </select>
@@ -380,8 +370,6 @@ endif;
             </div>
             <div class="col-md-3">
              </div>
-            <div class="col-md-3">
-            </div>
             <div class="col-md-3">
             </div>
         </div>
@@ -392,137 +380,32 @@ endif;
 
 
     if(is_array($submission_page_fields) && in_array('property_price', $submission_page_fields)) {
-    $booking_cd_end_date = get_post_meta($edit_id, 'booking_cd_end_date', true);
-    $booking_cd_start_date = get_post_meta($edit_id, 'booking_cd_start_date', true);
-    $booking_cd_day = get_post_meta($edit_id, 'booking_cd_day', true);
-    $booking_cd_day = !empty($booking_cd_day) ? json_decode($booking_cd_day,true) : array();
     ?>
-        <div class="wqs_custom_date_section">
-            <div class="col-md-12">
-                <div class="col-md-3"></div>
-                <div class="col-md-9 wqs_day_selection">
-                    <input type="checkbox" id="mon" name="booking_cd_day" value="Mo" <?php echo !empty($booking_cd_day) && in_array('Mo',$booking_cd_day) ? 'checked' : ''; ?>>
-                    <label for="mon">Monday</label>
-                    <input type="checkbox" id="tue" name="booking_cd_day" value="Tu" <?php echo !empty($booking_cd_day) && in_array('Tu',$booking_cd_day) ? 'checked' : ''; ?>>
-                    <label for="tue">Tuesday</label>
-                    <input type="checkbox" id="wed" name="booking_cd_day" value="We" <?php echo !empty($booking_cd_day) && in_array('We',$booking_cd_day) ? 'checked' : ''; ?>>
-                    <label for="wed">Wednesday</label>
-                    <input type="checkbox" id="thu" name="booking_cd_day" value="Th" <?php echo !empty($booking_cd_day) && in_array('Th',$booking_cd_day) ? 'checked' : ''; ?>>
-                    <label for="thu">Thrusday</label>
-                    <input type="checkbox" id="frd" name="booking_cd_day" value="Fr" <?php echo !empty($booking_cd_day) && in_array('Fr',$booking_cd_day) ? 'checked' : ''; ?>>
-                    <label for="frd">Friday</label>
-                    <input type="checkbox" id="sat" name="booking_cd_day" value="Sa" <?php echo !empty($booking_cd_day) && in_array('Sa',$booking_cd_day) ? 'checked' : ''; ?>>
-                    <label for="sat">Saturday</label>
-                    <input type="checkbox" id="sun" name="booking_cd_day" value="Su" <?php echo !empty($booking_cd_day) && in_array('Su',$booking_cd_day) ? 'checked' : ''; ?>>
-                    <label for="sun">Sunday</label>                
-                </div>
-            </div>
-            <div class="col-md-12">    
-                <div class="col-md-3"></div>
-                <div class="col-md-3">
-                    <label class="label_adjust" for="booking_cd_start_date">Start date</label>
-                    <input class="form-control" type="date" id="booking_cd_start_date" name="vdf_bk_cd_start_date" value="<?php echo $booking_cd_start_date; ?>"></input> 
-                </div>    
-                <div class="col-md-3">
-                    <label class="label_adjust" for="booking_cd_end_date">End date</label>
-                    <input class="form-control" type="date" id="booking_cd_end_date" name="vdf_bk_cd_end_date" value="<?php echo $booking_cd_end_date; ?>"></input> 
-                </div>
-            </div>    
-        </div>
-        
-        <div class="col-md-12 wqs_price_per_unit">
-            <!--  <div class="col-md-3 dashboard_chapter_label">
-                    <label class="label_adjust" for="property_price">Price per day $ (only numbers)</label>
-            </div> -->
-            <div class="col-md-3 dashboard_chapter_label">
-                <label class="label_adjust" for="property_price">Price per unit</label>
-            </div>
-            <div class="col-md-3 vdf_price_per_day">
-                <label class="label_adjust" for="property_price">Price per unit</label>
-                <input type="text" id="property_price" class="form-control" size="40" name="property_price"
-                    value="<?php print esc_html($property_price);?>">
-            </div>
-            <div class="col-md-3 vdf_price_per_half_day" style="display: none">
-                <label class="label_adjust" for="property_price_hfday">Price per half day</label>
-                <?php $property_price_hfday_value = get_post_meta($edit_id, 'property_price_hfday', true);    //echo $property_price_hfday_value."hfday";?>
-                <input type="text" id="property_price_hfday" class="form-control" size="40" name="property_price_hfday"
-                    value="<?php print esc_html($property_price_hfday_value);?>">
-            </div>
-            <div class="col-md-3 vdf_price_per_hour" style="display: none;">
-                <label class="label_adjust" for="property_price_hr">Price per hour</label>
-                <?php $property_price_hr_value = get_post_meta($edit_id, 'property_price_hr', true); //echo $property_price_hr_value."hfday"; ?>
-                <input type="text" id="property_price_hr" class="form-control" size="40" name="property_price_hr"
-                    value="<?php print esc_html($property_price_hr_value);?>">
-            </div>
-        </div>
-
- 
-        <div class="col-md-12 wqs_morning_price ">
-            <div class="col-md-3 dashboard_chapter_label">
-                <label class="label_adjust" for="morning_price">Morning Price</label>
-            </div>
-            <div class="col-md-3">
-                <!-- <label class="label_adjust" for="morning_price">Morning Price</label> -->
-                <input type="text" id="morning_price" class="form-control" size="40" name="morning_price"
-                    value="<?php print esc_html($morning_price);?>">
-            </div>
-        </div>
-
-        <div class="col-md-12 wqs_afternoon_price">
-            <div class="col-md-3 dashboard_chapter_label">
-                <label class="label_adjust" for="afternoon_price">Afternoon Price</label>
-            </div>
-            <div class="col-md-3">
-                <!-- <label class="label_adjust" for="afternoon_price">Afternoon Price</label> -->
-                <input type="text" id="afternoon_price" class="form-control" size="40" name="afternoon_price"
-                    value="<?php print esc_html($afternoon_price);?>">
-            </div>
-        </div>   
 
         <div class="col-md-12">
-            <!--  <div class="col-md-3 dashboard_chapter_label">
+           <div class="col-md-3 dashboard_chapter_label">
                 <label  class="label_adjust" for="property_price">
                 <?php
-//if($booking_type == 3){
-    ?>
-                    <label class="label_adjust" for="property_price">Price per half day $ (only numbers)</label>
-                    <?php
-//  }
-    //else{
-    // print wpestate_show_labels('price_label',$rental_type,$booking_type).' ';
-    // print esc_html($wp_estate_currency_symbol).' '; esc_html_e('(only numbers)','wprentals');
-    // }
-    //print wpestate_show_labels('price_label',$rental_type,$booking_type).' ';
-    //print esc_html($wp_estate_currency_symbol).' '; esc_html_e('(only numbers)','wprentals');
+                    print wpestate_show_labels('price_label',$rental_type,$booking_type).' ';
+                    print esc_html($wp_estate_currency_symbol).' '; esc_html_e('(only numbers)','wprentals');
                 ?>
                 </label>
-            </div> -->
-            <!--  <div class="col-md-3">
-                <label  class="label_adjust" for="property_price">
-                    <?php
-// if ($booking_type == 3) {
-    ?>
-                            <label class="label_adjust" for="property_price">Price per half day</label>
-                        <?php
-// }
-    //  else{
-    //  print wpestate_show_labels('price_label',$rental_type,$booking_type);
-    // }
-                    ?>
-                </label>
-                <input type="text" id="property_price" class="form-control" size="40" name="property_price" data-price="<?php echo $property_price; ?>" value="<?php print esc_html($property_price);?>">
-            </div> -->
-            <div class="col-md-3">
-                <label class="label_adjust" for="property_price_before_label">
-                    <?php esc_html_e('Before Label ', 'wprentals');?></label>
-                <input type="text" id="property_price_before_label" class="form-control" size="40"
-                    name="property_price_before_label" value="<?php print esc_html($property_price_before_label);?>">
             </div>
             <div class="col-md-3">
-                <label class="label_adjust" for="property_price_after_label">
-                    <?php esc_html_e('After Label ', 'wprentals');?> </label>
-                <input type="text" id="property_price_after_label" class="form-control" size="40"
-                    name="property_price_after_label" value="<?php print esc_html($property_price_after_label);?>">
+                <label  class="label_adjust" for="property_price">
+                    <?php
+                        print wpestate_show_labels('price_label',$rental_type,$booking_type);
+                    ?>
+                </label>
+                <input type="text" id="property_price" class="form-control" size="40" name="property_price" value="<?php print esc_html($property_price);?>">
+            </div>
+            <div class="col-md-3">
+                <label  class="label_adjust" for="property_price_before_label"> <?php esc_html_e('Before Label ','wprentals');?></label>
+                <input type="text" id="property_price_before_label" class="form-control" size="40" name="property_price_before_label" value="<?php print esc_html($property_price_before_label);?>">
+            </div>
+            <div class="col-md-3">
+                <label  class="label_adjust" for="property_price_after_label"> <?php esc_html_e('After Label ','wprentals'); ?>  </label>
+                <input type="text" id="property_price_after_label" class="form-control" size="40" name="property_price_after_label" value="<?php print esc_html($property_price_after_label);?>">
             </div>
         </div>
 
@@ -534,14 +417,11 @@ endif;
 
         <div class="col-md-12">
             <div class="col-md-3 dashboard_chapter_label">
-                <label for="property_taxes">
-                    <?php esc_html_e('Taxes in % (taxes are considered included in the price) ', 'wprentals');?>
-                </label>
+                <label for="property_taxes"> <?php esc_html_e('Taxes in % (taxes are considered included in the price) ','wprentals'); ?>  </label>
             </div>
             <div class="col-md-3">
                 <label for="property_taxes"> <?php esc_html_e('Value','wprentals'); ?>  </label>
-                <input type="text" id="property_taxes" class="form-control" size="40" name="property_taxes"
-                    value="<?php print esc_html($property_taxes);?>">
+                <input type="text" id="property_taxes" class="form-control" size="40" name="property_taxes" value="<?php print esc_html($property_taxes);?>">
             </div>
             <div class="col-md-3"> </div>
             <div class="col-md-3"> </div>
@@ -626,7 +506,7 @@ endif;
     <?php
     if(is_array($submission_page_fields) && in_array('extra_price_per_guest', $submission_page_fields)) {
     ?>
-        <div class="col-md-12 wqs_extra_price_per_guest">
+        <div class="col-md-12">
             <div class="col-md-3 dashboard_chapter_label">
                 <label>
                     <?php esc_html_e('Extra Guests ','wprentals');?>
@@ -634,8 +514,7 @@ endif;
             </div>
             <div class="col-md-3">
                 <label for="extra_price_per_guest">
-                    <?php print wpestate_show_labels('extra_price_per_guest', $rental_type, $booking_type);
-    print ' ' . esc_html($wp_estate_currency_symbol) . ' ';?>
+                    <?php print wpestate_show_labels('extra_price_per_guest',$rental_type,$booking_type);print ' '.esc_html($wp_estate_currency_symbol).' ';  ?>
                 </label>
                 <input type="text" id="extra_price_per_guest" class="form-control" size="40" name="extra_price_per_guest" value="<?php print esc_html($extra_price_per_guest);?>">
             </div>
@@ -768,7 +647,7 @@ endif;
           in_array('checkin_checkout_change_over', $submission_page_fields) )
     ) { ?>
 
-        <div class="col-md-12 wqs_per_day">
+        <div class="col-md-12">
             <div class="col-md-3 dashboard_chapter_label">
                 <label>
                     <?php
@@ -822,146 +701,25 @@ endif;
         </div>
     <?php }
 
-// if($booking_type==3 || $booking_type==2){
-?>
-        <div class="col-md-12" data-bk-type="<?php echo $booking_type; ?>">
-            <?php
-$booking_start_hour_mrng = get_post_meta($post_id, 'booking_start_hour_mrng', true);
-$booking_end_hour_mrng = get_post_meta($post_id, 'booking_end_hour_mrng', true);
-// if ($booking_type==3) {
-?>
-            <div class="col-md-3 dashboard_chapter_label vdf_per_half_day_bkng_time wqs_half_day" aaa>
-                <label>
-                    <?php
-esc_html_e('Business hours  -  for per half day morning booking', 'wprentals');
-?>
-                </label>
-            </div>
-            <div class="col-md-3 vdf_per_half_day_bkng_time wqs_half_day" bbb>
-                <label for="booking_start_hour_mrng"
-                    data-id="<?php echo $booking_type; ?>"><?php esc_html_e('Start Hour', 'wprentals');?></label>
-                <select id="booking_start_hour_mrng" name="booking_start_hour_mrng"
-                    class="select_submit_price select-submit2" data-s="<?php echo $booking_start_hour_mrng; ?>"
-                    data-e="<?php echo $booking_end_hour_mrng; ?>">
-                    <?php
-$i = 0;
-if ($booking_start_hour_mrng == '') {
-    $booking_start_hour_mrng = '0:00';
-}
-while ($i <= 23):
 
-    $value = $i . ':00';
-    print '   <option value="' . esc_attr($value) . '"';
-    if ($value == $booking_start_hour_mrng) {
-        print ' selected="selected" ';
-    }
-    $i++;
-    print '>' . esc_html($value) . '</option>';
-endwhile;
-?>
 
-                </select>
-            </div>
-
-            <?php
-$booking_start_hour_noon = get_post_meta($post_id, 'booking_start_hour_noon', true);
-$booking_end_hour_noon = get_post_meta($post_id, 'booking_end_hour_noon', true);
-?>
-
-            <div class="col-md-3 vdf_per_half_day_bkng_time wqs_half_day"
-                data-s="<?php echo $booking_start_hour_mrng; ?>" data-e="<?php echo $booking_end_hour_mrng; ?>" vvv>
-                <label for="booking_end_hour_mrng"><?php esc_html_e('End Hour', 'wprentals');?></label>
-                <select id="booking_end_hour_mrng" name="booking_end_hour_mrng"
-                    class="select_submit_price select-submit2">
-                    <?php
-$i = 0;
-if ($booking_end_hour_mrng == '') {
-    $booking_end_hour_mrng = '24:00';
-}
-while ($i <= 23):
-    $i++;
-    $value = $i . ':00';
-    print '   <option value="' . esc_attr($value) . '"';
-    if ($value == $booking_end_hour_mrng) {
-        print ' selected="selected" ';
-    }
-    print '>' . esc_html($value) . '</option>';
-endwhile;
+    if($booking_type==3 || $booking_type==2){
     ?>
-                </select>
-            </div>
 
-            <div class="col-md-12 vdf_per_half_day_bkng_time wqs_half_day" sss>
+        <div class="col-md-12">
             <div class="col-md-3 dashboard_chapter_label">
-                <label>
-                    <?php
-esc_html_e('Business hours  -  for per half day Afternoon booking', 'wprentals');
-?>
-                    </label>
-                </div>
-                <div class="col-md-3">
-                    <label for="booking_start_hour_noon"
-                        data-id="<?php echo $booking_type; ?>"><?php esc_html_e('Start Hour', 'wprentals');?></label>
-                    <select id="booking_start_hour_noon" name="booking_start_hour_noon"
-                        class="select_submit_price select-submit2">
-                        <?php
-$i = 0;
-if ($booking_start_hour_noon == '') {
-    $booking_start_hour_noon = '0:00';
-}
-while ($i <= 23):
-
-    $value = $i . ':00';
-    print '   <option value="' . esc_attr($value) . '"';
-    if ($value == $booking_start_hour_noon) {
-        print ' selected="selected" ';
-    }
-    $i++;
-    print '>' . esc_html($value) . '</option>';
-endwhile;
-?>
-
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label for="booking_end_hour_noon"><?php esc_html_e('End Hour', 'wprentals');?></label>
-                    <select id="booking_end_hour_noon" name="booking_end_hour_noon"
-                        class="select_submit_price select-submit2">
-                        <?php
-$i = 0;
-if ($booking_end_hour_noon == '') {
-    $booking_end_hour_noon = '24:00';
-}
-while ($i <= 23):
-    $i++;
-    $value = $i . ':00';
-    print '   <option value="' . esc_attr($value) . '"';
-    if ($value == $booking_end_hour_noon) {
-        print ' selected="selected" ';
-    }
-    print '>' . esc_html($value) . '</option>';
-endwhile;
-?>
-                    </select>
-                </div>
-            </div>
-            <?php
-// }
-//else{
-$booking_start_hour = get_post_meta($post_id, 'booking_start_hour', true);
-$booking_end_hour = get_post_meta($post_id, 'booking_end_hour', true);
-?>
-            <div class="col-md-3 dashboard_chapter_label vdf_per_hour_bkng_time wqs_per_hour">
                 <label>
                     <?php
                         esc_html_e('Business hours  -  for per h booking','wprentals');
                     ?>
                 </label>
             </div>
-            <div class="col-md-3 vdf_per_hour_bkng_time test wqs_per_hour">
-                <label for="booking_start_hour"
-                    data-id="<?php echo $booking_type; ?>"><?php esc_html_e('Start Hour', 'wprentals');?></label>
+
+
+            <div class="col-md-3">
+                <label for="booking_start_hour"><?php esc_html_e('Start Hour','wprentals');
+      
+                ?></label>
                 <select id="booking_start_hour" name="booking_start_hour" class="select_submit_price select-submit2">
                    <?php
                     $i=0;
@@ -974,8 +732,7 @@ $booking_end_hour = get_post_meta($post_id, 'booking_end_hour', true);
                         print '   <option value="'.esc_attr($value).'"';
                         if( $value==$booking_start_hour ){
                             print ' selected="selected" ';
-    }
-    $i++;
+                        } $i++;
                         print '>'.esc_html($value).'</option>';
                     endwhile;
                    ?>
@@ -985,7 +742,7 @@ $booking_end_hour = get_post_meta($post_id, 'booking_end_hour', true);
 
 
 
-            <div class="col-md-3 vdf_per_hour_bkng_time wqs_per_hour">
+            <div class="col-md-3">
                 <label for="booking_end_hour"><?php esc_html_e('End Hour','wprentals');?></label>
                 <select id="booking_end_hour" name="booking_end_hour" class="select_submit_price select-submit2">
                     <?php

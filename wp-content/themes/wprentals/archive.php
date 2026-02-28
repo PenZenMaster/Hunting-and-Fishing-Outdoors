@@ -40,7 +40,7 @@ if ( 'wpestate_message' == get_post_type() || 'wpestate_invoice' == get_post_typ
             <div class="blog_list_wrapper row">    
                 <?php
                 while (have_posts()) : the_post(); 
-                    include(locate_template('templates/blog_unit.php'));
+                    include(locate_template('templates/blog-unit/blog_unit.php'));
                 endwhile;
                 wp_reset_query();
                 ?>

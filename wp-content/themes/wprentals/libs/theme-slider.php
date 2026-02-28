@@ -28,7 +28,7 @@ function  wpestate_theme_slider(){
              if( is_array($theme_slider) && in_array($theid, $theme_slider) ){
                  print ' selected="selected" ';
              }
-             print'>'.get_the_title().'</option>';
+             print'>'. get_sanitized_truncated_title(0, 0).'</option>';
         endwhile;
         print '</select>';
         
@@ -157,7 +157,7 @@ if( !function_exists('wpestate_present_theme_slider') ):
                         
 
                         <div class="slider-title">
-                            <h2><a href="'.esc_url ( get_permalink() ).'">'.wpestate_strip_words(get_the_title(),10).'</a> </h2>
+                            <h2><a href="'.esc_url ( get_permalink() ).'">'.wpestate_strip_words( get_sanitized_truncated_title(0, 0),10).'</a> </h2>
                         </div>
 
                         <div class="listing-desc-slider"> 
@@ -276,7 +276,7 @@ if( !function_exists('wpestate_present_theme_slider_type2') ):
                         </div>
 
                         <div class="slider-title">
-                            <h2><a href="'.esc_url ( get_permalink() ).'">'.wpestate_strip_words(get_the_title(),10).'</a> </h2>
+                            <h2><a href="'.esc_url ( get_permalink() ).'">'.wpestate_strip_words( get_sanitized_truncated_title(0, 0),10).'</a> </h2>
                         </div>
 
                         <div class="listing-desc-slider"> 

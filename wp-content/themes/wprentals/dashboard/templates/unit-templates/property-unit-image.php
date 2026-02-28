@@ -13,7 +13,11 @@ $featured  =  intval  ( get_post_meta($post->ID, 'prop_featured', true) );
       <a href="<?php print esc_url($link); ?>"><img src="<?php  print esc_url($preview[0]); ?>" class="b-lazy dashboad-prop-img img-responsive " alt="<?php esc_html_e('image','wprentals');?>" /></a>
     <?php
     } else{
-        $thumb_prop_default =  get_stylesheet_directory_uri().'/img/defaultimage_prop.jpg';?>
+        $thumb_prop_default = wprentals_get_option('wp_estate_default_property_image', 'url');
+        if ( empty($thumb_prop_default) ) {
+            $thumb_prop_default = get_stylesheet_directory_uri().'/img/defaultimage_prop.jpg';
+        }
+    ?>
         <img src="<?php print esc_url($thumb_prop_default);?>"   class="b-lazy img-responsive dashboad-prop-img  wp-post-image " alt="<?php esc_html_e('image','wprentals');?>" />
     <?php
     }

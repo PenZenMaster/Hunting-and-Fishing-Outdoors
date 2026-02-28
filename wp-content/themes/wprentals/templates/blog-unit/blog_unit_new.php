@@ -16,7 +16,7 @@ $schema_data=   'itemprop="itemListElement" itemscope itemtype="http://schema.or
     <meta itemprop="position" content="<?php print esc_attr($wpestate_blog_selection->current_post);?>" />       
     <div class="blog_unit_back full_blog " data-link="<?php print esc_url($link);?>">
         <?php 
-        $title      =   get_the_title();
+        $title=get_sanitized_truncated_title(0, 0);
         if( has_post_thumbnail($post->ID) ){
             if($wpestate_full_row==1){
                 $preview    =   wp_get_attachment_image_src(get_post_thumbnail_id(), 'wpestate_property_featured');
@@ -34,11 +34,7 @@ $schema_data=   'itemprop="itemListElement" itemscope itemtype="http://schema.or
             <a itemprop="url"  href="<?php echo esc_url(get_permalink()); ?>" class="blog-title-link">
                 <span itemprop="name">
                     <?php
-                    $title=get_the_title();
-                    echo mb_substr( html_entity_decode($title),0,58); 
-                    if(strlen($title)>58){
-                        echo '...';   
-                    }
+                     $title=get_sanitized_truncated_title(0, 58);
                     ?>
                 </span>
             </a>

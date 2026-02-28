@@ -67,8 +67,12 @@ function wpestate_scripts() {
     wp_enqueue_script('slideout.min', get_template_directory_uri().'/js/slideout.min.js',array(), '1.0', true);
 
 
+    wp_enqueue_style('bootstrap-selectcss.min',get_template_directory_uri().'/css/bootstrap-select.min.css', array(), '1.0', 'all');
+    wp_enqueue_script('bootstrap-selectjs', get_template_directory_uri().'/js/bootstrap-select.min.js',array('jquery'), '1.0', true);
+
     wp_enqueue_script('dense', trailingslashit( get_template_directory_uri() ).'js/dense.js',array('jquery'), '1.0', true);
     wp_enqueue_script('jquery.ui.touch-punch.min', trailingslashit( get_template_directory_uri() ).'js/jquery.ui.touch-punch.min.js',array('jquery'), '1.0', true);
+    wp_enqueue_script('jquery.touchswipe.min', trailingslashit( get_template_directory_uri() ).'js/jquery.touchSwipe.min.js',array('jquery'), '1.0', true);
     wp_enqueue_script('jquery.lazyload.min', trailingslashit( get_template_directory_uri() ).'js/jquery.lazyload.min.js',array('jquery'), '1.0', true);
     wp_enqueue_style('jquery-ui.min', trailingslashit( get_template_directory_uri() ) . 'css/jquery-ui.min.css');
     wp_enqueue_script('latinise.min_', get_template_directory_uri().'/js/latinise.min_.js',array('jquery'), '1.0', true);
@@ -89,6 +93,20 @@ function wpestate_scripts() {
     wp_register_script('venobox.min', get_template_directory_uri().'/js/venobox.min.js',array('jquery'), '1.0', true);
     wp_register_style('venobox', get_theme_file_uri ('/css/venobox.css') );
 
+    if (
+        is_page_template('advanced_search_results.php') ||
+        is_page_template('property_list_half.php') ||
+        is_page_template('property_list.php') ||
+        is_tax()
+    ) {
+        wp_enqueue_script(
+            'wprentals-adv-search-order',
+            get_template_directory_uri() . '/js/advanced-search-order.js',
+            array('jquery'),
+            null,
+            true
+        );
+    }
 
 
 
@@ -564,6 +582,14 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
         $sticky_search = 'no';
     }
 
+    $geo_radius_measure_translatable=array(
+        'miles'=>esc_html__('miles','wprentals'),
+        'km'=>esc_html__('km','wprentals'),
+    );
+    $wp_estate_geo_radius_measure=  wprentals_get_option('wp_estate_geo_radius_measure','');
+    
+
+
     wp_enqueue_script('wpestate_control', trailingslashit( get_template_directory_uri() ).'js/control.js',array('jquery'), '1.0', true);
     wp_localize_script('wpestate_control', 'control_vars',
             array(  'searchtext'            =>   esc_html__( 'SEARCH','wprentals'),
@@ -635,7 +661,8 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
                     'include_expeses'                   =>   $include_expeses,
                     'date_format'                       =>   $dates_types[ intval( wprentals_get_option('wp_estate_date_format','')  )],
                     'stiky_search'                      =>   $sticky_search,
-                    'geo_radius_measure'                =>  wprentals_get_option('wp_estate_geo_radius_measure',''),
+                    'geo_radius_measure'               =>    $wp_estate_geo_radius_measure,
+                    'geo_radius_measure_string'         =>  isset($geo_radius_measure_translatable[$wp_estate_geo_radius_measure]) ?   $geo_radius_measure_translatable[$wp_estate_geo_radius_measure] : '',
                     'initial_radius'                    =>  wprentals_get_option('wp_estate_initial_radius',''),
                     'min_geo_radius'                    =>  wprentals_get_option('wp_estate_min_geo_radius',''),
                     'max_geo_radius'                    =>  wprentals_get_option('wp_estate_max_geo_radius',''),
@@ -655,7 +682,9 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
                     'limit_country'                     =>    wprentals_get_option('wp_estate_use_geo_location_limit_country',''),
                     'limit_country_select'              =>    wprentals_get_option('wp_estate_use_geo_location_limit_country_selected',''),
                     'is_rtl'                            =>   is_rtl(),
-
+                    'bd'                                =>  esc_html__('bd','wprentals'),
+                    'ba'                                =>  esc_html__('ba','wprentals'),
+                    'google_api_key' =>esc_html(wprentals_get_option('wp_estate_api_key', '') )
                 )
      );
 
@@ -817,31 +846,15 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
             $include_booking_type       =   wprentals_return_booking_type($post->ID);
             $include_children_as_guests =   get_post_meta($post->ID,'children_as_guests',true);
         }
-        $booking_cd_day = get_post_meta($post->ID, 'booking_cd_day', true);
-        $booking_cd_start_date = get_post_meta($post->ID, 'booking_cd_start_date', true);
-        $booking_cd_end_date = get_post_meta($post->ID, 'booking_cd_end_date', true);
-
-        $booking_repeat_event = get_post_meta($post->ID, 'booking_repeat_event', true);
 
         $property_js_required=array('jquery','wpestate_control','fancybox');
         if($book_type==2 || $book_type==3  ){
             $property_js_required=array('jquery','wpestate_control','fullcalendar','fancybox');
         }
 
-        $repeater_event_day = get_post_meta($post->ID, 'repeater_event_day', true);                        
-        if ($repeater_event_day) {
-            $repeater_event_day = json_decode($repeater_event_day);
-        } else {
-            $repeater_event_day = [];
-        }
-
-        wp_register_script('wpestate_property', trailingslashit(get_template_directory_uri()) . 'js/property.js', $property_js_required, '2.0', true);
-
-        wp_localize_script(
-            'wpestate_property',
-            'property_vars',
-            array(
-                'plsfill' => esc_html__('Please fill all the forms!', 'wprentals'),
+        wp_register_script('wpestate_property', trailingslashit( get_template_directory_uri() ).'js/property.js',$property_js_required, '1.0', true);
+        wp_localize_script('wpestate_property', 'property_vars',
+            array(  'plsfill'                 =>    esc_html__( 'Please fill all the forms!','wprentals'),
                     'sending'                 =>    esc_html__( 'Sending Request...','wprentals'),
                     'logged_in'               =>    $logged_in,
                     'notlog'                  =>    esc_html__( 'You need to log in order to book a listing!','wprentals'),
@@ -865,19 +878,17 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
                     'instant_booking'         =>    esc_html__( 'Instant Booking','wprentals'),
                     'send_mess'               =>    esc_html__('Send Message','wprentals'),
                     'children_as_guests'      =>    $include_children_as_guests,
-                'booking_cd_start_date' => $booking_cd_start_date,
-                'booking_cd_end_date' => $booking_cd_end_date,
-                'booking_cd_day'  => !empty($booking_cd_day) ? json_decode($booking_cd_day, true) : '',
-                'booking_repeat_event' => $booking_repeat_event,
-                'repeater_event_day' => $repeater_event_day,
+                    'book_terms'              =>    esc_html__('You must agree to Terms & Conditions','wprentals'),
+                    
                )
         );
 
         
+        $loading_post_type= get_post_type();
         
-        
-        if(     'estate_property' == get_post_type() 
-            ||  'estate_agent' == get_post_type() 
+        if(     'estate_property' == $loading_post_type
+            ||  'estate_agent' == $loading_post_type
+            ||  'wpestate-studio' == $loading_post_type 
             ||  $page_template == 'user_dashboard_invoices.php' 
             ||  $page_template == 'user_dashboard_my_reservations.php'
             ||  $page_template == 'user_dashboard_my_bookings.php'  ){
@@ -982,7 +993,11 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
     // embed custom fonts from admin
     if( isset($general_font['font-family'] ) && $general_font['font-family']!=''&& $general_font['google'] ){
         $general_font['font-family'] =  str_replace(' ', '+', $general_font['font-family']);
-        wp_enqueue_style( 'wpestate-custom-font',"https://fonts.googleapis.com/css?family=".$general_font['font-family'].":300,400,700,900$headings_font_subset&display=swap");
+        //wp_enqueue_style( 'wpestate-custom-font',"https://fonts.googleapis.com/css?family=".$general_font['font-family'].":300,400,700,900$headings_font_subset&display=swap");
+        wp_enqueue_style( 'wpestate-custom-font', 
+            'https://fonts.googleapis.com/css2?family=' . $general_font['font-family'] . ':wght@300;400;700;900&display=swap'
+        );
+
     }else{
         wp_enqueue_style( 'wpestate-roboto', "https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700,900&display=swap&subset=latin-ext&display=swap" );
     }
@@ -1025,7 +1040,10 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
 
 
                 $bed_types_array   =   array_map('wpestate_convert_cyrilic',$bed_types_array);
-                $bed_types_array2   =   array_map('sanitize_text_field',$bed_types_array);
+                $bed_types_array2  =   array_map('sanitize_text_field',$bed_types_array);
+
+                $max_bedrooms  = apply_filters('wpestate_max_bedrooms', 9999);
+                $max_bathrooms = apply_filters('wpestate_max_bathrooms', 9999);
 
                 wp_enqueue_script('jquery.chart.min', trailingslashit( get_template_directory_uri() ).'js/chart.bundle.min.js',array('jquery'), '1.0', true);
 
@@ -1069,6 +1087,10 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
                             'bed_types'                 =>  $bed_types_array2,
                             'bed_types_names'           =>  $bed_types_array_names,
                             'bedroom'                   =>  esc_html__('Bedroom','wprentals'),
+                            'max_bedrooms'              =>  $max_bedrooms,
+                            'max_bedrooms_message'      =>  sprintf( esc_html__( 'Maximum number of bedrooms allowed is %s', 'wprentals' ), $max_bedrooms ),
+                            'max_bathrooms'             =>  $max_bathrooms,
+                            'max_bathrooms_message'     =>  sprintf( esc_html__( 'Maximum number of bathrooms allowed is %s', 'wprentals' ), $max_bathrooms ),
                             'cancel_mess'               =>  esc_html__('Are you sure you want to cancel?','wprentals'),
                             'processing'                =>  esc_html__( 'processing..','wprentals'),
                             'view_details'              =>  esc_html__( 'View Details','wprentals'),
@@ -1085,6 +1107,8 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
         if( wpestate_check_if_admin_page($post->ID) || is_singular('estate_property') ){
             wp_enqueue_script('wpestate_dashboard-control');
         }
+
+        wp_enqueue_script( 'password-strength-meter' );
     }
 
 
@@ -1100,8 +1124,11 @@ if ( $page_template=='user_dashboard_edit_listing.php' ||
 endif; // end   wpestate_scripts
 
 
-
-
+//r preconnecting to Google Fonts to improve performance.
+add_action('wp_head', function() {
+    echo '<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
+}, 1);
 
 
 
@@ -1176,7 +1203,15 @@ function wpestate_admin($hook_suffix) {
 
         $what_place = intval( wprentals_get_option('wp_estate_kind_of_places') );
         if($what_place==2 || $what_place==3){
-            wp_enqueue_script('places.js@1.13.0',trailingslashit( get_template_directory_uri() ).'js/openstreet/places.js@1.13.0',array('jquery'), '1.0', true);
+            //wp_enqueue_script('places.js@1.13.0',trailingslashit( get_template_directory_uri() ).'js/openstreet/places.js@1.13.0',array('jquery'), '1.0', true);
+            wp_enqueue_script(
+                'places-js', 
+                trailingslashit(get_template_directory_uri()) . 'js/openstreet/places.1.13.0.js',
+                array('jquery'),
+                '1.13.0',
+                true
+            );
+
             wp_enqueue_script('algoliasearch.min',trailingslashit( get_template_directory_uri() ).'js/openstreet/algoliasearch.min.js',array('jquery'), '1.0', true);
         }
 
@@ -1221,7 +1256,9 @@ function wpestate_admin($hook_suffix) {
              'admin_url'                 =>  get_admin_url(),
                     'number'                    =>  1,
                     'warning'                   =>  __('Warning !','wprentals'),
-                    'path'                      =>  get_theme_file_uri(),)
+                    'path'                      =>  get_theme_file_uri(),
+                    'confirm_text'              =>  esc_html__(' Are you sure you want to remove this image?','wprentals')
+            )
     );
 
     wp_enqueue_style ('colorpicker', trailingslashit( get_template_directory_uri() ).'/css/colorpicker.css', false, '1.0', 'all');

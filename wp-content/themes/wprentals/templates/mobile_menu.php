@@ -1,3 +1,7 @@
+<?php
+$dashboard_links = wpestate_get_all_dashboard_template_links();
+?>
+
 <div class="mobilewrapper" id="mobilewrapper_links">
     <div class="snap-drawers">
         <!-- Left Sidebar-->
@@ -27,18 +31,18 @@
         if ( 0 != $current_user->ID  && is_user_logged_in() ) {
             $username               =   $current_user->user_login ;
             $userID                 =   $current_user->ID;
-            $dash_main              =   wpestate_get_template_link('user_dashboard_main.php');
-            $add_link               =   wpestate_get_template_link('user_dashboard_add_step1.php');
-            $dash_profile           =   wpestate_get_template_link('user_dashboard_profile.php');
-            $dash_pack              =   wpestate_get_template_link('user_dashboard_packs.php');
-            $dash_favorite          =   wpestate_get_template_link('user_dashboard_favorite.php');
-            $dash_link              =   wpestate_get_template_link('user_dashboard.php');
-            $dash_searches          =   wpestate_get_template_link('user_dashboard_searches.php');
-            $dash_reservation       =   wpestate_get_template_link('user_dashboard_my_reservations.php');
-            $dash_bookings          =   wpestate_get_template_link('user_dashboard_my_bookings.php');
-            $dash_inbox             =   wpestate_get_template_link('user_dashboard_inbox.php');
-            $dash_invoices          =   wpestate_get_template_link('user_dashboard_invoices.php');
-            $logout_url             =   wp_logout_url(wpestate_wpml_logout_url());
+            $dash_main       = $dashboard_links['user_dashboard_main.php'] ?? '';
+            $add_link        = $dashboard_links['user_dashboard_add_step1.php'] ?? '';
+            $dash_profile    = $dashboard_links['user_dashboard_profile.php'] ?? '';
+            $dash_pack       = $dashboard_links['user_dashboard_packs.php'] ?? '';
+            $dash_favorite   = $dashboard_links['user_dashboard_favorite.php'] ?? '';
+            $dash_link       = $dashboard_links['user_dashboard.php'] ?? '';
+            $dash_searches   = $dashboard_links['user_dashboard_searches.php'] ?? '';
+            $dash_reservation= $dashboard_links['user_dashboard_my_reservations.php'] ?? '';
+            $dash_bookings   = $dashboard_links['user_dashboard_my_bookings.php'] ?? '';
+            $dash_inbox      = $dashboard_links['user_dashboard_inbox.php'] ?? '';
+            $dash_invoices   = $dashboard_links['user_dashboard_invoices.php'] ?? '';
+            $logout_url      = wp_logout_url(wpestate_wpml_logout_url());
             $home_url               =   esc_html( home_url('/') );
             $no_unread=  intval(get_user_meta($userID,'unread_mess',true));
             $paid_submission_status     =   esc_html ( wprentals_get_option('wp_estate_paid_submission','') );
@@ -88,7 +92,7 @@
             <h3 class="widget-title-sidebar"  id="login-div-title-mobile">'.esc_html__( 'Login','wprentals').'</h3>
             <div class="login_form" id="login-div-mobile">
                 <div class="loginalert" id="login_message_area_wd_mobile" >'.esc_html($mess).'</div>
-                <input type="text" class="form-control" name="log" id="login_user_wd_mobile" placeholder="'.esc_html__( 'Username','wprentals').'"/>
+                <input type="text" class="form-control" name="log" id="login_user_wd_mobile" placeholder="'.esc_html__( 'Username or Email','wprentals').'"/>
                 
                 <div class="password_holder">
                     <input type="password" class="form-control" name="pwd" id="login_pwd_wd_mobile" placeholder="'.esc_html__( 'Password','wprentals').'"/>
@@ -110,8 +114,8 @@
 
               <h3 class="widget-title-sidebar"  id="register-div-title-mobile">'.esc_html__( 'Register','wprentals').'</h3>
                 <div class="login_form" id="register-div-mobile">
-                    <div class="loginalert" id="register_message_area_wd_mobile" ></div>
-                    <input type="text" name="user_login_register" id="user_login_register_wd_mobile" class="form-control" placeholder="'.esc_html__( 'Username','wprentals').'"/>';
+                    <div class="loginalert" id="register_message_area_wd_mobile" ></div>';
+                    print '<input type="text" name="user_login_register" id="user_login_register_wd_mobile" class="form-control" placeholder="'.esc_html__( 'Username','wprentals').'"/>';
 
             $enable_user_pass_status= esc_html ( wprentals_get_option('wp_estate_enable_user_pass','') );
             if($enable_user_pass_status == 'yes'){
@@ -119,10 +123,10 @@
                 
                 print   '<div class="password_holder"><input type="password" name="user_password" id="user_password_wd_mobile" class="form-control" placeholder="'.esc_html__( 'Password','wprentals').'" size="20" />   <i class=" far fa-eye-slash show_hide_password"></i></div>';
                 print   '<div class="password_holder"><input type="password" name="user_password_retype" id="user_password_retype_wd_mobile" class="form-control" placeholder="'.esc_html__( 'Retype Password','wprentals').'" size="20" />   <i class=" far fa-eye-slash show_hide_password"></i></div>';
+                print '<span class="password-strength"></span>';
             }else{
                 print'    <input type="text" name="user_email_register" id="user_email_register_wd_mobile" class="form-control" placeholder="'.esc_html__( 'Email','wprentals').'"  />';
             }
-
 
             $wp_estate_enable_user_phone= esc_html ( wprentals_get_option('wp_estate_enable_user_phone','') );
 

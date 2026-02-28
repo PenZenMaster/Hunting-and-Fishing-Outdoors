@@ -6,8 +6,10 @@
 
 function wpestate_start_filtering_ajax_map(newpage,pan_ne_lat, pan_ne_long, pan_sw_lat,pan_sv_long,move_map) {
     "use strict";
-    
-   
+    if (document.body.classList.contains('single-estate_property')) {
+      //not on single
+        return;
+        }
     is_fit_bounds_zoom=1;
     map_geo_first_load=1;
     external_action_ondemand=1;
@@ -16,10 +18,18 @@ function wpestate_start_filtering_ajax_map(newpage,pan_ne_lat, pan_ne_long, pan_
 
     all_fields=new Array();
     ajaxcalls_vars.adv_search_what_half.forEach( function(element) {
-      
-        if(element==='property_price'){
+
+        if(element==='property_price' || element==='property_price_v2'  ){
             all_fields.push({element:'price_low',value: parseInt(jQuery('#price_low').val(), 10)});
             all_fields.push({element:'price_max',value:parseInt(jQuery('#price_max').val(), 10) });
+        }else if(element==='property_beds_baths'   ){
+            
+            var componentsbeds = jQuery('.wpresidence-componentsbeds').val();
+            var componentsbaths = jQuery('.wpresidence-componentsbaths').val();
+
+            all_fields.push({element:'componentsbeds',value: parseInt(componentsbeds, 10)});
+            all_fields.push({element:'componentsbaths',value:parseInt(componentsbaths, 10) });
+
         }else if(element==='guest_no'){    
             if(jQuery('.advanced_search_form_wrapper .guest_no_hidden').length>0){
               
@@ -34,11 +44,9 @@ function wpestate_start_filtering_ajax_map(newpage,pan_ne_lat, pan_ne_long, pan_
 
 
     if(ajaxcalls_vars.adv_search_type==='type4'){
+    
         all_fields.push({element:'property_category',value:jQuery('#property_category').val() });
         all_fields.push({element:'property_action_category',value:jQuery('#property_action_category').val() });
-
-
-
     }
 
     if(jQuery('#search_location_city').length >0){
@@ -49,7 +57,9 @@ function wpestate_start_filtering_ajax_map(newpage,pan_ne_lat, pan_ne_long, pan_
     }
 
     if(jQuery('#advanced_cityhalf').length >0){
+        
         city                    =   jQuery('#advanced_cityhalf').val();
+ 
     }
 
 
@@ -113,6 +123,7 @@ function wpestate_start_filtering_ajax_map(newpage,pan_ne_lat, pan_ne_long, pan_
         keyword_search          = jQuery('#keyword_search').val();
     }
 
+    var order = jQuery('#a_filter_order').attr('data-value');
 
     var geo_lat     =   '';
     var geo_long    =   '';
@@ -126,8 +137,13 @@ function wpestate_start_filtering_ajax_map(newpage,pan_ne_lat, pan_ne_long, pan_
 
 
     ajaxurl     =   ajaxcalls_vars.admin_url + 'admin-ajax.php';
-    jQuery('#google_map_prop_list_sidebar #listing_ajax_container').empty();
-    jQuery('#google_map_prop_list_sidebar #listing_loader').show();
+  //  jQuery('#google_map_prop_list_sidebar #listing_ajax_container').empty();
+ //   jQuery('#google_map_prop_list_sidebar #listing_loader').show();
+
+
+    const listingContainer = jQuery('#listing_ajax_container');
+    wpestate_createSkeletons(listingContainer);
+
 
     var nonce = jQuery('#wprentals_ajax_filtering').val();
     jQuery.ajax({
@@ -147,6 +163,7 @@ function wpestate_start_filtering_ajax_map(newpage,pan_ne_lat, pan_ne_long, pan_
             'newpage'               :   newpage,
             'postid'                :   postid,
             'keyword_search'        :   keyword_search,
+            'order'                 :   order,
             'geo_lat'               :   geo_lat,
             'geo_long'              :   geo_long,
             'geo_rad'               :   geo_rad,
@@ -159,16 +176,25 @@ function wpestate_start_filtering_ajax_map(newpage,pan_ne_lat, pan_ne_long, pan_
 
         },
         success: function (data) {
-
+      
 
             jQuery('#advanced_search_map_list').removeClass('movetofixed');
-            jQuery('#listing_loader').hide();
+            //jQuery('#listing_loader').hide();
             jQuery('.listing_loader_title').show();
-            jQuery('#google_map_prop_list_sidebar #listing_ajax_container').empty().append(data.response);
+       //     jQuery('#google_map_prop_list_sidebar #listing_ajax_container').empty().append(data.response);
+       
+           wpestate_replaceSkeletons(listingContainer, data.response);
+
+            jQuery('.wprentals_adv_listing_filters_head .half_map_results').text(data.results);
             jQuery('.pagination_nojax').remove();
+
+
 
             wpestate_restart_js_after_ajax();
             wpestate_lazy_load_carousel_property_unit();
+            if (typeof wpestate_add_pagination_orderby === 'function') {
+                wpestate_add_pagination_orderby();
+            }
             var  new_markers = jQuery.parseJSON(data.markers);
             if (infoBox !== null) {
                 infoBox.close();
@@ -336,7 +362,7 @@ function wpestate_get_custom_value(slug){
 ////////////////////////////////////////////////////////////////////////////////////////////
 function wpestate_start_filtering_ajax(newpage) {
     "use strict";
-    var action, guest_no, country, check_out, check_in, category, city, area, rooms, baths, min_price, price_max, ajaxurl, postid;
+    var action, guest_no, country, check_out, check_in, category, city, area, rooms, baths, min_price, price_max, ajaxurl, postid, order;
     action      =   jQuery('#adv_actions').attr('data-value');
     category    =   jQuery('#adv_categ').attr('data-value');
     city        =   jQuery('#advanced_city').attr('data-value');
@@ -352,6 +378,7 @@ function wpestate_start_filtering_ajax(newpage) {
     check_in    =   jQuery('#check_in').val();
     check_out   =   jQuery('#check_out').val();
     guest_no    =   jQuery('#guest_no_main').val();
+    order       =   jQuery('#a_filter_order').attr('data-value');
 
     ajaxurl     =   ajaxcalls_vars.admin_url + 'admin-ajax.php';
     jQuery('#listing_ajax_container').empty();
@@ -376,6 +403,7 @@ function wpestate_start_filtering_ajax(newpage) {
             'check_in'          :   check_in,
             'check_out'         :   check_out,
             'guest_no'          :   guest_no,
+            'order'             :   order,
             'country'           :   country,
             'security'          :   nonce,
         },
@@ -384,7 +412,9 @@ function wpestate_start_filtering_ajax(newpage) {
             jQuery('#internal-loader,#listing_loader').hide();
             jQuery('#listing_ajax_container').addClass('load_from_ajax').empty().append(data);
             wpestate_restart_js_after_ajax();
-
+            if (typeof wpestate_add_pagination_orderby === 'function') {
+                wpestate_add_pagination_orderby();
+            }
         },
         error: function (errorThrown) {
 
@@ -621,6 +651,34 @@ function wpestate_make_prop_featured(prop_id, selectedspan) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
+/// duplicate listing-jslint checked
+////////////////////////////////////////////////////////////////////////////////////////////
+function wpestate_duplicate_listing(prop_id, selected_div) {
+    "use strict";
+    var ajaxurl = control_vars.admin_url + 'admin-ajax.php';
+    var nonce = jQuery('#wprentals_property_actions').val();
+    jQuery.ajax({
+        type: 'POST',
+        url: ajaxurl,
+        data: {
+            'action': 'wpestate_ajax_duplicate_listing',
+            'propid': prop_id,
+            'security': nonce
+        },
+        success: function (data) {
+            if (data === 'done') {
+                selected_div.parent().empty().append('<span class="featured_prop">Duplicate created</span>');
+                location.reload();
+            } else {
+                selected_div.parent().empty().append(data);
+            }
+        },
+        error: function (errorThrown) {
+
+        }
+    });//end ajax
+}
+
 /// pay package via paypal recuring-jslint checked
 ////////////////////////////////////////////////////////////////////////////////////////////
 function wpestate_recuring_pay_pack_via_paypal() {
@@ -724,8 +782,18 @@ function wpestate_start_filtering(newpage) {
     order = jQuery('#a_filter_order').attr('data-value');
     ajaxurl =  ajaxcalls_vars.admin_url + 'admin-ajax.php';
     page_id =   jQuery('#page_idx').val();
-    jQuery('#listing_ajax_container').empty();
-    jQuery('#listing_loader').show();
+    var is_archive='';
+
+    if(jQuery('body').hasClass('archive') && jQuery('#primary').hasClass('none') ){    
+        is_archive='yes';
+    }
+
+    //jQuery('#listing_ajax_container').empty();
+    //jQuery('#listing_loader').show();
+
+    const listingContainer = jQuery('#listing_ajax_container');
+    wpestate_createSkeletons(listingContainer);
+
 
     var nonce = jQuery('#wprentals_ajax_filtering').val();
 
@@ -741,14 +809,22 @@ function wpestate_start_filtering(newpage) {
             'order'             :   order,
             'newpage'           :   newpage,
             'page_id'           :   page_id,
+            'is_archive'        :   is_archive,
             'security'          :   nonce
         },
         success: function (data) {
-            jQuery('#listing_loader').hide();
-            jQuery('#listing_ajax_container').empty().append(data);
+            //jQuery('#listing_loader').hide();
+            //jQuery('#listing_ajax_container').empty().append(data);
             jQuery('.pagination_nojax').hide();
+
+            wpestate_replaceSkeletons(listingContainer, data);
+
+
             wpestate_restart_js_after_ajax();
             wpestate_lazy_load_carousel_property_unit();
+            if (typeof wpestate_add_pagination_orderby === 'function') {
+                wpestate_add_pagination_orderby();
+            }
             //var bLazy = new Blazy();
             //bLazy.revalidate();
         },
@@ -956,7 +1032,7 @@ function wpestate_forgot(type) {
         securityforgot        =  jQuery('#security-forgot').val();
     }
     if (type === 3) {
-        forgot_email          =  jQuery('#forgot_email').val();
+        forgot_email          =  jQuery('#forgot_email_shortcode').val();
         securityforgot        =  jQuery('#security-login-forgot_wd').val();
     }
 
@@ -967,6 +1043,7 @@ function wpestate_forgot(type) {
    var nonce               =  jQuery('#wpestate_ajax_log_reg').val();
 
    jQuery('#forgot_pass_area').empty();
+   jQuery('#forgot_pass_area_shortcode_wd').empty();
     jQuery.ajax({
         type: 'POST',
         url: ajaxurl,
@@ -992,6 +1069,7 @@ function wpestate_forgot(type) {
             if (type === 3) {
                 jQuery('#forgot_email_shortcode').val('');
                 jQuery('#forgot_pass_area').empty().append('<div class="login-alert">' + data + '<div>');
+                jQuery('#forgot_pass_area_shortcode_wd').empty().append('<div class="login-alert">' + data + '<div>');
             }
             if (type === 4) {
                 jQuery('#forgot_email_mobile').val('');
@@ -1726,6 +1804,12 @@ jQuery(document).ready(function ($) {
     $('.make_featured').on('click',function () {
         var prop_id = $(this).attr('data-postid');
         wpestate_make_prop_featured(prop_id, $(this));
+        $(this).unbind( "click" );
+    });
+
+    $('.duplicate_listing').on('click',function () {
+        var prop_id = $(this).attr('data-postid');
+        wpestate_duplicate_listing(prop_id, $(this));
         $(this).unbind( "click" );
     });
 

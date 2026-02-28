@@ -2,11 +2,12 @@
 global $post;
 global $wpestate_where_currency;
 global $wpestate_currency;
-$title              =   get_the_title($post->ID);
+
+$title              =   get_sanitized_truncated_title($post->ID, 0);
 $link               =   esc_url(get_permalink());
 $booking_status     =   get_post_meta($post->ID, 'booking_status', true);
 $property_id        =   get_post_meta($post->ID, 'booking_id', true);
-$property_title     =   get_the_title($property_id);
+$property_title     =   get_sanitized_truncated_title($property_id, 0);
 $property_url       =   esc_url ( get_permalink($property_id) );
 $booking_from_date  =   get_post_meta($post->ID, 'booking_from_date', true);
 $booking_to_date    =   get_post_meta($post->ID, 'booking_to_date', true);

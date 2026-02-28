@@ -14,7 +14,8 @@ global $guestnumber;
 global $property_country;
 global $property_admin_area;
 global $edit_link_price;
-global $instant_booking;    
+global $instant_booking;  
+global $wp_estate_replace_booking_form_local;  
 global $children_as_guests;
 global $submission_page_fields;
 global $submit_affiliate;
@@ -349,19 +350,27 @@ $show_adv_search_general            =   wprentals_get_option('wp_estate_wpestate
         }
         ?>
 
+        <?php
+        if(is_array($submission_page_fields) && in_array('private_notes', $submission_page_fields)) {
+        ?>
         <div class="col-md-12">
             <div class="col-md-3 dashboard_chapter_label">
-                <label for="private notes"><?php   esc_html_e('Private Notes','wprentals');?></label>
+                <label for="private_notes"><?php   esc_html_e('Private Notes','wprentals');?></label>
             </div>
 
             <div class="col-md-6">
-                <label for="private notes"><?php  esc_html_e('Private Notes','wprentals');?></label>
-                <textarea rows="4" id="private_notes" name="private notes"   class="advanced_select  form-control"
+                <label for="private_notes"><?php  esc_html_e('Private Notes','wprentals');?></label>
+                <textarea rows="4" id="private_notes" name="private_notes"   class="advanced_select  form-control"
                     placeholder="<?php esc_html_e('Private Notes','wprentals');?>"><?php print esc_textarea($private_notes); ?></textarea>
             </div>
         </div>
+        <?php
+        }
+        ?>
 
-
+        <?php
+        if(is_array($submission_page_fields) && in_array('checkin_message', $submission_page_fields)) {
+        ?>
         <div class="col-md-12">
             <div class="col-md-3 dashboard_chapter_label">
                 <label for="Check-In Message"><?php   esc_html_e('Check-In Message ( it will be added to trip details email )','wprentals');?></label>
@@ -369,17 +378,24 @@ $show_adv_search_general            =   wprentals_get_option('wp_estate_wpestate
 
             <div class="col-md-6">
                 <label for="checkin-message"><?php  esc_html_e('Check-In Message','wprentals');?></label>
-                <textarea rows="4" id="checkin-message" name="checkin-message"   class="advanced_select  form-control"
+                <textarea rows="4" id="checkin-message" name="checkin_message"   class="advanced_select  form-control"
                     placeholder="<?php esc_html_e('Check-In Message','wprentals');?>"><?php print esc_textarea($checkin_message); ?></textarea>
             </div>
         </div>
-
-
-
-
-
-
+        <?php
+        }
+        ?>
     </div>
+    
+    
+
+    <div class="row">
+        <div class="col-md-12 wp_estate_replace_booking_form_submit_wrapper ">
+            <input style="float:left;" type="checkbox" class="form-control" value="1"  id="wp_estate_replace_booking_form_local" name="wp_estate_replace_booking_form_local" <?php print esc_html($wp_estate_replace_booking_form_local); ?> >
+            <label style="display: inline;" for="wp_estate_replace_booking_form_local"><?php esc_html_e('Show Contact form instead of Booking Form','wprentals');?></label>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <input style="float:left;" type="checkbox" class="form-control" value="1"  id="instant_booking" name="instant_booking" <?php print esc_html($instant_booking); ?> >

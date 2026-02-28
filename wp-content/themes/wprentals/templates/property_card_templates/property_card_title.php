@@ -10,7 +10,7 @@ if( wprentals_get_option('wp_estate_prop_page_new_tab','')=='_self' ){ ?>
 <?php } ?>
     
     
-<!--    <span itemprop="name">-->
+   <span itemprop="name">
     <?php
 
         $title_str = html_entity_decode($title);
@@ -26,5 +26,5 @@ if( wprentals_get_option('wp_estate_prop_page_new_tab','')=='_self' ){ ?>
         }
 
     ?>
-<!--    </span>-->
+    </span>
 </a>

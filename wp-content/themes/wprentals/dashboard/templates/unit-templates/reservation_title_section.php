@@ -16,7 +16,7 @@ if ( $booking_status=='confirmed'){
     <h4 class="listing_title_book book_listing_user_unit_title">
         <?php
         echo esc_html__('Booking request','wprentals').' '.$post->ID;
-        print ' <strong>'. esc_html__( 'for','wprentals').'</strong> <a href="'.esc_url ( get_permalink($booking_id)).'">'.get_the_title($booking_id).'</a>';
+        print ' <strong>'. esc_html__( 'for','wprentals').'</strong> <a href="'.esc_url ( get_permalink($booking_id)).'">'.get_sanitized_truncated_title($booking_id, 0) .'</a>';
         ?>
     </h4>
 
