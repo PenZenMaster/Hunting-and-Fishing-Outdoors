@@ -9,10 +9,13 @@
  * - Added XSS protection
  */
 
-// Security: Check if user has permission to manage amenities
+// Security: Check if user has permission to manage amenities.
 if ( ! current_user_can( 'manage_options' ) ) {
 	wp_die( __( 'You do not have permission to access this page.', 'wprentals' ) );
 }
+
+// Security: Generate nonce for AJAX approve/deny actions.
+$hnfo_amenity_nonce = wp_create_nonce( 'hnfo_amenity_action' );
 
 // Security: Sanitize and validate input
 $amenity_entry_id = isset( $_GET['am_id'] ) ? absint( $_GET['am_id'] ) : 0;
@@ -245,77 +248,54 @@ if ( $add_amenity_category == 'Basic' || $add_amenity_category == 'Includes' || 
 <script src="https://code.jquery.com/jquery-3.6.3.min.js"
 	integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#vdf_approve01').click(function() {
-		jQuery(this).parent().parent().css('display', 'none');
-		jQuery("#vdf_cnfrm_main01 #vdf_appr_confrm01").css('display', 'block');
-		var amenity_url = window.location.href
-		//console.log(amenity_url);
-		var amnty_id_positon = amenity_url.indexOf('=');
-		var amenity_entry_id = amenity_url.substring(amnty_id_positon + 1, 70);
-		console.log(amenity_entry_id);
-		//console.log(amenity_entry_id);
-		jQuery.ajax({
+(function($) {
+	var ajaxUrl = '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>';
+	var nonce   = '<?php echo esc_js( $hnfo_amenity_nonce ); ?>';
+	// Use URLSearchParams for reliable ID extraction.
+	var amenityId = parseInt( new URLSearchParams( window.location.search ).get( 'am_id' ) || '0', 10 );
+
+	$('#vdf_approve01').on('click', function() {
+		$(this).parent().parent().css('display', 'none');
+		$('#vdf_cnfrm_main01 #vdf_appr_confrm01').css('display', 'block');
+		$.ajax({
 			type: 'POST',
 			dataType: 'json',
-			url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+			url: ajaxUrl,
 			data: {
 				action: 'approve_add_new_amenity',
-				amenity_entry_id: amenity_entry_id
+				amenity_entry_id: amenityId,
+				nonce: nonce
 			},
 			success: function(response) {
-				var data = response;
-				console.log(data);
-				// if (data == 'Fail') {
-				//   jQuery(".vdf_opn_again_err").css('display','block');
-				//   jQuery(".vdf_amnty_btns").css('display','none');
-				//   jQuery(".vdf_cnfrm_main").css('display','none');
-				// }
-				// else{
-				//   jQuery(".vdf_opn_again_err").css('display','none');
-				//   jQuery(this).parent().parent().css('display','none');
-				//   jQuery("#vdf_cnfrm_main01 #vdf_appr_confrm01").css('display','block');
-				// }
+				console.log(response);
 			},
-			error: function(xhr, status, error, response) {
+			error: function(xhr, status, error) {
 				console.log(error);
-				var err = eval("(" + xhr.responseText + ")");
-				console.log(xhr);
+				try { console.log(JSON.parse(xhr.responseText)); } catch(e) {}
 			}
 		});
-
 	});
-});
-</script>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#vdf_deny01').click(function() {
-		jQuery(this).parent().parent().css('display', 'none');
-		jQuery("#vdf_cnfrm_main01 #vdf_deny_confrm01").css('display', 'block');
-		var amenity_url = window.location.href
-		//console.log(amenity_url);
-		var amnty_id_positon = amenity_url.indexOf('=');
-		var amenity_entry_id = amenity_url.substring(amnty_id_positon + 1, 70);
-		//console.log(amenity_entry_id);
-		jQuery.ajax({
+
+	$('#vdf_deny01').on('click', function() {
+		$(this).parent().parent().css('display', 'none');
+		$('#vdf_cnfrm_main01 #vdf_deny_confrm01').css('display', 'block');
+		$.ajax({
 			type: 'POST',
 			dataType: 'json',
-			url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+			url: ajaxUrl,
 			data: {
 				action: 'deny_add_new_amenity',
-				amenity_entry_id: amenity_entry_id
+				amenity_entry_id: amenityId,
+				nonce: nonce
 			},
 			success: function(response) {
-				var data = response;
-				console.log(data);
+				console.log(response);
 			},
-			error: function(xhr, status, error, response) {
+			error: function(xhr, status, error) {
 				console.log(error);
-				var err = eval("(" + xhr.responseText + ")");
-				console.log(xhr);
+				try { console.log(JSON.parse(xhr.responseText)); } catch(e) {}
 			}
 		});
-
 	});
-});
+}(jQuery));
 </script>

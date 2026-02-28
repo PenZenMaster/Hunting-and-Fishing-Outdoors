@@ -64,16 +64,22 @@ function wqs_new_record( $record, $ajax_handler ) {
 }
 
 add_action( 'wp_ajax_approve_add_new_amenity', 'approve_add_new_amenity' );
-add_action( 'wp_ajax_nopriv_approve_add_new_amenity', 'approve_add_new_amenity' );
+// Intentionally no wp_ajax_nopriv_ - approve is an admin-only action.
 
 function approve_add_new_amenity() {
-	// Security: Check user capability
+	// Security: Check user capability.
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_send_json_error( array( 'message' => 'Unauthorized' ) );
 		return;
 	}
 
-	// Security: Sanitize input
+	// Security: Verify nonce.
+	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'hnfo_amenity_action' ) ) {
+		wp_send_json_error( array( 'message' => 'Invalid security token' ) );
+		return;
+	}
+
+	// Security: Sanitize input.
 	$amenity_entry_id = isset( $_POST['amenity_entry_id'] ) ? absint( $_POST['amenity_entry_id'] ) : 0;
 
 	if ( $amenity_entry_id <= 0 ) {
@@ -222,18 +228,32 @@ Ajax actions(hooks) when the admin click the new amenity request link received i
  */
 // Code starts here
 add_action( 'wp_ajax_deny_add_new_amenity', 'deny_add_new_amenity' );
-add_action( 'wp_ajax_nopriv_deny_add_new_amenity', 'deny_add_new_amenity' );
+// Intentionally no wp_ajax_nopriv_ - deny is an admin-only action.
 
 function deny_add_new_amenity() {
-	$amenity_entry_id = $_POST['amenity_entry_id'];
+	// Security: Check user capability.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+		return;
+	}
+
+	// Security: Verify nonce.
+	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'hnfo_amenity_action' ) ) {
+		wp_send_json_error( array( 'message' => 'Invalid security token' ) );
+		return;
+	}
+
+	// Security: Sanitize input.
+	$amenity_entry_id = isset( $_POST['amenity_entry_id'] ) ? absint( $_POST['amenity_entry_id'] ) : 0;
+	if ( $amenity_entry_id <= 0 ) {
+		wp_send_json_error( array( 'message' => 'Invalid amenity ID' ) );
+		return;
+	}
 
 	global $wpdb;
-	$del_amenities_data = $wpdb->get_results( $wpdb->prepare( "DELETE FROM new_amenities WHERE new_amenity_entry_id = $amenity_entry_id" ) );
+	$wpdb->query( $wpdb->prepare( 'DELETE FROM new_amenities WHERE new_amenity_entry_id = %d', $amenity_entry_id ) );
 
-	if ( $_GET['action'] != 'Deny' ) {
-		print_r( json_encode( $del_amenities_data ) );
-		die();
-	}
+	wp_send_json_success( array( 'deleted' => $amenity_entry_id ) );
 }
 
 // Add taxonomy meta box
@@ -248,10 +268,10 @@ function add_taxonomy_meta_box() {
 }
 add_action( 'admin_init', 'add_taxonomy_meta_box' );
 
-// Taxonomy meta box callback
+// Taxonomy meta box callback.
 function taxonomy_meta_box_callback( $term ) {
-	$taxonomy = 'property_action_category'; // Specify the taxonomy you want to target
-	$terms = get_terms(
+	$taxonomy = 'property_action_category';
+	$terms    = get_terms(
 		$taxonomy,
 		array(
 			'hide_empty' => false,
@@ -260,25 +280,32 @@ function taxonomy_meta_box_callback( $term ) {
 	$saved_term_ids = array();
 
 	if ( isset( $term->term_id ) ) {
-		$saved_terms = get_term_meta( $term->term_id, 'taxonomy_terms', true );
+		$saved_terms    = get_term_meta( $term->term_id, 'taxonomy_terms', true );
 		$saved_term_ids = ! empty( $saved_terms ) ? $saved_terms : array();
 	}
 
+	// Security: Output nonce for the save handler to verify.
+	wp_nonce_field( 'hnfo_taxonomy_meta', '_hnfo_tax_nonce' );
+
 	foreach ( $terms as $term ) {
-		$checked = in_array( $term->term_id, $saved_term_ids ) ? 'checked' : '';
+		// Security: Escape all output.
 		echo '<label>';
-		echo '<input type="checkbox" name="taxonomy_terms[]" value="' . $term->term_id . '" ' . $checked . '>';
-		echo $term->name;
+		echo '<input type="checkbox" name="taxonomy_terms[]" value="' . esc_attr( $term->term_id ) . '" ' . checked( in_array( $term->term_id, $saved_term_ids, true ), true, false ) . '>';
+		echo esc_html( $term->name );
 		echo '</label><br>';
 	}
 }
 
-// Save taxonomy meta box data
+// Save taxonomy meta box data.
 function save_taxonomy_meta_box_data( $term_id ) {
-	$taxonomy = 'property_category'; // Specify the taxonomy you want to target
+	// Security: Verify nonce before processing POST data.
+	if ( ! isset( $_POST['_hnfo_tax_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_hnfo_tax_nonce'] ) ), 'hnfo_taxonomy_meta' ) ) {
+		return;
+	}
 
-	if ( isset( $_POST['taxonomy_terms'] ) ) {
-		$taxonomy_terms = $_POST['taxonomy_terms'];
+	if ( isset( $_POST['taxonomy_terms'] ) && is_array( $_POST['taxonomy_terms'] ) ) {
+		// Security: Sanitize each term ID as an integer.
+		$taxonomy_terms = array_map( 'absint', wp_unslash( $_POST['taxonomy_terms'] ) );
 		update_term_meta( $term_id, 'taxonomy_terms', $taxonomy_terms );
 	} else {
 		delete_term_meta( $term_id, 'taxonomy_terms' );
@@ -292,7 +319,8 @@ function set_last_entry_id() {
 	global $wpdb;
 
 	$last_entry_record = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC' ) );
-	$last_entry = $last_entry_record[0]->new_amenity_entry_id;
+	// Guard: table may be empty on a fresh install.
+	$last_entry    = ! empty( $last_entry_record ) ? absint( $last_entry_record[0]->new_amenity_entry_id ) : 0;
 	$last_entry_id = $last_entry + 1;
 
 	// Output the jQuery script to set the value of the input field
