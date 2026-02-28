@@ -41,18 +41,27 @@
 
 ### In Progress
 
-- None
+- **Google Maps API configuration** — new key created, billing slot needed
+  - Geocoding API not yet enabled (blocked on GCP billing quota)
+  - Next: free billing slot, enable Geocoding API, update WP Admin key
 
 ### Deferred / Backlog
 
-1. **Continue Edit Listing QA** (High)
-   - Now on 3.17.0 - verify all wizard steps: Amenities save, Calendar, Pricing, Details, Location
-   - Priority: High - pick up here next session
+1. **Resolve Google Maps billing + finish API setup** (High)
+   - Free a GCP billing slot (delete/unlink old projects)
+   - Enable Geocoding API in Library
+   - Swap Places API (New) -> Places API (legacy) in key restrictions
+   - Update WP Admin with new key, confirm curl test OK
+   - Priority: High - blocking edit listing QA (Location step)
 
-2. **Remove Diagnostic/Temp Files** (High)
-   - check-amenity-terms.php, check-amenity-meta.php, check-property-categories.php
-   - edit-amenities.php, clear-amenities-cache.php (if still present in webroot)
+2. **Continue Edit Listing QA** (High)
+   - Location step blocked until Maps fixed
+   - Remaining steps: Amenities save, Calendar, Pricing, Details, Location
    - Priority: High
+
+3. **Remove diagnostic screenshot** (Low)
+   - docs/2026-02-27_19-01-23.jpg untracked — commit or delete
+   - Priority: Low
 
 3. **Orphaned wpestate_display_feature** (Medium)
    - Child theme defines it but new parent 3.17.0 calls `wpestate_display_feature_optimized()` instead
@@ -88,8 +97,8 @@
 ## Next Session Items
 
 ### Start Here
-1. Remove any remaining diagnostic/temp files from webroot
-2. Edit listing QA - verify all steps on 3.17.0: Amenities save, Calendar, Pricing, Details, Location
+1. Free GCP billing slot -> enable Geocoding API -> update WP Admin key -> confirm Maps loads
+2. Edit listing QA - Location step first (Maps), then Calendar, Pricing, Details
 
 ---
 
@@ -153,5 +162,5 @@
 
 ---
 
-*Status updated: 2026-02-27 12:00*
-*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-02-27_1200.md*
+*Status updated: 2026-02-27 19:30*
+*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-02-27_1930.md*
