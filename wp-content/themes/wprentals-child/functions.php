@@ -31,6 +31,11 @@ require_once get_stylesheet_directory() . '/wqs/functions.php';
 // child-theme version wins over whatever the upgraded parent ships.
 require_once get_stylesheet_directory() . '/libs/ajax-half-day-booking.php';
 
+// Fix: parent 3.17.0 get_pages() uses 'number' => count($templates) = 21, cutting off
+// pages whose titles sort alphabetically past position 21 (e.g. "My Listings" at 25+).
+// This override passes 'number' => 0 (unlimited) so all dashboard pages are found.
+require_once get_stylesheet_directory() . '/libs/dashboard-link-fix.php';
+
 /**
  * Enqueue the half-day price-save JS patch.
  *
