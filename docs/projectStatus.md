@@ -1,6 +1,6 @@
 # Project Status - HNFO WordPress Development
 
-**Last Updated:** 2026-02-27 12:00
+**Last Updated:** 2026-02-28 12:00
 **Project:** Hunting and Fishing Outdoors Website
 **Repository:** https://github.com/PenZenMaster/Hunting-and-Fishing-Outdoors
 **Environment:** http://hnfo-development.local/
@@ -31,7 +31,7 @@
    - 6 bugs fixed in property_amenities.php child theme override
    - **Commits:** e129d90, 94f73a3, f1343d2, dfa4032, 38e2747, a4e68b4
 
-5. **WPRentals Theme Upgrade 3.11.4 -> 3.17.0 - Complete** (this session)
+5. **WPRentals Theme Upgrade 3.11.4 -> 3.17.0 - Complete** (prev. session)
    - Half-day booking code migrated to child theme before upgrade
    - Parent theme replaced with 3.17.0 (681 files changed)
    - wprentals-core and wprentals-elementor plugins updated to 3.17.0
@@ -39,101 +39,105 @@
    - All workflows browser-tested and passing
    - **Commits:** e96d746, 6e3ba2d, bf8da8f, aa3d6e5, 156eb36, d01446a, 4fda21c
 
-### In Progress
+6. **Google Maps / Places API - Complete** (this session)
+   - Places API (New) proxy deployed server-side (API key never exposed to browser)
+   - Billing resolved, Geocoding + Maps JS + Places API (New) enabled in GCP
+   - City autocomplete working, map renders, lat/lng populates on selection
+   - **Commit:** 2e725f2
 
-- **Google Maps API configuration** — new key created, billing slot needed
-  - Geocoding API not yet enabled (blocked on GCP billing quota)
-  - Next: free billing slot, enable Geocoding API, update WP Admin key
+7. **Edit Listing QA - Complete** (this session)
+   - Description, Location, Price, Details, Images, Amenities all passing
+   - Calendar deferred (user choice)
+
+8. **Backlog Cleared** (this session)
+   - Orphaned `wpestate_display_feature` dead code removed (`4b04a1c`)
+   - 708 PHPCS violations auto-fixed in wqs/ via phpcbf (`d44a7eb`)
+   - Security: deny AJAX SQLi fixed, nopriv hooks removed, nonces added,
+     taxonomy output escaped, eval() replaced, URLSearchParams parsing (`8f29bbe`)
+   - PHPUnit expanded: 14 -> 27 tests, 22 -> 39 assertions (`4a37eb8`)
+   - Diagnostic screenshot deleted
+
+### In Progress
+- Nothing actively in progress.
 
 ### Deferred / Backlog
 
-1. **Resolve Google Maps billing + finish API setup** (High)
-   - Free a GCP billing slot (delete/unlink old projects)
-   - Enable Geocoding API in Library
-   - Swap Places API (New) -> Places API (legacy) in key restrictions
-   - Update WP Admin with new key, confirm curl test OK
-   - Priority: High - blocking edit listing QA (Location step)
+1. **Push to remote** (High)
+   - 5 commits ahead of origin/main, not pushed this session
+   - Priority: High - do at start of next session
 
-2. **Continue Edit Listing QA** (High)
-   - Location step blocked until Maps fixed
-   - Remaining steps: Amenities save, Calendar, Pricing, Details, Location
-   - Priority: High
-
-3. **Remove diagnostic screenshot** (Low)
-   - docs/2026-02-27_19-01-23.jpg untracked — commit or delete
-   - Priority: Low
-
-3. **Orphaned wpestate_display_feature** (Medium)
-   - Child theme defines it but new parent 3.17.0 calls `wpestate_display_feature_optimized()` instead
-   - Child function is dead code - either hook it or remove it
+2. **Calendar QA** (Medium)
+   - Deferred by user; no bug identified
    - Priority: Medium
 
-4. **wqs/ PHPCS Cleanup** (Medium)
-   - ~800+ auto-fixable violations (tabs, spacing, quotes) in add-new-amenities.php and install-amenities-table.php
-   - Run `composer phpcbf` scoped to wqs/ and commit
-   - Priority: Medium
-
-5. **Live Site Testing - Category Filtering** (Medium)
+3. **Live Site Testing - Category Filtering** (Medium)
    - Submit test amenity, approve, verify taxonomy_terms is set
    - Verify filtering by property type works correctly
    - Priority: Medium
 
-6. **Expand PHPUnit Test Coverage** (Low)
-   - Currently: 14 tests, 22 assertions
-   - Add tests for dashboard-link-fix and half-day booking handlers
+4. **wqs/ Remaining PHPCS Violations** (Low)
+   - 206 manual-fix violations remain (naming, Yoda conditions, comment punctuation)
+   - Pre-commit hook treats wqs/ as warning-only, so non-blocking
    - Priority: Low
 
-7. **Child Theme functions.php Cleanup** (Low)
+5. **Expand PHPUnit to Runtime Tests** (Low)
+   - Requires WP test suite bootstrap (currently not set up)
+   - Priority: Low
+
+6. **Child Theme functions.php Cleanup** (Low)
    - 301 legacy coding standard violations remain
    - Gradual cleanup - dedicated commit
    - Priority: Low
 
-8. **Security Audit** (Medium)
-   - Continue reviewing remaining Upwork code
-   - Priority: Medium
+7. **Security Audit - Continued** (Low)
+   - Critical/High issues resolved this session
+   - Medium remaining: hardcoded taxonomy IDs, deprecated get_terms() signature
+   - Priority: Low
 
 ---
 
 ## Next Session Items
 
 ### Start Here
-1. Free GCP billing slot -> enable Geocoding API -> update WP Admin key -> confirm Maps loads
-2. Edit listing QA - Location step first (Maps), then Calendar, Pricing, Details
+1. `git push` - 5 commits to push to origin/main
+2. Calendar QA (when ready)
+3. Live site category filtering test
 
 ---
 
 ## Project Health
 
 ### Code Quality
-- All quality gates passing (14/14 tests, 22 assertions)
-- Pre-commit: blocks on PHPCS + PHPUnit failures
-- Pre-push: warning-only for wqs/ PHPCS violations (legacy), blocks on test failures
+- All quality gates passing (27/27 tests, 39 assertions)
+- Pre-commit: blocks on PHPCS + PHPUnit failures (wqs/ warning-only)
+- Pre-push: warning-only for all PHPCS violations, blocks on test failures
 
 ### Architecture
-- Parent theme: WPRentals 3.17.0 (upgraded this session)
-- Child theme: owns all customizations (half-day booking, amenities, dashboard link fix)
+- Parent theme: WPRentals 3.17.0 (upgraded prev. session)
+- Child theme: owns all customizations (half-day booking, amenities, dashboard link fix, Places proxy)
 - Template overrides: proper WordPress hierarchy
 - Plugin: wprentals-core 3.17.0, wprentals-elementor 3.17.0
 
 ### Security
 - Fixed 14+ vulnerabilities in amenity system (prev. session)
-- Input sanitization, authorization checks, nonces in place
+- Fixed 6 more this session (SQLi, CSRF, privilege escalation, XSS in taxonomy meta box)
+- Input sanitization, authorization checks, nonces in place across all AJAX handlers
 
 ### Testing
-- PHPUnit: 14 tests, 22 assertions, all passing
-- Manual testing: All workflows confirmed passing post 3.17.0 upgrade
+- PHPUnit: 27 tests, 39 assertions, all passing
+- Manual testing: All Edit Listing workflows confirmed passing (except Calendar, deferred)
 
 ---
 
 ## Technical Debt
 
-1. **wqs/ PHPCS violations** (Medium)
-   - ~800+ errors, mostly auto-fixable (tabs, spacing)
-   - Action: Run phpcbf and commit
+1. **wqs/ PHPCS violations** (Low)
+   - 206 errors remaining (comment punctuation, Yoda conditions, naming conventions)
+   - Action: Gradual manual cleanup
 
-2. **Orphaned child theme function** (Medium)
-   - `wpestate_display_feature()` defined but not called by new parent
-   - Action: Investigate hook or remove
+2. **Deprecated get_terms() signature in wqs/functions.php** (Low)
+   - Uses positional args deprecated since WP 4.5
+   - Action: Update to named args array
 
 3. **Child Theme functions.php Violations** (Low)
    - 301 errors (legacy Upwork code)
@@ -157,10 +161,10 @@
 - **Theme:** WPRentals 3.17.0 (parent) + wprentals-child
 - **Plugins:** wprentals-core 3.17.0, wprentals-elementor 3.17.0
 - **Database:** new_amenities table exists
-- **Git:** Clean, up to date with origin/main
+- **Git:** 5 commits ahead of origin/main, not yet pushed
 - **Branch:** main
 
 ---
 
-*Status updated: 2026-02-27 19:30*
-*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-02-27_1930.md*
+*Status updated: 2026-02-28 12:00*
+*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-02-28_1200.md*
