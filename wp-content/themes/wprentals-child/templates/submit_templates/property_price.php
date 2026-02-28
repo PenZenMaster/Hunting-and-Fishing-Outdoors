@@ -464,7 +464,7 @@ endif;
             <div class="col-md-3">
                 <!-- <label class="label_adjust" for="morning_price">Morning Price</label> -->
                 <input type="text" id="morning_price" class="form-control" size="40" name="morning_price"
-                    value="<?php print esc_html($morning_price);?>">
+                    value="<?php print esc_html( $morning_price ? $morning_price : get_post_meta( $edit_id, 'morning_price', true ) );?>">
             </div>
         </div>
 
@@ -475,7 +475,7 @@ endif;
             <div class="col-md-3">
                 <!-- <label class="label_adjust" for="afternoon_price">Afternoon Price</label> -->
                 <input type="text" id="afternoon_price" class="form-control" size="40" name="afternoon_price"
-                    value="<?php print esc_html($afternoon_price);?>">
+                    value="<?php print esc_html( $afternoon_price ? $afternoon_price : get_post_meta( $edit_id, 'afternoon_price', true ) );?>">
             </div>
         </div>   
 
