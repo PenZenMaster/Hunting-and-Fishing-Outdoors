@@ -42,6 +42,12 @@ require_once get_stylesheet_directory() . '/libs/dashboard-link-fix.php';
 // This proxy intercepts those fetch calls and forwards them server-side.
 require_once get_stylesheet_directory() . '/libs/places-proxy.php';
 
+// One-time home page widget migration (GitHub issue: empty sections).
+// Triggered via ?run_homepage_migration=1 by an administrator.
+// Remove this require after migration is confirmed complete.
+require_once get_stylesheet_directory() . '/libs/homepage-widgets-migration.php';
+add_action( 'init', 'hnfo_homepage_migration_trigger' );
+
 /**
  * Enqueue the half-day price-save JS patch.
  *
