@@ -107,29 +107,33 @@ function hnfo_migration_targets() {
 
 		'7f6fc94' => array(
 			'label'   => 'Featured Guides',
+			// Note: Wprentals_Featured_Owner widget has a pre-existing render bug on
+			// this installation (output is always empty regardless of agent ID). Using
+			// Wprentals_Featured_Listing as a working fallback for now; swap to
+			// Wprentals_Featured_Owner once the upstream widget is fixed.
 			'columns' => array(
 				0 => array(
-					'widgetType' => 'Wprentals_Featured_Owner',
+					'widgetType' => 'Wprentals_Featured_Listing',
 					'widget_id'  => 'gd00001',
 					'settings'   => array(
-						'owner_id'    => '1',
-						'design_type' => '1',
+						'listing_id' => '2894',
+						'type'       => 'type1',
 					),
 				),
 				1 => array(
-					'widgetType' => 'Wprentals_Featured_Owner',
+					'widgetType' => 'Wprentals_Featured_Listing',
 					'widget_id'  => 'gd00002',
 					'settings'   => array(
-						'owner_id'    => '69',
-						'design_type' => '1',
+						'listing_id' => '3016',
+						'type'       => 'type1',
 					),
 				),
 				2 => array(
-					'widgetType' => 'Wprentals_Featured_Owner',
+					'widgetType' => 'Wprentals_Featured_Listing',
 					'widget_id'  => 'gd00003',
 					'settings'   => array(
-						'owner_id'    => '1',
-						'design_type' => '1',
+						'listing_id' => '3126',
+						'type'       => 'type1',
 					),
 				),
 			),
@@ -297,7 +301,9 @@ function hnfo_run_homepage_widgets_migration() {
 	$log[] = 'Saved updated _elementor_data.';
 
 	delete_post_meta( $page_id, '_elementor_css' );
+	delete_post_meta( $page_id, '_elementor_element_cache' );
 	delete_post_meta( $page_id, '_elementor_element_cache_data' );
+	delete_post_meta( $page_id, '_elementor_page_assets' );
 	if ( class_exists( '\Elementor\Plugin' ) ) {
 		\Elementor\Plugin::$instance->files_manager->clear_cache();
 		$log[] = 'Elementor file cache cleared.';
