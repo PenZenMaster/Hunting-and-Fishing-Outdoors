@@ -54,7 +54,7 @@ function wqs_new_record( $record, $ajax_handler ) {
 	// $fields['field_d034d3a'] = 0;
 	// }
 
-	// Security: Sanitize inputs before database insert
+	// Security: Sanitize inputs before database insert.
 	$output['success'] = $wpdb->insert(
 		'new_amenities',
 		array(
@@ -67,7 +67,7 @@ function wqs_new_record( $record, $ajax_handler ) {
 		array( '%d', '%s', '%s', '%s', '%s' )
 	);
 
-	// Security: Use configurable email instead of hardcoded
+	// Security: Use configurable email instead of hardcoded.
 	$admin_email = get_option( 'hnfo_amenity_admin_email', get_option( 'admin_email' ) );
 	$site_url    = home_url( '/add-new-amenities/' );
 
@@ -81,7 +81,7 @@ function wqs_new_record( $record, $ajax_handler ) {
 	$message .= '<p><b>Amenity category: </b>' . esc_html( $fields['field_2167f68'] ) . '</p>';
 	$message .= '<p><b>Amenity description: </b>' . esc_html( $fields['field_2084096'] ) . '</p>';
 
-	// Security: Proper email headers
+	// Security: Proper email headers.
 	$headers   = array();
 	$headers[] = 'Content-Type: text/html; charset=UTF-8';
 	$headers[] = 'From: ' . get_bloginfo( 'name' ) . ' <' . $admin_email . '>';
@@ -116,36 +116,36 @@ function approve_add_new_amenity() {
 	}
 
 	global $wpdb;
-	// Security: Properly prepared statement
+	// Security: Properly prepared statement.
 	$new_amenities_data = $wpdb->get_results(
 		$wpdb->prepare(
 			'SELECT * FROM new_amenities WHERE new_amenity_entry_id = %d',
 			$amenity_entry_id
 		)
 	);
-	// Security: Check if data exists
+	// Security: Check if data exists.
 	if ( empty( $new_amenities_data ) ) {
 		wp_send_json_error( array( 'message' => 'Amenity not found' ) );
 		return;
 	}
 
-	// Security: Sanitize data from database
+	// Security: Sanitize data from database.
 	$add_amenity_name        = sanitize_text_field( $new_amenities_data[0]->nw_amenity_name );
 	$add_amenity_category    = sanitize_text_field( $new_amenities_data[0]->nw_amenity_category );
 	$add_amenity_description = sanitize_textarea_field( $new_amenities_data[0]->nw_amenity_description );
 	$add_amenity_img_url     = esc_url_raw( $new_amenities_data[0]->nw_amenity_image );
 	$add_amenity_slug        = sanitize_title( $add_amenity_name );
-	if ( $add_amenity_category == 'Basic' || $add_amenity_category == 'Features' || $add_amenity_category == 'Includes' ) {
-		if ( $add_amenity_name != '' && $add_amenity_category != '' && $add_amenity_description != '' && $add_amenity_slug != '' ) {
-			if ( $add_amenity_category == 'Basic' ) {
+	if ( 'Basic' === $add_amenity_category || 'Features' === $add_amenity_category || 'Includes' === $add_amenity_category ) {
+		if ( '' !== $add_amenity_name && '' !== $add_amenity_category && '' !== $add_amenity_description && '' !== $add_amenity_slug ) {
+			if ( 'Basic' === $add_amenity_category ) {
 				$add_amenity_parent = 21;
-			} elseif ( $add_amenity_category == 'Features' ) {
+			} elseif ( 'Features' === $add_amenity_category ) {
 				$add_amenity_parent = 29;
-			} elseif ( $add_amenity_category == 'Includes' ) {
+			} elseif ( 'Includes' === $add_amenity_category ) {
 				$add_amenity_parent = 24;
-			} elseif ( $add_amenity_category == 'Type of Fish' ) {
+			} elseif ( 'Type of Fish' === $add_amenity_category ) {
 				$add_amenity_parent = 94;
-			} elseif ( $add_amenity_category == 'Type of Game' ) {
+			} elseif ( 'Type of Game' === $add_amenity_category ) {
 				$add_amenity_parent = 178;
 			}
 
@@ -179,10 +179,10 @@ function approve_add_new_amenity() {
 			update_term_meta( $term_id, 'is_hunt_fishing', 'Hunting and Fishing' );
 			update_term_meta( $term_id, 'is_stay_and_fish', 'Stay and Fish' );
 
-			// Clear amenities cache so new term appears immediately
+			// Clear amenities cache so new term appears immediately.
 			delete_transient( 'wpestate_get_features_array' );
 
-			// Security: Properly prepared DELETE statement
+			// Security: Properly prepared DELETE statement.
 			$wpdb->query(
 				$wpdb->prepare(
 					'DELETE FROM new_amenities WHERE new_amenity_entry_id = %d',
@@ -190,21 +190,21 @@ function approve_add_new_amenity() {
 				)
 			);
 
-			// Return success response
+			// Return success response.
 			wp_send_json_success( array( 'term_id' => $term_id ) );
 		} else {
 			echo json_encode( 'Fail' );
 		}
-	} elseif ( $add_amenity_name != '' && $add_amenity_category != '' && $add_amenity_description != '' && $add_amenity_img_url != '' && $add_amenity_slug != '' ) {
-		if ( $add_amenity_category == 'Basic' ) {
+	} elseif ( '' !== $add_amenity_name && '' !== $add_amenity_category && '' !== $add_amenity_description && '' !== $add_amenity_img_url && '' !== $add_amenity_slug ) {
+		if ( 'Basic' === $add_amenity_category ) {
 			$add_amenity_parent = 21;
-		} elseif ( $add_amenity_category == 'Features' ) {
+		} elseif ( 'Features' === $add_amenity_category ) {
 			$add_amenity_parent = 29;
-		} elseif ( $add_amenity_category == 'Includes' ) {
+		} elseif ( 'Includes' === $add_amenity_category ) {
 			$add_amenity_parent = 24;
-		} elseif ( $add_amenity_category == 'Type of Fish' ) {
+		} elseif ( 'Type of Fish' === $add_amenity_category ) {
 			$add_amenity_parent = 94;
-		} elseif ( $add_amenity_category == 'Type of Game' ) {
+		} elseif ( 'Type of Game' === $add_amenity_category ) {
 			$add_amenity_parent = 178;
 		}
 
@@ -234,10 +234,10 @@ function approve_add_new_amenity() {
 			update_term_meta( $term_id, 'is_hunt_fishing', 'Hunting and Fishing' );
 			update_term_meta( $term_id, 'is_stay_and_fish', 'Stay and Fish' );
 
-			// Clear amenities cache so new term appears immediately
+			// Clear amenities cache so new term appears immediately.
 			delete_transient( 'wpestate_get_features_array' );
 
-			// Security: Properly prepared DELETE statement
+			// Security: Properly prepared DELETE statement.
 			$wpdb->query(
 				$wpdb->prepare(
 					'DELETE FROM new_amenities WHERE new_amenity_entry_id = %d',
@@ -245,7 +245,7 @@ function approve_add_new_amenity() {
 				)
 			);
 
-			// Return success response
+			// Return success response.
 			wp_send_json_success( array( 'term_id' => $term_id ) );
 
 	} else {
@@ -296,10 +296,10 @@ function deny_add_new_amenity() {
 	wp_send_json_success( array( 'deleted' => $amenity_entry_id ) );
 }
 
-// Add taxonomy meta box
+// Add taxonomy meta box.
 function add_taxonomy_meta_box() {
-	$taxonomy = 'property_features'; // Specify the taxonomy you want to target
-	$post_type = 'estate_property'; // Specify the post type you want to target
+	$taxonomy = 'property_features'; // Specify the taxonomy you want to target.
+	$post_type = 'estate_property'; // Specify the post type you want to target.
 
 	add_action( "{$taxonomy}_add_form_fields", 'taxonomy_meta_box_callback' );
 	add_action( "{$taxonomy}_edit_form_fields", 'taxonomy_meta_box_callback' );
@@ -352,7 +352,7 @@ function save_taxonomy_meta_box_data( $term_id ) {
 	}
 }
 
-// Add the code to the wp_footer action
+// Add the code to the wp_footer action.
 add_action( 'wp_footer', 'set_last_entry_id' );
 
 function set_last_entry_id() {
@@ -363,7 +363,7 @@ function set_last_entry_id() {
 	$last_entry    = ! empty( $last_entry_record ) ? absint( $last_entry_record[0]->new_amenity_entry_id ) : 0;
 	$last_entry_id = $last_entry + 1;
 
-	// Output the jQuery script to set the value of the input field
+	// Output the jQuery script to set the value of the input field.
 	echo '<script>
         jQuery(document).ready(function($) {
             $("#form-field-field_7ecc6f3").val(' . $last_entry_id . ');
@@ -371,34 +371,34 @@ function set_last_entry_id() {
     </script>';
 }
 
-// Add amenity request modal to footer
+// Add amenity request modal to footer.
 add_action( 'wp_footer', 'add_amenity_modal_html' );
 
-// Handle HTML form submission (non-Elementor)
+// Handle HTML form submission (non-Elementor).
 add_action( 'wp_ajax_submit_new_amenity', 'handle_new_amenity_submission' );
 add_action( 'wp_ajax_nopriv_submit_new_amenity', 'handle_new_amenity_submission' );
 
 function handle_new_amenity_submission() {
-	// Security: Verify nonce
+	// Security: Verify nonce.
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'submit_new_amenity' ) ) {
 		wp_send_json_error( 'Invalid security token' );
 		return;
 	}
 
-	// Security: Sanitize inputs
+	// Security: Sanitize inputs.
 	$entry_id    = isset( $_POST['entry_id'] ) ? absint( $_POST['entry_id'] ) : 0;
 	$name        = isset( $_POST['amenity_name'] ) ? sanitize_text_field( $_POST['amenity_name'] ) : '';
 	$category    = isset( $_POST['amenity_category'] ) ? sanitize_text_field( $_POST['amenity_category'] ) : '';
 	$description = isset( $_POST['amenity_description'] ) ? sanitize_textarea_field( $_POST['amenity_description'] ) : '';
 	$image       = isset( $_POST['amenity_image'] ) ? esc_url_raw( $_POST['amenity_image'] ) : '';
 
-	// Validate required fields
+	// Validate required fields.
 	if ( empty( $name ) || empty( $category ) || empty( $description ) ) {
 		wp_send_json_error( 'Please fill in all required fields' );
 		return;
 	}
 
-	// Insert into database
+	// Insert into database.
 	global $wpdb;
 	$result = $wpdb->insert(
 		'new_amenities',
@@ -417,7 +417,7 @@ function handle_new_amenity_submission() {
 		return;
 	}
 
-	// Send email notification to admin
+	// Send email notification to admin.
 	$admin_email = get_option( 'hnfo_amenity_admin_email', get_option( 'admin_email' ) );
 	$site_url    = home_url( '/add-new-amenities/' );
 
@@ -446,7 +446,7 @@ function handle_new_amenity_submission() {
 function add_amenity_modal_html() {
 	global $wpdb;
 
-	// Get next entry ID
+	// Get next entry ID.
 	$last_entry_record = $wpdb->get_results( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC LIMIT 1' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- static query, no user input
 	$last_entry_id = ! empty( $last_entry_record ) ? intval( $last_entry_record[0]->new_amenity_entry_id ) + 1 : 1;
 	?>
