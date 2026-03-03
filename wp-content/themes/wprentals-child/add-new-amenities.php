@@ -47,13 +47,13 @@ if ( $amenity_entry_id > 0 ) {
 		$add_amenity_img_url     = esc_url( $new_amenities_data[0]->nw_amenity_image );
 		$add_amenity_slug        = sanitize_title( $add_amenity_name );
 
-		// Security: Process actions only for valid entries
+		// Security: Process actions only for valid entries.
 		if ( in_array( $action, array( 'Approve', 'Deny' ), true ) ) {
 			$_POST['amenity_entry_id'] = $amenity_entry_id;
-			if ( 'Approve' === $action && function_exists( 'approve_add_new_amenity' ) ) {
-				approve_add_new_amenity();
-			} elseif ( 'Deny' === $action && function_exists( 'deny_add_new_amenity' ) ) {
-				deny_add_new_amenity();
+			if ( 'Approve' === $action && function_exists( 'hnfo_approve_add_new_amenity' ) ) {
+				hnfo_approve_add_new_amenity();
+			} elseif ( 'Deny' === $action && function_exists( 'hnfo_deny_add_new_amenity' ) ) {
+				hnfo_deny_add_new_amenity();
 			}
 		}
 	}

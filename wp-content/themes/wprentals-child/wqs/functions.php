@@ -52,13 +52,13 @@ function hnfo_get_action_category_ids() {
 /**
  * Enqueue WQS scripts and styles on the front end.
  */
-function enqueue_wqs_script() {
+function hnfo_enqueue_wqs_script() {
 	wp_enqueue_script( 'wqs-script', get_stylesheet_directory_uri() . '/wqs/js/custom-script.js', array( 'jquery' ), '1.3', true );
 	wp_enqueue_style( 'wqs-style', get_stylesheet_directory_uri() . '/wqs/css/custom-style.css', array(), '4.2', 'all' );
 }
-add_action( 'wp_enqueue_scripts', 'enqueue_wqs_script' );
+add_action( 'wp_enqueue_scripts', 'hnfo_enqueue_wqs_script' );
 
-add_action( 'elementor_pro/forms/new_record', 'wqs_new_record', 10, 2 );
+add_action( 'elementor_pro/forms/new_record', 'hnfo_wqs_new_record', 10, 2 );
 /**
  * Handle a new Elementor form submission for an amenity request.
  *
@@ -68,7 +68,7 @@ add_action( 'elementor_pro/forms/new_record', 'wqs_new_record', 10, 2 );
  * @param \ElementorPro\Modules\Forms\Classes\Form_Record  $record       Form record.
  * @param \ElementorPro\Modules\Forms\Classes\Ajax_Handler $ajax_handler Ajax response handler.
  */
-function wqs_new_record( $record, $ajax_handler ) {
+function hnfo_wqs_new_record( $record, $ajax_handler ) {
 
 	$raw_fields = $record->get( 'fields' );
 	$fields = [];
@@ -117,7 +117,7 @@ function wqs_new_record( $record, $ajax_handler ) {
 	$ajax_handler->add_response_data( true, $output );
 }
 
-add_action( 'wp_ajax_approve_add_new_amenity', 'approve_add_new_amenity' ); // Intentionally no wp_ajax_nopriv_ - approve is admin-only.
+add_action( 'wp_ajax_approve_add_new_amenity', 'hnfo_approve_add_new_amenity' ); // Intentionally no wp_ajax_nopriv_ - approve is admin-only.
 
 /**
  * AJAX callback: approve a pending amenity request.
@@ -126,7 +126,7 @@ add_action( 'wp_ajax_approve_add_new_amenity', 'approve_add_new_amenity' ); // I
  * from the pending record, sets category metadata, clears the cache, and
  * removes the record from the new_amenities table.
  */
-function approve_add_new_amenity() {
+function hnfo_approve_add_new_amenity() {
 	// Security: Check user capability.
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_send_json_error( array( 'message' => 'Unauthorized' ) );
@@ -283,12 +283,9 @@ function approve_add_new_amenity() {
 	} else {
 		echo json_encode( 'Fail' );
 	}
-	if ( $_GET['action'] != 'Approve' ) {
-		die();
-	}
 }
 
-add_action( 'wp_ajax_deny_add_new_amenity', 'deny_add_new_amenity' ); // Intentionally no wp_ajax_nopriv_ - deny is admin-only.
+add_action( 'wp_ajax_deny_add_new_amenity', 'hnfo_deny_add_new_amenity' ); // Intentionally no wp_ajax_nopriv_ - deny is admin-only.
 
 /**
  * AJAX callback: deny a pending amenity request.
@@ -296,7 +293,7 @@ add_action( 'wp_ajax_deny_add_new_amenity', 'deny_add_new_amenity' ); // Intenti
  * Validates capability and nonce, then deletes the record from the
  * new_amenities table without creating a taxonomy term.
  */
-function deny_add_new_amenity() {
+function hnfo_deny_add_new_amenity() {
 	// Security: Check user capability.
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_send_json_error( array( 'message' => 'Unauthorized' ) );
@@ -325,23 +322,23 @@ function deny_add_new_amenity() {
 /**
  * Register meta box hooks for the property_features taxonomy admin screen.
  */
-function add_taxonomy_meta_box() {
+function hnfo_add_taxonomy_meta_box() {
 	$taxonomy = 'property_features'; // Specify the taxonomy you want to target.
 	$post_type = 'estate_property'; // Specify the post type you want to target.
 
-	add_action( "{$taxonomy}_add_form_fields", 'taxonomy_meta_box_callback' );
-	add_action( "{$taxonomy}_edit_form_fields", 'taxonomy_meta_box_callback' );
-	add_action( "create_{$taxonomy}", 'save_taxonomy_meta_box_data' );
-	add_action( "edited_{$taxonomy}", 'save_taxonomy_meta_box_data' );
+	add_action( "{$taxonomy}_add_form_fields", 'hnfo_taxonomy_meta_box_callback' );
+	add_action( "{$taxonomy}_edit_form_fields", 'hnfo_taxonomy_meta_box_callback' );
+	add_action( "create_{$taxonomy}", 'hnfo_save_taxonomy_meta_box_data' );
+	add_action( "edited_{$taxonomy}", 'hnfo_save_taxonomy_meta_box_data' );
 }
-add_action( 'admin_init', 'add_taxonomy_meta_box' );
+add_action( 'admin_init', 'hnfo_add_taxonomy_meta_box' );
 
 /**
  * Render the property_action_category checkboxes on the property_features term form.
  *
  * @param WP_Term|string $term Current term object, or empty string when adding a new term.
  */
-function taxonomy_meta_box_callback( $term ) {
+function hnfo_taxonomy_meta_box_callback( $term ) {
 	$taxonomy = 'property_action_category';
 	$terms    = get_terms(
 		array(
@@ -373,7 +370,7 @@ function taxonomy_meta_box_callback( $term ) {
  *
  * @param int $term_id ID of the term being saved.
  */
-function save_taxonomy_meta_box_data( $term_id ) {
+function hnfo_save_taxonomy_meta_box_data( $term_id ) {
 	// Security: Verify nonce before processing POST data.
 	if ( ! isset( $_POST['_hnfo_tax_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_hnfo_tax_nonce'] ) ), 'hnfo_taxonomy_meta' ) ) {
 		return;
@@ -388,12 +385,12 @@ function save_taxonomy_meta_box_data( $term_id ) {
 	}
 }
 
-add_action( 'wp_footer', 'set_last_entry_id' );
+add_action( 'wp_footer', 'hnfo_set_last_entry_id' );
 
 /**
  * Output an inline script that pre-fills the hidden entry_id field in the Elementor form.
  */
-function set_last_entry_id() {
+function hnfo_set_last_entry_id() {
 	global $wpdb;
 
 	$last_entry_record = $wpdb->get_results( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- static query, no user input
@@ -404,15 +401,15 @@ function set_last_entry_id() {
 	// Output the jQuery script to set the value of the input field.
 	echo '<script>
         jQuery(document).ready(function($) {
-            $("#form-field-field_7ecc6f3").val(' . $last_entry_id . ');
+            $("#form-field-field_7ecc6f3").val(' . absint( $last_entry_id ) . ');
         });
     </script>';
 }
 
-add_action( 'wp_footer', 'add_amenity_modal_html' );
+add_action( 'wp_footer', 'hnfo_add_amenity_modal_html' );
 
-add_action( 'wp_ajax_submit_new_amenity', 'handle_new_amenity_submission' );
-add_action( 'wp_ajax_nopriv_submit_new_amenity', 'handle_new_amenity_submission' );
+add_action( 'wp_ajax_submit_new_amenity', 'hnfo_handle_new_amenity_submission' );
+add_action( 'wp_ajax_nopriv_submit_new_amenity', 'hnfo_handle_new_amenity_submission' );
 
 /**
  * AJAX callback: handle the front-end amenity request modal form submission.
@@ -420,19 +417,19 @@ add_action( 'wp_ajax_nopriv_submit_new_amenity', 'handle_new_amenity_submission'
  * Verifies nonce, sanitizes inputs, inserts the pending record, and emails
  * the admin an approve/deny link.
  */
-function handle_new_amenity_submission() {
+function hnfo_handle_new_amenity_submission() {
 	// Security: Verify nonce.
-	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'submit_new_amenity' ) ) {
+	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'submit_new_amenity' ) ) {
 		wp_send_json_error( 'Invalid security token' );
 		return;
 	}
 
 	// Security: Sanitize inputs.
-	$entry_id    = isset( $_POST['entry_id'] ) ? absint( $_POST['entry_id'] ) : 0;
-	$name        = isset( $_POST['amenity_name'] ) ? sanitize_text_field( $_POST['amenity_name'] ) : '';
-	$category    = isset( $_POST['amenity_category'] ) ? sanitize_text_field( $_POST['amenity_category'] ) : '';
-	$description = isset( $_POST['amenity_description'] ) ? sanitize_textarea_field( $_POST['amenity_description'] ) : '';
-	$image       = isset( $_POST['amenity_image'] ) ? esc_url_raw( $_POST['amenity_image'] ) : '';
+	$entry_id    = isset( $_POST['entry_id'] ) ? absint( wp_unslash( $_POST['entry_id'] ) ) : 0;
+	$name        = isset( $_POST['amenity_name'] ) ? sanitize_text_field( wp_unslash( $_POST['amenity_name'] ) ) : '';
+	$category    = isset( $_POST['amenity_category'] ) ? sanitize_text_field( wp_unslash( $_POST['amenity_category'] ) ) : '';
+	$description = isset( $_POST['amenity_description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['amenity_description'] ) ) : '';
+	$image       = isset( $_POST['amenity_image'] ) ? esc_url_raw( wp_unslash( $_POST['amenity_image'] ) ) : '';
 
 	// Validate required fields.
 	if ( empty( $name ) || empty( $category ) || empty( $description ) ) {
@@ -490,7 +487,7 @@ function handle_new_amenity_submission() {
  *
  * Renders the lightbox form that logged-in users use to submit a new amenity.
  */
-function add_amenity_modal_html() {
+function hnfo_add_amenity_modal_html() {
 	global $wpdb;
 
 	// Get next entry ID.
@@ -705,7 +702,7 @@ function add_amenity_modal_html() {
 			};
 
 			// Submit via AJAX
-			$.post('<?php echo admin_url( 'admin-ajax.php' ); ?>', formData, function(response) {
+			$.post('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', formData, function(response) {
 				if (response.success) {
 					$message.addClass('success').html('<strong>Success!</strong> Your amenity request has been submitted and an admin will review it shortly.').show();
 					$form[0].reset();
