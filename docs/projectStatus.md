@@ -1,6 +1,6 @@
 # Project Status - HNFO WordPress Development
 
-**Last Updated:** 2026-03-01 18:00
+**Last Updated:** 2026-03-03 03:30
 **Project:** Hunting and Fishing Outdoors Website
 **Repository:** https://github.com/PenZenMaster/Hunting-and-Fishing-Outdoors
 **Environment:** http://hnfo-development.local/
@@ -52,7 +52,7 @@
      PHPUnit expanded 14 -> 27 tests
    - **Commits:** 4b04a1c, d44a7eb, 8f29bbe, 4a37eb8
 
-9. **Home Page Empty Sections Fix** (this session)
+9. **Home Page Empty Sections Fix** (prev. session)
    - Six sections now display content (Book a Trip Today, Packages, Featured Guides,
      Properties, Reviews, Blog/Camp Fire Chat)
    - 13 WPRentals Elementor widgets injected into page 1745 _elementor_data
@@ -60,6 +60,17 @@
      section uses `Wprentals_Featured_Listing` as fallback
    - Migration script left in functions.php until live site verified
    - **Commits:** 71a0653, e81c530
+
+10. **QA Pass - Technical Debt Items 5-7** (this session)
+    - Item 5 (functions.php cleanup): SQL injection patched, hardcoded credentials removed,
+      dead commented-out code deleted, site-wide mail filters removed
+    - Item 6 (security - deprecated get_terms + hardcoded IDs): deprecated two-arg
+      get_terms() modernised; hardcoded taxonomy IDs 2/3/50/51/364 replaced with
+      hnfo_get_action_category_ids() runtime slug lookup (slugs confirmed from DB)
+    - Item 7 (Featured Owner widget): DEFERRED - code is structurally sound; no
+      estate_agent posts exist yet. Root cause is content, not code.
+    - Item 4 (wqs/ PHPCS violations): DEFERRED - tracked in backlog item 1
+    - **Commits:** c75c3ed, 5be3b5c, 1e5773a, 0dc50e7
 
 ### In Progress
 - Nothing actively in progress.
@@ -81,28 +92,36 @@
    - Priority: Medium
 
 4. **wqs/ Remaining PHPCS Violations** (Low)
-   - 206 manual-fix violations remain (naming, Yoda conditions, comment punctuation)
-   - Pre-commit hook treats wqs/ as warning-only, so non-blocking
+   - ~85 manual-fix violations remain (naming prefix, Yoda conditions, comment punctuation,
+     doc comments, unslash on $_POST)
+   - Needs wp-coding-standards/wpcs installed via Composer to auto-fix
+   - Pre-commit hook treats wqs/ as warning-only; non-blocking
    - Priority: Low
 
 5. **Expand PHPUnit to Runtime Tests** (Low)
    - Requires WP test suite bootstrap (currently not set up)
    - Priority: Low
 
-6. **Child Theme functions.php Cleanup** (Low)
-   - 301 legacy coding standard violations remain
-   - Gradual cleanup - dedicated commit
+6. **Child Theme functions.php Violations** (Low)
+   - Excluded from PHPCS (see phpcs.xml.dist line 24); legacy Upwork code
+   - Gradual cleanup - dedicated commit when ready
    - Priority: Low
 
-7. **Security Audit - Continued** (Low)
-   - Critical/High issues resolved
-   - Medium remaining: hardcoded taxonomy IDs, deprecated get_terms() signature
+7. **Create estate_agent Posts for Featured Owner Widget** (Low)
+   - Wprentals_Featured_Owner widget code is structurally sound
+   - SELECT2 dropdown has no options because zero estate_agent posts exist
+   - Fix: create agent posts via WP Admin > Agents; no code change needed
    - Priority: Low
 
-8. **Wprentals_Featured_Owner widget bug** (Low)
-   - Pre-existing render bug: always empty output regardless of agent ID
-   - Affects Featured Guides section (currently using Featured Listing as fallback)
-   - Needs upstream investigation or custom widget override
+8. **Parent Theme deprecated get_terms() in pin_management.php** (Low)
+   - Lines 697, 704 use deprecated two-arg get_terms() signature
+   - Located in wprentals/libs/marker-functions/pin_management.php (parent theme)
+   - Cannot safely patch -- would be overwritten on next theme update
+   - Priority: Low (monitor on upgrade)
+
+9. **Hardcoded parent term IDs in wqs/functions.php** (Low)
+   - IDs 21, 29, 24, 94, 178 (property_features taxonomy parents) at lines 113-121, 160-169
+   - Same migration risk as the taxonomy_terms IDs fixed this session
    - Priority: Low
 
 ---
@@ -112,7 +131,8 @@
 ### Start Here
 1. Deploy to live/staging and verify all 6 home page sections display content
 2. After verification, remove migration require from functions.php + commit + push
-3. Calendar QA (when ready)
+3. Create estate_agent posts in WP Admin to populate Featured Owner widget (no code needed)
+4. Calendar QA (when ready)
 
 ---
 
@@ -143,11 +163,11 @@
 
 ## Technical Debt
 
-1. **wqs/ PHPCS violations** (Low) - 206 errors remaining
-2. **Deprecated get_terms() signature in wqs/functions.php** (Low)
-3. **Child Theme functions.php Violations** (Low) - 301 errors (legacy Upwork code)
-4. **Dead code in property_amenities.php** (Low) - Lines 42-44, vars set from undefined $term
-5. **Incomplete Upwork Implementations** (Medium) - Pattern: features 10-50% complete
+1. **wqs/ PHPCS violations** (Low) - ~85 errors remaining (naming, Yoda, docs, unslash)
+2. **Child Theme functions.php Violations** (Low) - excluded from PHPCS, legacy Upwork code
+3. **Dead code in property_amenities.php** (Low) - Lines 42-44, vars set from undefined $term
+4. **Incomplete Upwork Implementations** (Medium) - Pattern: features 10-50% complete
+5. **Parent theme hardcoded IDs + deprecated get_terms()** (Low) - not our code to patch
 
 ---
 
@@ -164,5 +184,5 @@
 
 ---
 
-*Status updated: 2026-03-01 18:00*
+*Status updated: 2026-03-03 03:30*
 *See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-03-01_1800.md*
