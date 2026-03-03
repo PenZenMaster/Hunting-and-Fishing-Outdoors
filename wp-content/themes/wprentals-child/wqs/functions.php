@@ -1,4 +1,25 @@
 <?php
+/**
+ * Module/Script Name: functions.php
+ * Path: wp-content/themes/wprentals-child/wqs/functions.php
+ *
+ * Description:
+ * WQS amenity request system. Registers an Elementor form hook, AJAX
+ * approve/deny handlers, a taxonomy meta box for the property_features
+ * taxonomy, and the front-end amenity request modal.
+ *
+ * Author(s):
+ * Rank Rocket Co (C) Copyright 2026 - All Rights Reserved
+ *
+ * Created Date: 2026-02-13
+ * Last Modified Date: 2026-03-03
+ *
+ * Comments:
+ * v1.00 - Security hardening: nonces, capability checks, prepared queries.
+ * v1.01 - PHPCS compliance: Yoda conditions, comment punctuation, docblocks.
+ *
+ * @package hnfo
+ */
 
 /**
  * Return a slug-to-term-id map for property_action_category terms.
@@ -28,17 +49,25 @@ function hnfo_get_action_category_ids() {
 	return $ids;
 }
 
+/**
+ * Enqueue WQS scripts and styles on the front end.
+ */
 function enqueue_wqs_script() {
-
 	wp_enqueue_script( 'wqs-script', get_stylesheet_directory_uri() . '/wqs/js/custom-script.js', array( 'jquery' ), '1.3', true );
-
-	if ( is_singular( 'estate_property' ) ) {
-	}
 	wp_enqueue_style( 'wqs-style', get_stylesheet_directory_uri() . '/wqs/css/custom-style.css', array(), '4.2', 'all' );
 }
 add_action( 'wp_enqueue_scripts', 'enqueue_wqs_script' );
 
 add_action( 'elementor_pro/forms/new_record', 'wqs_new_record', 10, 2 );
+/**
+ * Handle a new Elementor form submission for an amenity request.
+ *
+ * Inserts the pending record into the new_amenities table and emails
+ * the site admin an approve/deny link.
+ *
+ * @param \ElementorPro\Modules\Forms\Classes\Form_Record  $record       Form record.
+ * @param \ElementorPro\Modules\Forms\Classes\Ajax_Handler $ajax_handler Ajax response handler.
+ */
 function wqs_new_record( $record, $ajax_handler ) {
 
 	$raw_fields = $record->get( 'fields' );
@@ -50,9 +79,6 @@ function wqs_new_record( $record, $ajax_handler ) {
 	$last_entry_record = $wpdb->get_results( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	$last_entry = $last_entry_record[0]->new_amenity_entry_id;
 	$last_entry_id = $last_entry + 1;
-	// if ($fields['field_2167f68'] == '(binary)') {
-	// $fields['field_d034d3a'] = 0;
-	// }
 
 	// Security: Sanitize inputs before database insert.
 	$output['success'] = $wpdb->insert(
@@ -91,9 +117,15 @@ function wqs_new_record( $record, $ajax_handler ) {
 	$ajax_handler->add_response_data( true, $output );
 }
 
-add_action( 'wp_ajax_approve_add_new_amenity', 'approve_add_new_amenity' );
-// Intentionally no wp_ajax_nopriv_ - approve is an admin-only action.
+add_action( 'wp_ajax_approve_add_new_amenity', 'approve_add_new_amenity' ); // Intentionally no wp_ajax_nopriv_ - approve is admin-only.
 
+/**
+ * AJAX callback: approve a pending amenity request.
+ *
+ * Validates capability and nonce, creates a property_features taxonomy term
+ * from the pending record, sets category metadata, clears the cache, and
+ * removes the record from the new_amenities table.
+ */
 function approve_add_new_amenity() {
 	// Security: Check user capability.
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -151,7 +183,7 @@ function approve_add_new_amenity() {
 
 			$create_amenities = wp_insert_term(
 				"$add_amenity_name",
-				'property_features', // the taxonomy
+				'property_features', // the taxonomy.
 				array(
 					'description' => $add_amenity_description,
 					'slug' => strtolower( $add_amenity_slug ),
@@ -210,7 +242,7 @@ function approve_add_new_amenity() {
 
 			$create_amenities = wp_insert_term(
 				"$add_amenity_name",
-				'property_features', // the taxonomy
+				'property_features', // the taxonomy.
 				array(
 					'description' => $add_amenity_description,
 					'slug' => strtolower( $add_amenity_slug ),
@@ -255,21 +287,15 @@ function approve_add_new_amenity() {
 		die();
 	}
 }
-/*
-Ajax actions(hooks) when the admin click the new amenity request link received in email and clicks "Approve" then this function will
- *execute and adds that paricular amenity to the "amenities & features list" and displays in frontend
- */
-// Code ends here
 
-/*
-Ajax actions(hooks) when the admin click the new amenity request link received in email and clicks "Deny" then this function will
- *execute and it will not added in the amenity list and doesn't display in frontend
- *Deleting the request from the table which we are saving when user submits the new amenity form
- */
-// Code starts here
-add_action( 'wp_ajax_deny_add_new_amenity', 'deny_add_new_amenity' );
-// Intentionally no wp_ajax_nopriv_ - deny is an admin-only action.
+add_action( 'wp_ajax_deny_add_new_amenity', 'deny_add_new_amenity' ); // Intentionally no wp_ajax_nopriv_ - deny is admin-only.
 
+/**
+ * AJAX callback: deny a pending amenity request.
+ *
+ * Validates capability and nonce, then deletes the record from the
+ * new_amenities table without creating a taxonomy term.
+ */
 function deny_add_new_amenity() {
 	// Security: Check user capability.
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -296,7 +322,9 @@ function deny_add_new_amenity() {
 	wp_send_json_success( array( 'deleted' => $amenity_entry_id ) );
 }
 
-// Add taxonomy meta box.
+/**
+ * Register meta box hooks for the property_features taxonomy admin screen.
+ */
 function add_taxonomy_meta_box() {
 	$taxonomy = 'property_features'; // Specify the taxonomy you want to target.
 	$post_type = 'estate_property'; // Specify the post type you want to target.
@@ -308,7 +336,11 @@ function add_taxonomy_meta_box() {
 }
 add_action( 'admin_init', 'add_taxonomy_meta_box' );
 
-// Taxonomy meta box callback.
+/**
+ * Render the property_action_category checkboxes on the property_features term form.
+ *
+ * @param WP_Term|string $term Current term object, or empty string when adding a new term.
+ */
 function taxonomy_meta_box_callback( $term ) {
 	$taxonomy = 'property_action_category';
 	$terms    = get_terms(
@@ -336,7 +368,11 @@ function taxonomy_meta_box_callback( $term ) {
 	}
 }
 
-// Save taxonomy meta box data.
+/**
+ * Persist the taxonomy_terms meta after a property_features term is saved.
+ *
+ * @param int $term_id ID of the term being saved.
+ */
 function save_taxonomy_meta_box_data( $term_id ) {
 	// Security: Verify nonce before processing POST data.
 	if ( ! isset( $_POST['_hnfo_tax_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_hnfo_tax_nonce'] ) ), 'hnfo_taxonomy_meta' ) ) {
@@ -352,9 +388,11 @@ function save_taxonomy_meta_box_data( $term_id ) {
 	}
 }
 
-// Add the code to the wp_footer action.
 add_action( 'wp_footer', 'set_last_entry_id' );
 
+/**
+ * Output an inline script that pre-fills the hidden entry_id field in the Elementor form.
+ */
 function set_last_entry_id() {
 	global $wpdb;
 
@@ -371,13 +409,17 @@ function set_last_entry_id() {
     </script>';
 }
 
-// Add amenity request modal to footer.
 add_action( 'wp_footer', 'add_amenity_modal_html' );
 
-// Handle HTML form submission (non-Elementor).
 add_action( 'wp_ajax_submit_new_amenity', 'handle_new_amenity_submission' );
 add_action( 'wp_ajax_nopriv_submit_new_amenity', 'handle_new_amenity_submission' );
 
+/**
+ * AJAX callback: handle the front-end amenity request modal form submission.
+ *
+ * Verifies nonce, sanitizes inputs, inserts the pending record, and emails
+ * the admin an approve/deny link.
+ */
 function handle_new_amenity_submission() {
 	// Security: Verify nonce.
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'submit_new_amenity' ) ) {
@@ -443,6 +485,11 @@ function handle_new_amenity_submission() {
 	wp_send_json_success( array( 'message' => 'Amenity request submitted successfully' ) );
 }
 
+/**
+ * Output the amenity request modal HTML, CSS, and JS in the footer.
+ *
+ * Renders the lightbox form that logged-in users use to submit a new amenity.
+ */
 function add_amenity_modal_html() {
 	global $wpdb;
 
