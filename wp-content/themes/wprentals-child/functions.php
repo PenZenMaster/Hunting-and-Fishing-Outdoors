@@ -291,47 +291,47 @@ function vw_half_day_time(){
    <?php
 }
 
-function wpse27856_set_content_type(){
-    return "text/html";
-}
-add_filter( 'wp_mail_content_type','wpse27856_set_content_type' );
-
-
 add_action( 'wpforms_process_complete_3568', 'vdw_send_add_new_amenities', 10, 4 );
-function change_default_sender_name( $original_email_from ) {
-    return 'verdantwaye';
+function vdw_send_add_new_amenities( $fields, $entry, $entry_id, $form_data ) {
+
+    $amenity_name     = sanitize_text_field( $fields[1]['value'] );
+    $amenity_category = sanitize_text_field( $fields[4]['value'] );
+    $amenity_desc     = sanitize_textarea_field( $fields[2]['value'] );
+    $amenity_image    = esc_url_raw( $fields[3]['value'] );
+
+    global $wpdb;
+    $wpdb->insert(
+        'new_amenities',
+        array(
+            'new_amenity_entry_id'   => absint( $entry_id ),
+            'nw_amenity_name'        => $amenity_name,
+            'nw_amenity_category'    => $amenity_category,
+            'nw_amenity_description' => $amenity_desc,
+            'nw_amenity_image'       => $amenity_image,
+        ),
+        array( '%d', '%s', '%s', '%s', '%s' )
+    );
+
+    $admin_email = get_option( 'hnfo_amenity_admin_email', get_option( 'admin_email' ) );
+    $approve_url = home_url( '/add-new-amenities/?am_id=' . absint( $entry_id ) );
+
+    $to      = $admin_email;
+    $subject = 'New Amenity Request';
+    $message  = '<h2>Hello Admin,</h2>';
+    $message .= '<p><b>Approve or Deny new amenity request:</b> <a href="' . esc_url( $approve_url ) . '">Click here</a></p>';
+    $message .= '<h3>Below are new amenity details:</h3>';
+    $message .= '<p><b>Amenity name: </b>' . esc_html( $amenity_name ) . '</p>';
+    $message .= '<p><b>Amenity category: </b>' . esc_html( $amenity_category ) . '</p>';
+    $message .= '<p><b>Amenity description: </b>' . esc_html( $amenity_desc ) . '</p>';
+    $message .= '<p><b>Amenity Image: </b><a href="' . esc_url( $amenity_image ) . '">View</a></p>';
+
+    $headers   = array();
+    $headers[] = 'Content-Type: text/html; charset=UTF-8';
+    $headers[] = 'From: ' . get_bloginfo( 'name' ) . ' <' . $admin_email . '>';
+    $headers[] = 'Reply-To: ' . $admin_email;
+
+    wp_mail( $to, $subject, $message, $headers );
 }
-add_filter( 'wp_mail_from_name', 'change_default_sender_name' );
-
-function vdw_send_add_new_amenities($fields, $entry, $entry_id, $form_data ){
- 
-  $amenity_name = $fields[1]['value'];
-  $amenity_category = $fields[4]['value'];
-  $amenity_desc = $fields[2]['value'];
-  $amenity_image = $fields[3]['value'];
-  $amenity_entry_id = $form_data;
-  
-  //die();
-
- global $wpdb;
- $amenities_data = $wpdb->get_results($wpdb->prepare("INSERT INTO new_amenities (new_amenity_entry_id, nw_amenity_name, nw_amenity_category, nw_amenity_description, nw_amenity_image) VALUES ($amenity_entry_id, '".$amenity_name."', '".$amenity_category."', '".$amenity_desc."', '".$amenity_image."')"));
-
- 	$to = 'hilarion@g3.agency';
-  //$to = 'asusannaneha@gmail.com';
-	$subject = 'New Amenity Request';
-  $message = '<h2>Hello Admin,</h2>';
-  $message .= '<p><b>Approve or Deny new amenity request<b></p><a href="https://hnfo.verdantwaye.com/add-new-amenities/?am_id='.$amenity_entry_id.'"><b>Click here</b></a>';
-  $message .= '<h3>Below are new amenity details:</h3>';
-  $message .= '<p><b>Amenity name: </b>'.$amenity_name.'</p>';
-  $message .= '<p><b>Amenity category: </b>'.$amenity_category.'</p>';
-  $message .= '<p><b>Amenity description: </b>'.$amenity_desc.'</p>';
-  $message .= '<p><b>Amenity Image: </b><a href="'.$amenity_image.'">View</a></p>';
-	//$message .= $current_user;
-	$headers = 'From: hello@hnfo.verdantwaye.com' . "\r\n" .
-    'CC: prabha161810@gmail.com,saibhaskarmail@gmail.com' . "\r\n" .
-    'Reply-To: hello@hnfo.verdantwaye.com'. "\r\n";
-	wp_mail( $to, $subject, $message, $headers );
-} 
 
 // add_action( 'wpforms_process_entry_save', 'wpf_dev_process_entry_save', 10, 4 );
 
