@@ -1,6 +1,6 @@
 # Project Status - HNFO WordPress Development
 
-**Last Updated:** 2026-03-03 03:30
+**Last Updated:** 2026-03-03 11:53
 **Project:** Hunting and Fishing Outdoors Website
 **Repository:** https://github.com/PenZenMaster/Hunting-and-Fishing-Outdoors
 **Environment:** http://hnfo-development.local/
@@ -61,7 +61,7 @@
    - Migration script left in functions.php until live site verified
    - **Commits:** 71a0653, e81c530
 
-10. **QA Pass - Technical Debt Items 5-7** (this session)
+10. **QA Pass - Technical Debt Items 5-7** (prev. session)
     - Item 5 (functions.php cleanup): SQL injection patched, hardcoded credentials removed,
       dead commented-out code deleted, site-wide mail filters removed
     - Item 6 (security - deprecated get_terms + hardcoded IDs): deprecated two-arg
@@ -69,8 +69,14 @@
       hnfo_get_action_category_ids() runtime slug lookup (slugs confirmed from DB)
     - Item 7 (Featured Owner widget): DEFERRED - code is structurally sound; no
       estate_agent posts exist yet. Root cause is content, not code.
-    - Item 4 (wqs/ PHPCS violations): DEFERRED - tracked in backlog item 1
     - **Commits:** c75c3ed, 5be3b5c, 1e5773a, 0dc50e7
+
+11. **wqs/functions.php PHPCS Compliance** (this session)
+    - 85 -> 0 violations: Yoda conditions, comment punctuation, file header, docblocks,
+      dead code removal, hnfo_ prefix on all 10 global functions, wp_unslash + escaping
+    - add-new-amenities.php function_exists guards updated to hnfo_ names
+    - Pre-commit hook: wqs/ promoted from warning-only to strict-blocking
+    - **Commits:** 4f790c0, 0f19d3c, ad98cc8, 7e95ee5
 
 ### In Progress
 - Nothing actively in progress.
@@ -91,11 +97,10 @@
    - Verify filtering by property type works correctly
    - Priority: Medium
 
-4. **wqs/ Remaining PHPCS Violations** (Low)
-   - ~85 manual-fix violations remain (naming prefix, Yoda conditions, comment punctuation,
-     doc comments, unslash on $_POST)
-   - Needs wp-coding-standards/wpcs installed via Composer to auto-fix
-   - Pre-commit hook treats wqs/ as warning-only; non-blocking
+4. **add-new-amenities.php PHPCS Violations** (~51) (Low)
+   - NonPrefixedVariable, NonPrefixedFunction, unescaped output, Yoda conditions,
+     comment punctuation. Pre-commit hook is warning-only for this file.
+   - Natural next cleanup target after wqs/
    - Priority: Low
 
 5. **Expand PHPUnit to Runtime Tests** (Low)
@@ -140,7 +145,7 @@
 
 ### Code Quality
 - All quality gates passing (27/27 tests, 39 assertions)
-- Pre-commit: blocks on PHPCS + PHPUnit failures (wqs/ warning-only)
+- Pre-commit: blocks on PHPCS + PHPUnit failures (wqs/ now strict; add-new-amenities.php warning-only)
 - Pre-push: warning-only for all PHPCS violations, blocks on test failures
 
 ### Architecture
@@ -163,11 +168,12 @@
 
 ## Technical Debt
 
-1. **wqs/ PHPCS violations** (Low) - ~85 errors remaining (naming, Yoda, docs, unslash)
-2. **Child Theme functions.php Violations** (Low) - excluded from PHPCS, legacy Upwork code
-3. **Dead code in property_amenities.php** (Low) - Lines 42-44, vars set from undefined $term
-4. **Incomplete Upwork Implementations** (Medium) - Pattern: features 10-50% complete
-5. **Parent theme hardcoded IDs + deprecated get_terms()** (Low) - not our code to patch
+1. **add-new-amenities.php PHPCS** (Low) - ~51 violations; warning-only in pre-commit
+2. **Hardcoded property_features parent IDs** (Low) - IDs 21/29/24/94/178 in hnfo_approve_add_new_amenity(); same migration risk as taxonomy_terms IDs fixed last session
+3. **Child Theme functions.php** (Low) - excluded from PHPCS; 301 legacy violations; gradual cleanup
+4. **Dead code in property_amenities.php** (Low) - Lines 42-44, vars set from undefined $term
+5. **Incomplete Upwork Implementations** (Medium) - Pattern: features 10-50% complete
+6. **Parent theme hardcoded IDs + deprecated get_terms()** (Low) - not our code to patch
 
 ---
 
@@ -184,5 +190,5 @@
 
 ---
 
-*Status updated: 2026-03-03 02:03*
-*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-03-03_0203.md*
+*Status updated: 2026-03-03 11:53*
+*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-03-03_1153.md*
