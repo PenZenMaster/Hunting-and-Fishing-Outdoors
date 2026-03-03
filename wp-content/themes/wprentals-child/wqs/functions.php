@@ -1,5 +1,33 @@
 <?php
 
+/**
+ * Return a slug-to-term-id map for property_action_category terms.
+ *
+ * Cached in a static variable so repeated calls within a request
+ * cost only one database round-trip.
+ *
+ * @return array<string, int> Associative array of slug => term_id.
+ */
+function hnfo_get_action_category_ids() {
+	static $ids = null;
+
+	if ( null !== $ids ) {
+		return $ids;
+	}
+
+	$slugs = array( 'fishing', 'hunting', 'hunt-camp', 'hunting-and-fishing', 'stay-and-fish' );
+	$ids   = array();
+
+	foreach ( $slugs as $slug ) {
+		$term = get_term_by( 'slug', $slug, 'property_action_category' );
+		if ( $term instanceof WP_Term ) {
+			$ids[ $slug ] = $term->term_id;
+		}
+	}
+
+	return $ids;
+}
+
 function enqueue_wqs_script() {
 
 	wp_enqueue_script( 'wqs-script', get_stylesheet_directory_uri() . '/wqs/js/custom-script.js', array( 'jquery' ), '1.3', true );
@@ -132,8 +160,19 @@ function approve_add_new_amenity() {
 			);
 			$term_id = intval( $create_amenities['term_id'] );
 			update_term_meta( $term_id, 'category_featured_image', $add_amenity_img_url );
-			// Basic, Features, Includes apply to all property types
-			update_term_meta( $term_id, 'taxonomy_terms', array( 50, 3, 51, 2, 364 ) );
+			// Basic, Features, Includes apply to all property types.
+			$cats = hnfo_get_action_category_ids();
+			update_term_meta(
+				$term_id,
+				'taxonomy_terms',
+				array(
+					$cats['fishing'],
+					$cats['hunt-camp'],
+					$cats['hunting'],
+					$cats['hunting-and-fishing'],
+					$cats['stay-and-fish'],
+				)
+			);
 			update_term_meta( $term_id, 'is_fishing', 'Fishing' );
 			update_term_meta( $term_id, 'is_hunt_camp', 'Hunt Camp' );
 			update_term_meta( $term_id, 'is_hunting', 'Hunting' );
@@ -180,12 +219,13 @@ function approve_add_new_amenity() {
 			);
 			$term_id = intval( $create_amenities['term_id'] );
 			update_term_meta( $term_id, 'category_featured_image', $add_amenity_img_url );
-			// Type of Fish: Fishing, Hunting And Fishing, Stay and Fish
-			// Type of Game: Hunting, Hunt Camp, Hunting And Fishing
+			// Type of Fish: Fishing, Hunting And Fishing, Stay and Fish.
+			// Type of Game: Hunting, Hunt Camp, Hunting And Fishing.
+			$cats = hnfo_get_action_category_ids();
 		if ( 'Type of Fish' === $add_amenity_category ) {
-			$taxonomy_terms = array( 50, 2, 364 );
+			$taxonomy_terms = array( $cats['fishing'], $cats['hunting-and-fishing'], $cats['stay-and-fish'] );
 		} else {
-			$taxonomy_terms = array( 51, 3, 2 );
+			$taxonomy_terms = array( $cats['hunting'], $cats['hunt-camp'], $cats['hunting-and-fishing'] );
 		}
 			update_term_meta( $term_id, 'taxonomy_terms', $taxonomy_terms );
 			update_term_meta( $term_id, 'is_fishing', 'Fishing' );
