@@ -99,26 +99,6 @@ function hnfo_enqueue_places_proxy_js() {
 add_action( 'wp_enqueue_scripts', 'hnfo_enqueue_places_proxy_js', 20 );
 
 
-// add_action('init','admin_vd_check');
-// function admin_vd_check() {
-//    $action_terms = get_terms( array(
-//        'taxonomy' => 'property_features',
-//        'hide_empty' => false,
-//    ) );
-
-//    foreach ($action_terms as $action_key) {
-//        //print_r($action_terms);
-//        $amnts_term_id = $action_key->term_id;
-//         update_term_meta($amnts_term_id,'is_fishing','Fishing');
-//         update_term_meta($amnts_term_id,'is_hunt_camp','Hunt Camp');
-//          update_term_meta($amnts_term_id,'is_hunting','Hunting');
-//          update_term_meta($amnts_term_id,'is_hunt_fishing','Hunting and Fishing');
-//        //echo $amnts_term_name;
-       
-//        //echo $action_category;
-
-//    }
-// }
 add_action('admin_head', 'admin_custom_func');
 
 function admin_custom_func() {
@@ -195,48 +175,6 @@ function vw_half_day_time(){
                half_day_end_hrs = half_day_end_hrs;
              }
          });
-
-        //  jQuery('#vw_mrng_time01').change(function(){
-        //  	jQuery('.vw-half-day').css('display','block');
-        //  var half_start_hr_mrng = jQuery('#fah_start_hour01').val();
-        //  var half_end_hr_mrng = jQuery('#fah_end_hour01').val();
-        //        jQuery(".vw-half-day #start_hour_wrapper_list li").each(function(){
-        //         var start_time_text = jQuery(this).text();
-        //         if(half_start_hr_mrng == start_time_text){
-        //           //console.log(start_time_text);
-        //           jQuery(this).trigger('click');
-        //         }
-        //       });
-        //          jQuery(".vw-half-day #end_hour_wrapper_list li").each(function(){
-        //         var end_time_text = jQuery(this).text();
-        //         if(half_end_hr_mrng == end_time_text){
-        //           //console.log(end_time_text);
-        //           jQuery(this).trigger('click');
-        //         }
-        //       });
-        //  });
-        //  jQuery('#vw_evng_time01').change(function(){
-        //  	jQuery('.vw-half-day').css('display','block'); 
-        //  var half_start_hr_evng = jQuery('#fah_start_hour01_noon').val();
-        //  var half_end_hr_evng = jQuery('#fah_end_hour01_noon').val();
-        //  //console.log(half_start_hr_evng);
-        // // console.log(half_end_hr_evng);
-        //   jQuery(".vw-half-day #start_hour_wrapper_list li").each(function(){
-        //         var start_time_text_evng = jQuery(this).text();
-        //         //console.log(start_time_text_evng);
-        //         if(half_start_hr_evng == start_time_text_evng){
-        //           //console.log(start_time_text);
-        //           jQuery(this).trigger('click');
-        //         }
-        //       });
-        //          jQuery(".vw-half-day #end_hour_wrapper_list li").each(function(){
-        //         var end_time_text_evng = jQuery(this).text();
-        //         if(half_end_hr_evng == end_time_text_evng){
-        //          // console.log(end_time_text);
-        //           jQuery(this).trigger('click');
-        //         }
-        //       });
-        //  });
 
           jQuery('input[name=vw_mrng_time01]').change(function(){
 
@@ -333,17 +271,4 @@ function vdw_send_add_new_amenities( $fields, $entry, $entry_id, $form_data ) {
     wp_mail( $to, $subject, $message, $headers );
 }
 
-// add_action( 'wpforms_process_entry_save', 'wpf_dev_process_entry_save', 10, 4 );
-
-// function wpf_dev_process_entry_save(){
-//   echo "success";
-//   die();
-// }
-
-// ========================================
-// REMOVED: Duplicate insecure amenity functions
-// These functions are now in parent theme: wp-content/themes/wprentals/wqs/functions.php
-// Removed on 2026-02-13: Child theme had old insecure versions with SQL injection
-// Parent theme has secure versions with proper sanitization and capability checks
-// ========================================
 
