@@ -23,7 +23,7 @@ This custom system allows property owners to request new amenities that admins c
 ### 2. Elementor Form Integration
 
 **File:** `/wqs/functions.php`
-**Function:** `wqs_new_record()`
+**Function:** `hnfo_wqs_new_record()`
 
 **Workflow:**
 1. User submits Elementor form on property page
@@ -62,13 +62,13 @@ https://yoursite.com/add-new-amenities/?am_id=123&action=Deny
 **File:** `/wqs/functions.php`
 
 **Functions:**
-- `approve_add_new_amenity()` - Approves request, creates taxonomy term
-- `deny_add_new_amenity()` - Denies request, deletes from table
+- `hnfo_approve_add_new_amenity()` - Approves request, creates taxonomy term
+- `hnfo_deny_add_new_amenity()` - Denies request, deletes from table
 
 **Security:**
 - Capability checks (`manage_options`)
-- Input validation
-- Nonce verification (TODO: add nonce to AJAX calls)
+- Nonce verification on all AJAX calls
+- Input sanitization and validation
 
 ## User Workflow
 
@@ -152,8 +152,7 @@ This makes the amenity available for multiple property types.
 
 ### Remaining Security Improvements
 
-⚠️ **TODO:**
-- Add nonce verification to AJAX calls
+**TODO:**
 - Add rate limiting for form submissions
 - Add CAPTCHA to prevent spam
 - Implement approval expiration (auto-delete old requests)
@@ -239,7 +238,7 @@ When creating a child theme, move these files:
 
 1. `/add-new-amenities.php` → Child theme root
 2. `/wqs/` directory → Child theme
-3. Update paths in `enqueue_wqs_script()` to use `get_stylesheet_directory_uri()`
+3. Update paths in `hnfo_enqueue_wqs_script()` to use `get_stylesheet_directory_uri()`
 
 ### Moving to Custom Plugin
 
@@ -256,9 +255,10 @@ When creating a child theme, move these files:
 For issues or questions about this system, contact:
 - System created: ~2023 (Upwork developers)
 - Security hardened: 2026-02-13
+- PHPCS compliance pass: 2026-03-03 (0 violations, hnfo_ prefix applied)
 - Documentation created: 2026-02-13
 
 ---
 
-**Last Updated:** 2026-02-13
-**Version:** 1.0 (Post-Security Audit)
+**Last Updated:** 2026-03-03
+**Version:** 1.1 (PHPCS Compliance)
