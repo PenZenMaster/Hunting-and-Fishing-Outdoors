@@ -19,7 +19,7 @@ function wqs_new_record( $record, $ajax_handler ) {
 		$fields[ $id ] = $field['value'];
 	}
 	global $wpdb;
-	$last_entry_record = $wpdb->get_results( $wpdb->prepare( 'SELECT  * FROM new_amenities ORDER BY new_amenity_entry_id DESC' ) );
+	$last_entry_record = $wpdb->get_results( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	$last_entry = $last_entry_record[0]->new_amenity_entry_id;
 	$last_entry_id = $last_entry + 1;
 	// if ($fields['field_2167f68'] == '(binary)') {
@@ -272,8 +272,8 @@ add_action( 'admin_init', 'add_taxonomy_meta_box' );
 function taxonomy_meta_box_callback( $term ) {
 	$taxonomy = 'property_action_category';
 	$terms    = get_terms(
-		$taxonomy,
 		array(
+			'taxonomy'   => $taxonomy,
 			'hide_empty' => false,
 		)
 	);
@@ -318,7 +318,7 @@ add_action( 'wp_footer', 'set_last_entry_id' );
 function set_last_entry_id() {
 	global $wpdb;
 
-	$last_entry_record = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC' ) );
+	$last_entry_record = $wpdb->get_results( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- static query, no user input
 	// Guard: table may be empty on a fresh install.
 	$last_entry    = ! empty( $last_entry_record ) ? absint( $last_entry_record[0]->new_amenity_entry_id ) : 0;
 	$last_entry_id = $last_entry + 1;
@@ -407,7 +407,7 @@ function add_amenity_modal_html() {
 	global $wpdb;
 
 	// Get next entry ID
-	$last_entry_record = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC LIMIT 1' ) );
+	$last_entry_record = $wpdb->get_results( 'SELECT * FROM new_amenities ORDER BY new_amenity_entry_id DESC LIMIT 1' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- static query, no user input
 	$last_entry_id = ! empty( $last_entry_record ) ? intval( $last_entry_record[0]->new_amenity_entry_id ) + 1 : 1;
 	?>
 	<div id="new-amenity-modal" class="new-amenity-modal-overlay" style="display:none;">
