@@ -1,6 +1,6 @@
 # Project Status - HNFO WordPress Development
 
-**Last Updated:** 2026-03-03 11:53
+**Last Updated:** 2026-10-02 18:38
 **Project:** Hunting and Fishing Outdoors Website
 **Repository:** https://github.com/PenZenMaster/Hunting-and-Fishing-Outdoors
 **Environment:** http://hnfo-development.local/
@@ -78,8 +78,17 @@
     - Pre-commit hook: wqs/ promoted from warning-only to strict-blocking
     - **Commits:** 4f790c0, 0f19d3c, ad98cc8, 7e95ee5
 
+12. **Post-Hiatus Environment Update** (this session, 2026-10-02)
+    - Local: WordPress 6.9.1 -> 7.1.2, Elementor 3.35.5 -> 4.3.3, plus Popup Maker,
+      UpdraftPlus, Performance Lab, Loco Translate, SVG Support updated via Local shell (WP-CLI)
+    - Root cause of failed web-admin updates: mod_fcgid ~40s IO timeout on local Apache
+    - Removed stale local object-cache drop-ins (LiteSpeed/Performance Lab)
+    - Live hnfo.net 500 diagnosed (Wordfence auto_prepend_file) and fixed by user in cPanel
+    - No tracked code changes; PHPUnit 27/27
+
 ### In Progress
-- Nothing actively in progress.
+- WPForms still 1.6.2.2 (license support ticket open); Revolution Slider 6.7.41 (needs purchase code)
+- Verified DB backup still needed (earlier export was 0 bytes)
 
 ### Deferred / Backlog
 
@@ -97,7 +106,7 @@
    - Verify filtering by property type works correctly
    - Priority: Medium
 
-4. **add-new-amenities.php PHPCS Violations** (~51) (Low)
+4. **PHPCS: add-new-amenities.php (~51) + wqs/install-amenities-table.php (41)** (Medium)
    - NonPrefixedVariable, NonPrefixedFunction, unescaped output, Yoda conditions,
      comment punctuation. Pre-commit hook is warning-only for this file.
    - Natural next cleanup target after wqs/
@@ -134,10 +143,13 @@
 ## Next Session Items
 
 ### Start Here
-1. Deploy to live/staging and verify all 6 home page sections display content
-2. After verification, remove migration require from functions.php + commit + push
-3. Create estate_agent posts in WP Admin to populate Featured Owner widget (no code needed)
-4. Calendar QA (when ready)
+1. Take a verified local DB export + files backup (Local Export)
+2. Plan live deploy: update live plugins, deploy child theme + home page migration, verify
+   all 6 home page sections on hnfo.net (live currently lacks the widget migration)
+3. Resolve WPForms license (or fall back to WPForms Lite) and decide on Wordfence for live
+4. Visual QA on updated stack (Elementor 4 / WP 7.1.2): home, listing, Edit Listing
+5. After live verification, remove migration require from functions.php + commit + push
+6. PHPCS: add-new-amenities.php (51) + wqs/install-amenities-table.php (41)
 
 ---
 
@@ -149,6 +161,7 @@
 - Pre-push: warning-only for all PHPCS violations, blocks on test failures
 
 ### Architecture
+- WordPress 7.1.2 (local); Elementor 4.3.3
 - Parent theme: WPRentals 3.17.0
 - Child theme: owns all customizations (half-day booking, amenities, dashboard link fix,
   Places proxy, home page migration)
@@ -180,7 +193,7 @@
 ## Environment Info
 
 - **Platform:** Windows (Cygwin)
-- **WordPress:** Latest
+- **WordPress:** 7.1.2 (local)
 - **PHP:** 8.4.2
 - **Theme:** WPRentals 3.17.0 (parent) + wprentals-child
 - **Plugins:** wprentals-core 3.17.0, wprentals-elementor 3.17.0
@@ -190,5 +203,5 @@
 
 ---
 
-*Status updated: 2026-03-03 11:53*
-*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-03-03_1153.md*
+*Status updated: 2026-10-02 18:38*
+*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-10-02_1838.md*
