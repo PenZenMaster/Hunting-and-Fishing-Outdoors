@@ -16,6 +16,7 @@
 !package-lock.json
 !phpcs.xml.dist
 !phpunit.xml.dist
+!.cpanel.yml
 !.phpunit.result.cache
 !tests/
 !.github/

@@ -1,0 +1,31 @@
+# Module/Script Name: .cpanel.yml
+# Path: D:/local/HNFO-DEV/app/public/.cpanel.yml
+#
+# Description:
+# cPanel Git Version Control deployment tasks for hnfo.net. Copies the four
+# version-controlled WPRentals folders from the cPanel repository clone into
+# the live WordPress install. WordPress core, uploads, wp-config.php and all
+# third-party plugins are NOT touched.
+#
+# Author(s):
+# Rank Rocket Co (C) Copyright 2026 - All Rights Reserved
+#
+# Created Date: 2026-10-05
+# Last Modified Date: 2026-10-05
+#
+# Comments:
+# * v1.00 - Initial deployment config. Each folder is replaced cleanly
+#   (remove, then copy) so files deleted between theme versions do not linger.
+#   The live DB, options and uploads are not affected.
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/hnfo/public_html
+    - /bin/rm -rf $DEPLOYPATH/wp-content/themes/wprentals
+    - /bin/cp -R wp-content/themes/wprentals $DEPLOYPATH/wp-content/themes/wprentals
+    - /bin/rm -rf $DEPLOYPATH/wp-content/themes/wprentals-child
+    - /bin/cp -R wp-content/themes/wprentals-child $DEPLOYPATH/wp-content/themes/wprentals-child
+    - /bin/rm -rf $DEPLOYPATH/wp-content/plugins/wprentals-core
+    - /bin/cp -R wp-content/plugins/wprentals-core $DEPLOYPATH/wp-content/plugins/wprentals-core
+    - /bin/rm -rf $DEPLOYPATH/wp-content/plugins/wprentals-elementor
+    - /bin/cp -R wp-content/plugins/wprentals-elementor $DEPLOYPATH/wp-content/plugins/wprentals-elementor
