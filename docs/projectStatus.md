@@ -1,6 +1,6 @@
 # Project Status - HNFO WordPress Development
 
-**Last Updated:** 2026-10-05 15:46
+**Last Updated:** 2026-10-05 16:58
 **Project:** Hunting and Fishing Outdoors Website
 **Repository:** https://github.com/PenZenMaster/Hunting-and-Fishing-Outdoors
 **Environment:** http://hnfo-development.local/
@@ -89,23 +89,24 @@
 13. **Live Deploy Prep** (2026-10-05)
     - Verified local DB + wp-content backups (D:/local/HNFO-DEV/backups/)
     - .cpanel.yml added (clean replace of 4 WPRentals folders -> /home/hnfo/public_html); pushed
-    - cPanel Git clone started; deploy NOT yet run
     - **Commit:** 8a17161
 
+14. **Live Deploy to hnfo.net** (this session, 2026-10-05)
+    - cPanel Git clone + Deploy HEAD Commit succeeded (works without shell access)
+    - Live on WPRentals 3.17.0; front page shows all 6 sections; permalinks saved
+    - Elementor Pro fatal fixed (Pro 4.3.0 + Free 4.3.1)
+    - Migration not needed on live; migration hook and libs file removed
+    - **Commit:** b42e64a
+
 ### In Progress
-- Live deploy: resume at cPanel Git Version Control > Manage > Deploy HEAD Commit
-  (shell-access warning seen; may need host to enable shell, else zip + File Manager fallback)
-- WPForms still 1.6.2.2 (license support ticket open); Revolution Slider 6.7.41 (needs purchase code)
-- Verified DB backup still needed (earlier export was 0 bytes)
+- Live WPRentals theme options check (post new core plugin)
+- Live: WPForms Lite swap (old 1.6.2.2 retired), LiteSpeed Cache install (production only),
+  Wordfence leftovers cleanup (Wordfence not used), core + plugin updates (skip WPRentals)
+- Revolution Slider 6.7.41 (needs purchase code)
 
 ### Deferred / Backlog
 
-1. **Remove migration require from functions.php** (High - after live verify)
-   - Once home page sections confirmed on live/staging, remove the `require_once` and
-     `add_action` for `homepage-widgets-migration.php` from functions.php
-   - Priority: High (do after live site deployment + verification)
-
-2. **Calendar QA** (Medium)
+1. **Calendar QA** (Medium)
    - Deferred by user; no bug identified
    - Priority: Medium
 
@@ -151,12 +152,11 @@
 ## Next Session Items
 
 ### Start Here
-1. Resume live deploy in cPanel (Deploy HEAD Commit), verify site + 3.17.0, save permalinks,
-   run migration once at /?run_homepage_migration=1, verify all 6 home page sections
-2. Update live core + third-party plugins via WP Admin (skip WPRentals items)
-3. Resolve WPForms license (or fall back to WPForms Lite) and decide on Wordfence for live
-4. Visual QA on updated stack (Elementor 4 / WP 7.1.2): home, listing, Edit Listing
-5. After live verification, remove migration require from functions.php + commit + push
+1. Verify live WPRentals theme options
+2. WPForms Lite swap + form submission test; Wordfence leftovers cleanup on live
+3. Install LiteSpeed Cache on live (production only; not in DEV)
+4. Update live core + third-party plugins via WP Admin (skip WPRentals items)
+5. Visual QA on updated stack (Elementor 4 / WP 7.1.2): home, listing, Edit Listing
 6. PHPCS: add-new-amenities.php (51) + wqs/install-amenities-table.php (41)
 
 ---
@@ -211,5 +211,5 @@
 
 ---
 
-*Status updated: 2026-10-05 15:46*
-*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-10-05_1546.md*
+*Status updated: 2026-10-05 16:58*
+*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-10-05_1658.md*
