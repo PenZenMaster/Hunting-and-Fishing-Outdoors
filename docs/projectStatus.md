@@ -1,6 +1,6 @@
 # Project Status - HNFO WordPress Development
 
-**Last Updated:** 2026-10-02 18:38
+**Last Updated:** 2026-10-05 15:46
 **Project:** Hunting and Fishing Outdoors Website
 **Repository:** https://github.com/PenZenMaster/Hunting-and-Fishing-Outdoors
 **Environment:** http://hnfo-development.local/
@@ -86,7 +86,15 @@
     - Live hnfo.net 500 diagnosed (Wordfence auto_prepend_file) and fixed by user in cPanel
     - No tracked code changes; PHPUnit 27/27
 
+13. **Live Deploy Prep** (2026-10-05)
+    - Verified local DB + wp-content backups (D:/local/HNFO-DEV/backups/)
+    - .cpanel.yml added (clean replace of 4 WPRentals folders -> /home/hnfo/public_html); pushed
+    - cPanel Git clone started; deploy NOT yet run
+    - **Commit:** 8a17161
+
 ### In Progress
+- Live deploy: resume at cPanel Git Version Control > Manage > Deploy HEAD Commit
+  (shell-access warning seen; may need host to enable shell, else zip + File Manager fallback)
 - WPForms still 1.6.2.2 (license support ticket open); Revolution Slider 6.7.41 (needs purchase code)
 - Verified DB backup still needed (earlier export was 0 bytes)
 
@@ -143,9 +151,9 @@
 ## Next Session Items
 
 ### Start Here
-1. Take a verified local DB export + files backup (Local Export)
-2. Plan live deploy: update live plugins, deploy child theme + home page migration, verify
-   all 6 home page sections on hnfo.net (live currently lacks the widget migration)
+1. Resume live deploy in cPanel (Deploy HEAD Commit), verify site + 3.17.0, save permalinks,
+   run migration once at /?run_homepage_migration=1, verify all 6 home page sections
+2. Update live core + third-party plugins via WP Admin (skip WPRentals items)
 3. Resolve WPForms license (or fall back to WPForms Lite) and decide on Wordfence for live
 4. Visual QA on updated stack (Elementor 4 / WP 7.1.2): home, listing, Edit Listing
 5. After live verification, remove migration require from functions.php + commit + push
@@ -203,5 +211,5 @@
 
 ---
 
-*Status updated: 2026-10-02 18:38*
-*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-10-02_1838.md*
+*Status updated: 2026-10-05 15:46*
+*See latest checkpoint: docs/archive/checkpoints/CheckPoint-2026-10-05_1546.md*
